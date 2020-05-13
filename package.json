@@ -1,0 +1,48 @@
+{
+  "name": "dom-native",
+  "version": "0.9.9",
+  "description": "DOM Native micro library to build small to big web application (zero dependency, < 12kb min, < 5kb gzip)",
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dom-native/dom-native.git"
+  },
+  "keywords": [
+    "web-framework",
+    "WebComponent",
+    "customElement",
+    "cssGrid",
+    "DOM",
+    "DOM Native",
+    "Patterns",
+    "html",
+    "framework",
+    "mvc",
+    "html5"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "chokidar": "^3.4.0",
+    "cmdrouter": "^0.3.1",
+    "fs-extra-plus": "^0.5.11",
+    "rollup": "^2.10.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "terser": "^4.6.13",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.2"
+  },
+  "files": [
+    "src/",
+    "dist/"
+  ],
+  "scripts": {
+    "prepare": "rm -Rf ./dist && ./node_modules/.bin/tsc",
+    "test": "echo \"Start server here, and test via browser http://localhost:8888/test \" && exit 0",
+    "build": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/src/cmds.ts build",
+    "watch": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/src/cmds.ts watch"
+  },
+  "author": "Jeremy Chone <jeremy.chone@gmail.com> (http://jeremychone.com)",
+  "license": "MIT"
+}

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="">
+	<head>
+		<meta charset="utf-8">
+		<title>dom-native test: component</title>
+
+		<script src="./dist/dom-native.js"></script>
+		<script src="./dist/test-bundle.js"></script>
+
+		<link href="./common/test.css" rel="stylesheet">
+
+		<script>
+		var tests = test_bundle.dxTests;
+		</script>
+
+	</head>
+
+	<body>
+		<div class="test-output">
+			<h1>dx tests</h1>
+			<ul id="output">
+			</ul>
+		</div>
+		<div class="test-content">
+				<h1>Generic dx test</h1>
+				<div class="form test-pull">
+					<div class="field">
+							<label>input with no name</label>
+							<input class="ctrl dx" val="not set">
+						</div>				
+					<div class="field">
+						<label>input a</label>
+						<input name="a" class="ctrl dx" value="a-val">
+					</div>
+	
+					<div class="field">
+						<label>input.dx-b</label>
+						<input class="ctrl dx dx-b" value="b-val">
+					</div>
+	
+					<div class="field">
+						<label>input[checkbox].dx-c1 (checked)</label>
+						<input type="checkbox" class="ctrl dx dx-c1" value="c1-val" checked="checked">
+					</div>
+	
+					<div class="field">
+						<label>input[checkbox].dx-c2</label>
+						<input type="checkbox" class="ctrl dx dx-c2" value="c2-val">
+					</div>
+	
+					<div class="field">
+						<label>input[checkbox].dx-c3 (checked)</label>
+						<input type="checkbox" class="ctrl dx dx-c3" value="c3-val-a" checked="checked">
+					</div>
+	
+					<div class="field">
+						<label>input[checkbox].dx-c3 (checked)</label>
+						<input type="checkbox" class="ctrl dx dx-c3" value="c3-val-b" checked="checked">
+					</div>
+	
+	
+					<div class="field">
+						<label>input[checkbox].dx-c4 (checked)</label>
+						<input type="checkbox" class="ctrl dx dx-c4" value="c4-val-a" checked="checked">
+					</div>
+	
+					<div class="field">
+						<label>input[checkbox].dx-c4</label>
+						<input type="checkbox" class="ctrl dx dx-c4" value="c4-val-b">
+					</div>
+	
+					<div class="field">
+						<label>input[checkbox].dx-c5 (checked)</label>
+						<input type="checkbox" class="ctrl dx dx-c5" checked="checked">
+					</div>				
+	
+					<div class="field">
+						<label>input[radio].dx-r1 (checked)</label>
+						<input type="radio" class="ctrl dx dx-r1" value="r1-val-a" checked="checked">
+					</div>
+	
+					<div class="field">
+						<label>input[radio].dx-r2 (checked)</label>
+						<input name="r2" type="radio" class="ctrl dx" value="r2-val-a" checked="checked">
+					</div>
+					<div class="field">
+						<label>input[radio].dx-r2</label>
+						<input name="r2" type="radio" class="ctrl dx" value="r2-val-b">
+					</div>
+					<div class="field">
+						<label>div.dx-d</label>
+						<div class="ctrl dx dx-d">d-val</div>
+					</div>
+					<div class="field">
+						<label>div[data-dx="e"]</label>
+						<div class="ctrl dx" data-dx="e">e-val</div>
+					</div>
+				</div> <!-- /.test-pull -->
+	
+				<h1>Custom selector test</h1>
+				<div class="custom-form">
+					<div class="field">
+						<div class="edit">
+							<input class="dx dx-firstName" value="firstName1">
+						</div>
+						<div class="view">
+							<span class="dx dx-firstName">aaa</span>
+						</div>
+					</div>
+					<div class="field">
+						<div class="edit">
+							<input class="dx dx-lastName" value="lastName1">
+						</div>
+						<div class="view">
+							<span class="dx dx-lastName">bbb</span>
+						</div>
+					</div>				
+				</div>
+	
+				<h1>Empty properties</h1>
+					<div class="empty-props">
+						<div class="field">
+							<input class="dx dx-a" value="a1">
+						</div>
+						<div class="field">
+							<span class="dx dx-b">b1</span>
+						</div>
+						<div class="field">
+							<input class="dx dx-c" value="c1">
+						</div>
+						<div class="field">
+							<span class="dx dx-d">d1</span>
+						</div>							
+				</div>			
+		</div>		
+	</body>
+</html>

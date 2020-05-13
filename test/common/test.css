@@ -1,0 +1,67 @@
+html {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 8px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  flex-direction: row;
+}
+
+.test-output {
+  border-right: solid 1px #ddd;
+  width: 300px;
+  margin-right: 8px;
+}
+
+.test-output h1 {
+  font-size: 24px;
+}
+
+.test-output li {
+  font-family: courier;
+  font-size: 13px;
+}
+
+.test-output li.fail {
+  color: red;
+}
+
+.test-content {
+  flex-grow: 1;
+}
+
+.rect {
+  display: block;
+  padding: 0 16px;
+  margin: 8px;
+  border: solid 1px #ddd;
+  width: 200px;
+  min-height: 32px;
+  font-size: 12px;
+  color: #888;
+  cursor: pointer;
+}
+
+.rect.sm {
+  width: 100px;
+}
+
+button,
+.but {
+  display: inline-block;
+  cursor: pointer;
+  padding: 8px;
+  text-align: center;
+  font-size: 14px;
+  letter-spacing: .1em;
+  background-color: #fff;
+  border: solid 1px #999;
+  border-radius: 3px;
+}

@@ -1,0 +1,18 @@
+# Ignore . file by default
+.*
+
+!.gitignore
+
+# ignore node_modules
+node_modules/
+# for now, we ignore this new node.js package file.
+package-lock.json
+
+dist/
+*.tgz
+
+#ignore all all paths that start with ~ (personal folder/files)
+~*
+
+# prevent the .map
+*.map

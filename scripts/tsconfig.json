@@ -1,0 +1,42 @@
+{
+	"compilerOptions": {
+		// This is for the node/scripts mode, so we can target esNext
+		"target": "esNext",
+
+		// For the node.js context, so, target commonjs otherwise, cannot run in node
+		"module": "commonjs",
+
+		// This is important to support 3rd party modules that are still in a node.js/commonjs way
+		"moduleResolution": "node", 
+		
+		// 99% of the code will be .ts, and .js files will just be 3rd party libs and will be in 
+		"allowJs": false,
+		"checkJs": false,
+
+		// To extract the maximum value from TypeScript, we use strict = true (no implicit, null check, ...)
+		"strict": true, 
+
+		"removeComments": true,
+
+		"declaration": true,
+
+		// Definitely wants sourcemapp
+		"sourceMap": true, /* Generates corresponding '.map' file. */
+
+		"outDir": "./~out/", /* Redirect output structure to the directory. */
+
+		// allow to import moment like: import moment from "moment"
+		"allowSyntheticDefaultImports": true
+	},
+	
+	// We want more control about which code we will compile and exclude
+	"include": [
+		"./src/**/*.ts"
+	],
+	
+
+	"exclude": [
+		"node_modules",
+		".rpt2_cache" // this folder will be created by the rollup-typescript2, so, need to exlude it, can become confusing.
+	]
+}
