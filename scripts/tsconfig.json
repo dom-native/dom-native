@@ -26,7 +26,7 @@
 		"outDir": "./~out/", /* Redirect output structure to the directory. */
 
 		// allow to import moment like: import moment from "moment"
-		"allowSyntheticDefaultImports": true
+		"esModuleInterop": true
 	},
 	
 	// We want more control about which code we will compile and exclude

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="">
+	<head>
+		<meta charset="utf-8">
+		<title>mvdom-xp perf</title>
+
+		<!-- <script src="./dist/mvdom.js"></script> -->
+		<script src="./dist/test-bundle.js"></script>
+
+		<link href="./common/test.css" rel="stylesheet">
+
+		<script>
+		/* global assertEquals */
+
+		window.perfs = test_bundle.indexPerfs;
+		
+
+		</script>
+
+	</head>
+
+	<body>
+		<div class="test-output">
+			<h1>Perf</h1>
+			<ul id="output">
+			</ul>
+
+		</div>
+		<div class="test-content container">
+		</div>		
+	</body>
+</html>

@@ -1,25 +1,67 @@
 
-# dom-native introduction
-
 ## Making the DOM Scale (**< 5kb compressed**)
 
-`dom-native` is a minimalistic DOM CENTRIC library, which uses the DOM as the foundation for scalable MVC framework rather than working against it. 
+`dom-native` is a minimalistic DOM library that uses the DOM as the foundation for scalable MVC foundation rather than working against it. 
 
-- **No Virtual DOM**, No Black Magic, just **REAL DOM**
+It can be used to build simple to rich Web and Mobile Web frontends. The key concept is that **Simple Scales Better.**
 
-- **< 5kb gzipped** (< 13kb minimized) and **ZERO dependency**!
+### Why: 
 
-- Promoto **Native DOM Component Model** based (i.e., customElement/WebComponent) 
+- **IT'S 2020** - Native Browser component model and support are exponentially better than in 2010ish.
 
-- **ZERO IE TAX**! Only **targets modern browsers**, NO Polyfill included (PC & Mobile of Chrome, Firefox, Safari, and Chrominium Edge).
+- **Learn what matters** - Frameworks come and go, but Runtimes stay. 
 
-- **Light and expressive** DOM **API** wrappers with lightweight pub/sub API. 
+- **THE DOM is THE FRAMEWORK** - With customElement / web component, the DOM has become a very scalable framework for future proof Application Programming. 
 
-- **Typed** Carefully typed for expressiveness and robustness (big thanks to TypeScript)
 
-- **Template agnostic** (e.g., [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals), handlebars, and [lit-html](https://github.com/Polymer/lit-html) for full render/re-render model )
+### Key features and approach:
 
-> **Simple Scales Better** - **Learn what matters** - **favor pattern over frameworks** - **The DOM is the Framework!** - **Real DOM is Back!!!**
+- **ZERO IE TAX**! Only **target modern browsers** (e.g., modern Chrome, Edge Chromium, Firefox, and Safari). NO Polyfill or Shiming.
+
+- **NO VIRTUAL DOM**! Fully embrace DOM native customElement and web component. **REAL DOM IS BACK!**
+
+- **JUST A LIB** not a framework (**DOM is THE FRAMEWORK**). 
+
+- **SMALL** **< 5kb gzipped** (< 13kb minimized) and **ZERO dependency**!
+
+- **SIMPLE** `BaseHMLElement extends HTMLElement` base class providing expressive lifecycle by hooking to native DOM custom elements 
+  - e.g.,`.init` `.preDisplay` `.postDisplay`. 
+
+- **O(1) event binding** support by fully utilizing DOM event bubbling with optional namespacing
+```ts
+on(containerEl, 'pointerup', '.my-div', (evt) => { 
+    console.log('clicked')
+}, {ns: 'some_namespace'});
+// or a la jquery: on(containerEl, 'pointerup.some_namespace', ...)
+
+// ...
+
+off(containerEl, {ns: 'some_namespace'});
+```
+ 
+- **TYPED** for expressiveness and robustness (big thanks to TypeScript) with some minimalistic but powerfull TS **decorators**
+```ts 
+import {customElement, BaseHTMLElement, onEvent} from 'dom-native';
+
+@customElement('my-element') 
+class MyElement extends BaseHTMLElement{
+  @onEvent('pointerdown', '.big-button')
+  bigButtonClick(evt: PointerEvent & {S})
+}
+```
+
+- **LIGHT** and expressive** DOM API wrappers (e.g., `first(el, selector)` `all(el, selector)`)
+  - e.g., `const itemsEl = first(el, 'ul.items'); all(itemsEl,'li').map(liEl => console.log(liEl))`
+
+- **PUB/SUB** - Unleash state management with a Minimalistic pub/sub api (see below)
+
+- **AGNOSTIC** - NO templating included. Feel free to use [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals), handlebars, or [lit-html](https://github.com/Polymer/lit-html, or even vuejs). 
+
+
+> IN SHORT - **Simple Scales Better** - **Learn what matters** - **favor pattern over frameworks** - **The DOM is the Framework!** - **Real DOM is Back!!!**
+
+
+\>>> [QUICK DEMO](https://demo.dom-native.org/core/index.html) <<< (under construction!)
 
 
 ## Hello World

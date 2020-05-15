@@ -1,0 +1,13 @@
+#-# {{assignJsonValue 'dropVersion' 'package.json' 'version'}}
+
+blocks:
+  - name: demo
+    dir: demo/
+    baseDistDir: demo/dist/
+    webBundles:
+      - name: ts
+        entries: ./src/*.ts
+        dist: ./demo-bundle.js
+      - name: css-demo
+        entries: ./pcss/main.pcss
+        dist: ./css/demo.css

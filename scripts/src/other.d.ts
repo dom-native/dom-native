@@ -1,6 +1,11 @@
 
 
 // --------- Rollup Plugins --------- //
+declare module '@rollup/plugin-multi-entry' {
+	function fn(data?: any): any
+	export default fn;
+}
+
 declare module 'rollup-plugin-commonjs' {
 	function fn(data?: any): any
 	export = fn;

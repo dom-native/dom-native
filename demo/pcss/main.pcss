@@ -1,0 +1,103 @@
+@import "@dom-native/demo-infra/pcss/demo.pcss";
+
+
+.card{
+	box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2),
+		0px 3px 4px 0px rgba(0, 0, 0, 0.14),
+		0px 1px 8px 0px rgba(0, 0, 0, 0.12);
+	background: #fff;	
+	user-select: none;
+	width: 10rem;
+	height: 10rem;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(3rem, 1fr));
+}
+
+
+.drag-me, slide-me{
+	touch-action: none; 
+	cursor: pointer;
+}
+
+.box {
+	background: #fff;
+	min-height: 3rem;
+	border: solid 1px var(--clr-bdr);
+	height: 3rem;
+	color: #777;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	font-size: 14px;
+}
+
+.zone{
+	min-height: 3rem;
+	border: solid 1px var(--clr-bdr);
+	display: flex;
+	grid-gap: 1rem;
+}
+
+.slider{
+	position: relative;
+	touch-action: none; 	
+	min-height: .5rem;
+	width: 10rem;
+	background: #ddd;
+	border-radius: 1rem;
+}
+
+.slider-zone{
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+
+	touch-action: none; 	
+	background: red;
+	border-radius: 1rem;	
+}
+
+.slider-handle{
+	touch-action: none; 	
+	position: absolute;
+	top: -4px;
+	bottom: -4px;
+	width: 4px;
+	background: red;
+
+	&.left{
+		left: 0;
+	}
+	&.right{
+		right: 0;
+	}
+
+	&:hover{
+		background: blue;
+	}
+}
+
+
+.container{
+	position: relative;
+	touch-action: none; 	
+	min-height: .5rem;
+	width: 10rem;
+	background: #ddd;
+	height: 10rem;
+}
+
+.thumb, .dot{
+	opacity: .8;
+	touch-action: none; 
+	position: absolute;
+	top: -.75rem;
+	left: 0;
+	height: 2rem;
+	width: 2rem;
+	border-radius: 1rem;
+	background: var(--clr-prime);
+}
+
