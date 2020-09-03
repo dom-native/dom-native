@@ -83,9 +83,13 @@ export function bindOnEventsDecorators(this: any) {
 						hasOnWinEvent.set(topClazz, true);
 						setHasWinEvent = false;
 					}
-					const target = onEvent.target || this;
-					on(target, onEvent.type, onEvent.selector, fn, opts);
+					let target = onEvent.target || this;
 
+					// TODO: offer a flag to turn off the automatic .shadowRoot selection if present 
+					//      (However, if no flag, taking the .shadowRoot if most intuitive default for a @onEvent decorator)
+					target = (target.shadowRoot) ? target.shadowRoot : target;
+
+					on(target, onEvent.type, onEvent.selector, fn, opts);
 
 					// to not double bind same function name (aligning with inheritance behavior)
 					fnNameBoundSet.add(fnName);
