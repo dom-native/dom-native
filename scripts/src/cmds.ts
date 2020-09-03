@@ -113,6 +113,7 @@ async function _generateDemoCodesFile() {
 	let codeContent = '';
 	for (let { name, code } of codeItems) {
 		code = code.replace(/\`/g, '\\\`');
+		code = code.replace(/\$/g, '\\$');
 		codeContent += `
 
 export const code_${name}	= \`

@@ -42,6 +42,7 @@
     "terser": "^5.2.1",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.2",
+    "utils-min": "^0.1.16",
     "vdev": "^0.12.3"
   },
   "files": [

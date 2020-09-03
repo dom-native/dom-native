@@ -7,6 +7,9 @@ type OnDOMEvent = { target: Window | Document | null, name: string, type: string
 
 const onEventsByConstructor: Map<Function, OnDOMEvent[]> = new Map();
 
+// TODO: OPTIMIZATION 
+// const onEventsByTopClazz: Map<Function, OnDOMEvent[]> = new Map();
+
 // Keep track of which leaf Constructor has windows event
 // NOTE: this has to be initialize at the  bindOnDecorators phase, because at the _onDOMEvent, we do not know all the class inheritance yet.
 // The good news is that it has to be done once. So, undefined means not sure, true, means there is at least once, and false means we already looked and nothing. 
@@ -56,6 +59,7 @@ export function bindOnEventsDecorators(this: any) {
 	let clazz = this.constructor;
 	const topClazz = clazz;
 
+
 	// Determine if we need to set if this class has a doc or win event (this allow to do it only once per leaf class)
 	let setHasDocEvent = !hasOnDocEvent.has(topClazz);
 	let setHasWinEvent = !hasOnWinEvent.has(topClazz);
@@ -67,6 +71,10 @@ export function bindOnEventsDecorators(this: any) {
 
 	const opts = { ...this._nsObj, ctx: this };
 
+	// TODO: OPTIMIZATION - cache the list of events for topClazz on first passthrough
+	// let onEvents = onEventsByTopClazz.get(topClazz) ?? processOnEventsByTopClazz(topClazz);
+
+
 	while (clazz !== HTMLElement) {
 		const onEvents = onEventsByConstructor.get(clazz);
 		if (onEvents) {
@@ -77,15 +85,16 @@ export function bindOnEventsDecorators(this: any) {
 
 					if (setHasDocEvent && onEvent.target === document) {
 						hasOnDocEvent.set(topClazz, true);
-						setHasDocEvent = false;
+						setHasDocEvent = false; // this will ignore the parent class same function name @docEvent
 					}
 					if (setHasWinEvent && onEvent.target === window) {
 						hasOnWinEvent.set(topClazz, true);
-						setHasWinEvent = false;
+						setHasWinEvent = false; // this will ignore the parent class same function name @winEvent
 					}
+
 					let target = onEvent.target || this;
 
-					// TODO: offer a flag to turn off the automatic .shadowRoot selection if present 
+					// TODO: offer a decorator flag to turn off the automatic .shadowRoot selection if present 
 					//      (However, if no flag, taking the .shadowRoot if most intuitive default for a @onEvent decorator)
 					target = (target.shadowRoot) ? target.shadowRoot : target;
 
