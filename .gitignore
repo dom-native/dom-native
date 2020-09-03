@@ -11,8 +11,8 @@ package-lock.json
 dist/
 *.tgz
 
-#ignore all all paths that start with ~ (personal folder/files)
-~*
+# generated ts code
+demo/src/_codes.ts
 
 # prevent the .map
 *.map
