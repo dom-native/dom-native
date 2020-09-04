@@ -13,6 +13,9 @@
 	grid-template-columns: repeat(auto-fill, minmax(3rem, 1fr));
 }
 
+.root-el{
+	padding: 1rem 0; 
+}
 
 .drag-me, slide-me{
 	touch-action: none; 
@@ -32,51 +35,12 @@
 	font-size: 14px;
 }
 
-.zone{
-	min-height: 3rem;
+.clickable{
+	display: inline-block;
+	padding: 1rem;
+	margin: 1rem;
+	cursor: pointer;
 	border: solid 1px var(--clr-bdr);
-	display: flex;
-	grid-gap: 1rem;
-}
-
-.slider{
-	position: relative;
-	touch-action: none; 	
-	min-height: .5rem;
-	width: 10rem;
-	background: #ddd;
-	border-radius: 1rem;
-}
-
-.slider-zone{
-	position: absolute;
-	top: 0;
-	left: 0;
-	bottom: 0;
-
-	touch-action: none; 	
-	background: red;
-	border-radius: 1rem;	
-}
-
-.slider-handle{
-	touch-action: none; 	
-	position: absolute;
-	top: -4px;
-	bottom: -4px;
-	width: 4px;
-	background: red;
-
-	&.left{
-		left: 0;
-	}
-	&.right{
-		right: 0;
-	}
-
-	&:hover{
-		background: blue;
-	}
 }
 
 

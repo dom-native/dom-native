@@ -63,8 +63,51 @@ export function prev(el: Node | null | undefined, selector?: string): HTMLElemen
 	return _sibling(false, el, selector) as HTMLElement;  // assume HTMLElement
 }
 
+
+/**
+ * Return the next or previous Element sibling
+ * @param next
+ * @param el
+ * @param selector
+ */
+function _sibling(next: boolean, el: Node | undefined | null, selector?: string) {
+	const sibling: 'nextSibling' | 'previousSibling' = (next) ? 'nextSibling' : 'previousSibling';
+
+	let tmpEl = (el) ? el[sibling] : null;
+
+	// use "!=" for null and undefined
+	while (tmpEl != null && (<any>tmpEl) != document) {
+		// only if node type is of Element, otherwise, 
+		if (tmpEl.nodeType === 1 && (!selector || (<Element>tmpEl).matches(selector))) {
+			return tmpEl as Element;
+		}
+		tmpEl = tmpEl[sibling];
+	}
+	return null;
+}
+
+// util: querySelector[All] wrapper
+function _execQuerySelector(all: boolean, elOrSelector?: Document | HTMLElement | DocumentFragment | null | string, selector?: string) {
+	let el: HTMLElement | Document | DocumentFragment | null = null;
+	// if el is null or undefined, means we return nothing. 
+	if (elOrSelector == null) {
+		return null;
+	}
+	// if selector is undefined, it means we select from document and el is the document
+	if (typeof selector === "undefined") {
+		selector = elOrSelector as string;
+		el = document;
+	} else {
+		el = elOrSelector as HTMLElement | DocumentFragment;
+	}
+	return (all) ? el.querySelectorAll(selector) : el.querySelector(selector);
+}
+
+
+
 // By default use the document.closest (if not implemented, use the matches to mimic the logic) 
 // return null if not found
+// TODO: support shadow-dom piercing
 export function closest(el: HTMLElement | null | undefined, selector: string): HTMLElement | null {
 	return (el) ? el.closest(selector) as HTMLElement | null : null;
 }
@@ -170,202 +213,6 @@ export function frag(html: string | null | undefined) {
 //#endregion ---------- /DOM Manipulation ---------- 
 
 
-//#region    ---------- style ---------- 
-/** Conditional typing override for  */
-export function style<T extends HTMLElement | HTMLElement[] | null | undefined>(el: T, style: Partial<CSSStyleDeclaration>): T;
-
-// NOTE: If the implementation style... does not return 'T | null' then, the `return null;` says that does not match T (the guard seems to not work).
-//       The trick is to override the definition with above, and it work. 
-export function style<T extends HTMLElement | HTMLElement[] | null>(el: T, style: Partial<CSSStyleDeclaration>): T {
-	if (el == null) return el;
-
-	// TODO: Would be nice to make this more typed, however function constraints and assignment below matches.
-
-	if (el instanceof HTMLElement) {
-		_styleEl(el, style);
-	} else if (el instanceof Array) {
-		for (const elItem of el) {
-			_styleEl(elItem, style);
-		}
-	}
-	return el;
-}
-
-function _styleEl(el: HTMLElement, style: Partial<CSSStyleDeclaration>) {
-	for (const name of Object.keys(style)) {
-		(<any>el.style)[name] = (<any>style)[name];
-	}
-}
-//#endregion ---------- /style ----------
-
-
-//#region    ---------- className ---------- 
-/**
- * Minimilist DOM css class name helper. Add or Remove class name based on object property value. 
- * 
- * e.g., `className(el, {prime: true, 'dark-mode': false} )`
- * 
- * - false | null means remove class name
- * - true | any defined object add class name
- * - undefined values will ignore the property name
- * 
- * @returns pathrough return
- * 
- * Examples: 
- *   - `className(el, {prime: true, 'dark-mode': false} )` add css class 'prime' and remove 'dark-mode'
- *   - `className(el, {prime: someNonNullObject, 'dark-mode': false})` same as above.
- *   - `className(els, {prime: someNonNullObject, 'dark-mode': false})` Will add/remove class for all of the elements.
- * 
- * @param el 
- * @param keyValues e.g. `{prime: true, 'dark-mode': fase, 'compact-view': someObj}`
- */
-export function className<E extends HTMLElement | HTMLElement[] | null | undefined>(els: E, keyValues: { [name: string]: boolean | object | null | undefined }): E {
-
-	if (els instanceof Array) {
-		for (const el of els) {
-			_setClassName(el, keyValues);
-		}
-	}
-	else {
-		_setClassName(els as HTMLElement, keyValues);
-	}
-	return els;
-}
-
-function _setClassName(el: HTMLElement, keyValues: { [name: string]: boolean | object | null | undefined }) {
-	for (const name of Object.keys(keyValues)) {
-		const val = keyValues[name];
-		if (val === null || val === false) {
-			el.classList.remove(name);
-		} else if (val !== undefined) { // for now, do nothing if undefined
-			el.classList.add(name);
-		}
-	}
-}
-//#endregion ---------- /className ----------
-
-
-//#region    ---------- attr ---------- 
-// conditional typing
-
-type Val = string | null;
-type NameValMap = { [name: string]: string | null | boolean };
-
-/**
- * setAttribute DOM helper to Get and Set attribute to DOM HTMLElement(s).
- * 
- * Note: For setters, null and boolean-false value will remove the attribute, `true` will set empty string.
- * 
- * Examples:
- *
- *   Getters:
- *     - `attr(el, 'name')` returns `string | null`, Get of the attribute `name`
- *     - `attr(el, ['name', 'label'])` returns the attribute `[name, label]` (string | null)[]
- *     - `attr(els,'name')` returns `[name, name, ...]` for each attribute for all els. Item is null if no attribute with this anme.
- *     - `attr(els,['name', 'label'])` returns `[name,label][]` for each element.
- *
- *   Setters:
- *     - `attr(el, 'name', 'username')` Set attribute name. If value is null, then, remove will be applied. TODO: Might deprecate. But ok shorthand, and handle the null/remove case, and return el.
- *     - `attr(el, {name: 'username', placeholder: 'Enter username'})` Will set the attributes specified in the object to this element, and returl el,
- *     - `attr(els, {checked: true, readonly: ''})` Will set the attributes specified in the object for all of the elements, and return els.
- *
- * TODO: On 'set' should be a passtrough return (return null | undefined as well)
- */
-
-export function attr(el: HTMLElement, name: string): string | null;
-export function attr(els: HTMLElement[], name: string): (string | null)[];
-export function attr(el: HTMLElement, names: string[]): (string | null)[];
-export function attr(els: HTMLElement[], names: string[]): (string | null)[][];
-
-export function attr(el: HTMLElement, nameValues: { [name: string]: string | null | boolean }): HTMLElement;
-export function attr(els: HTMLElement[], nameValues: { [name: string]: string | null | boolean }): HTMLElement[];
-export function attr(el: HTMLElement, name: string, val: string | null | boolean): HTMLElement;
-export function attr(els: HTMLElement[], name: string, val: string | null | boolean): HTMLElement[];
-
-// implementation
-export function attr<E extends HTMLElement | HTMLElement[], A extends string | string[] | NameValMap>(els: E, arg: A, val?: string | null | boolean): Val | Val[] | Val[][] | E {
-
-	// if we have a val, then, its a single attribute setting (on one or more element)
-	if (val !== undefined) {
-		if (typeof arg !== 'string') {
-			throw new Error(`attr - attr(els, name, value) must have name as string and not: ${arg}`);
-		}
-		const name = arg as string;
-		if (els instanceof Array) {
-			for (const el of els) {
-				_setAttribute(el, name, val);
-			}
-		} else {
-			_setAttribute(els as HTMLElement, name, val);
-		}
-		return els;
-	}
-	// else, if arg is string or array, we assume its a getter (for now, assume the array is an array of string)
-	else if (typeof arg === 'string' || arg instanceof Array) {
-		return _attrGet(els, arg as (string | string[]));
-	}
-	// otherwise, it is a setter 
-	else {
-		return _attrSet(els, arg as NameValMap); // TODO
-	}
-}
-
-export function _attrSet<E extends HTMLElement | HTMLElement[]>(els: E, arg: NameValMap): E {
-	if (els instanceof Array) {
-		for (const el of els) {
-			_setAttributes(el, arg);
-		}
-	} else {
-		_setAttributes(els as HTMLElement, arg);
-	}
-	return els;
-}
-
-function _setAttributes(el: HTMLElement, nameValueObject: NameValMap) {
-	for (const name of Object.keys(nameValueObject)) {
-		_setAttribute(el, name, nameValueObject[name]);
-	}
-}
-
-function _setAttribute(el: HTMLElement, name: string, val: string | null | boolean) {
-	// if it is a boolean, true will set the attribute empty, and false will set txtVal to null, which will remove it.
-	const txtVal = (typeof val !== 'boolean') ? val : (val === true) ? '' : null;
-	if (txtVal !== null) {
-		el.setAttribute(name, txtVal);
-	} else {
-		el.removeAttribute(name);
-	}
-}
-
-export function _attrGet<E extends HTMLElement | HTMLElement[], A extends string | string[]>(els: E, arg: A): Val | Val[] | Val[][] | E {
-	// If HTMLElement[]
-	if (els instanceof Array) {
-		const ells = els as HTMLElement[];
-		return ells.map(el => {
-			const r = _getAttrEl(el as HTMLElement, arg as string);
-			return r;
-		});
-	}
-	// otherwise, assum HTMLElement
-	else {
-		const r = _getAttrEl(els as HTMLElement, arg);
-		return r;
-	}
-}
-
-export function _getAttrEl<N extends string | string[]>(el: HTMLElement, names: N):
-	N extends string ? string | null : (string | null)[];
-export function _getAttrEl(el: HTMLElement, names: string | string[]): any | (string | null) | (string | null)[] {
-	if (names instanceof Array) {
-		return names.map(n => { return el.getAttribute(n) });
-	}
-	// else singloe
-	else {
-		return el.getAttribute(names);
-	}
-
-}
-//#endregion ---------- /attr ----------
 
 //#region    ---------- elem ---------- 
 
@@ -389,42 +236,5 @@ export function elem(...names: string[]): HTMLElement | HTMLElement[] {
 }
 //#endregion ---------- /elem ----------
 
-/**
- * Return the next or previous Element sibling
- * @param next
- * @param el
- * @param selector
- */
-function _sibling(next: boolean, el: Node | undefined | null, selector?: string) {
-	const sibling: 'nextSibling' | 'previousSibling' = (next) ? 'nextSibling' : 'previousSibling';
-
-	let tmpEl = (el) ? el[sibling] : null;
-
-	// use "!=" for null and undefined
-	while (tmpEl != null && (<any>tmpEl) != document) {
-		// only if node type is of Element, otherwise, 
-		if (tmpEl.nodeType === 1 && (!selector || (<Element>tmpEl).matches(selector))) {
-			return tmpEl as Element;
-		}
-		tmpEl = tmpEl[sibling];
-	}
-	return null;
-}
 
 
-// util: querySelector[All] wrapper
-function _execQuerySelector(all: boolean, elOrSelector?: Document | HTMLElement | DocumentFragment | null | string, selector?: string) {
-	let el: HTMLElement | Document | DocumentFragment | null = null;
-	// if el is null or undefined, means we return nothing. 
-	if (elOrSelector == null) {
-		return null;
-	}
-	// if selector is undefined, it means we select from document and el is the document
-	if (typeof selector === "undefined") {
-		selector = elOrSelector as string;
-		el = document;
-	} else {
-		el = elOrSelector as HTMLElement | DocumentFragment;
-	}
-	return (all) ? el.querySelectorAll(selector) : el.querySelector(selector);
-}

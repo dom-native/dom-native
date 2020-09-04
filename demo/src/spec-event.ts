@@ -5,7 +5,7 @@ import { code_eventShadow, code_eventSimple } from './_codes';
 @customElement('spec-event')
 export class SpecEventView extends SpecView {
 	name = 'spec-events'
-	doc = spec_events
+	doc = spec_doc
 	constructor() {
 		super();
 	}
@@ -85,7 +85,7 @@ Some <span class="clickable-1">clickable-1</span> <span class="clickable-2">clic
 //#endregion ---------- /code: eventShadow ---------- 
 
 
-const spec_events: CodeDoc = {
+const spec_doc: CodeDoc = {
 	title: 'Event Binding micro wrappers (on() and @onEvent)',
 	jsPrefix: ``,
 	groups: [

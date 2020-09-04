@@ -12,7 +12,7 @@ const perfList: PerfItem[] = [{ name: 'perf-simplest', fn: startPerfSimplest }];
 @customElement('spec-perf')
 export class SpecPerfView extends SpecView {
 	name = 'spec-perf';
-	doc = spec_perf;
+	doc = spec_doc;
 
 	async postDisplay() {
 		// workaround - because we do not import dom-native, and @dom-native/infra does (alias is not fully working in vscode apparently)
@@ -227,7 +227,7 @@ function formatTime(ms: number) {
 	return `${ms.toFixed(2)}ms`;
 }
 
-const spec_perf: CodeDoc = {
+const spec_doc: CodeDoc = {
 	title: 'Performance (create 10,000 various elements)',
 	jsPrefix: ``,
 	groups: [

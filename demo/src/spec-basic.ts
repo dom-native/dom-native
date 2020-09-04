@@ -5,7 +5,7 @@ import { code_simpleElement, code_simpleElement2 } from './_codes';
 @customElement('spec-basic')
 export class SpecBasicView extends SpecView {
 	name = 'spec-basic'
-	doc = spec_dnd_basic
+	doc = spec_doc
 }
 
 //#region    ---------- code: simpleElement ---------- 
@@ -63,7 +63,7 @@ function basicLifeCycle(rootEl: HTMLElement) {
 
 
 
-const spec_dnd_basic: CodeDoc = {
+const spec_doc: CodeDoc = {
 	title: 'dom-native basic',
 	jsPrefix: ``,
 	groups: [
