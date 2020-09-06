@@ -235,6 +235,3 @@ export function elem(...names: string[]): HTMLElement | HTMLElement[] {
 	}
 }
 //#endregion ---------- /elem ----------
-
-
-

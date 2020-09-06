@@ -34,8 +34,10 @@
 		"esModuleInterop": true,
 
 		"paths": {
-			"dom-native": ["../src"]
-		}
+			"dom-native": ["../dist/index.js"] // does not work
+		}, 
+
+		"skipLibCheck": true,                     /* Skip type checking of declaration files. */
 	},
 
 	// We want more control about which code we will compile and exclude

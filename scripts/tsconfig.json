@@ -23,7 +23,7 @@
 		// Definitely wants sourcemapp
 		"sourceMap": true, /* Generates corresponding '.map' file. */
 
-		"outDir": "./~out/", /* Redirect output structure to the directory. */
+		"outDir": "./.out/", /* Redirect output structure to the directory. */
 
 		// allow to import moment like: import moment from "moment"
 		"esModuleInterop": true
@@ -31,7 +31,7 @@
 	
 	// We want more control about which code we will compile and exclude
 	"include": [
-		"./src/**/*.ts"
+		"./**/*.ts",
 	],
 	
 

@@ -5,27 +5,20 @@
 
 It can be used to build simple to rich Web and Mobile Web frontends. The key concept is that **Simple Scales Better.**
 
-### Why: 
-
-- **IT'S 2020** - Native Browser component model and support are exponentially better than in 2010ish.
-
-- **Learn what matters** - Frameworks come and go, but Runtimes stay. 
-
-- **THE DOM is THE FRAMEWORK** - With customElement / web component, the DOM has become a very scalable framework for future proof Application Programming. 
-
+ **Why:** **IT'S 2020** & **THE DOM is THE FRAMEWORK** & **Learn what matters**  & **Simple Scale Better**
 
 ### Key features and approach:
 
 - **ZERO IE TAX**! Only **target modern browsers** (e.g., modern Chrome, Edge Chromium, Firefox, and Safari). NO Polyfill or Shiming.
 
-- **NO VIRTUAL DOM**! Fully embrace DOM native customElement and web component. **REAL DOM IS BACK!**
+- **NO VIRTUAL DOM**! Fully embrace DOM **native customElement** and **web component**. 
 
 - **JUST A LIB** not a framework (**DOM is THE FRAMEWORK**). 
 
 - **SMALL** **< 5kb gzipped** (< 13kb minimized) and **ZERO dependency**!
 
-- **SIMPLE** `BaseHMLElement extends HTMLElement` base class providing expressive lifecycle by hooking to native DOM custom elements 
-  - e.g.,`.init` `.preDisplay` `.postDisplay`. 
+- **SIMPLE** base class providing expressive lifecycle by hooking to native DOM custom elements 
+  - e.g., `BaseHMLElement extends HTMLElement` with `.init` `.preDisplay` `.postDisplay`. 
 
 - **O(1) event binding** support by fully utilizing DOM event bubbling with optional namespacing
 ```ts
