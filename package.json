@@ -1,6 +1,6 @@
 {
   "name": "dom-native",
-  "version": "0.9.10-SNAPSHOT-4",
+  "version": "0.9.10",
   "description": "DOM Native micro library to build small to big web application (zero dependency, < 12kb min, < 5kb gzip)",
   "main": "dist/index.js",
   "repository": {
@@ -20,8 +20,7 @@
     "mvc",
     "html5"
   ],
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/js-yaml": "^3.12.5",
     "@dom-native/demo-infra": "0.0.0-internal-2",
