@@ -2,7 +2,7 @@
 
 import { bindOnEvents, off, OnListenerBySelector } from './event';
 import { bindHubEvents, HubBindings, unbindHubEvents } from './hub';
-import { bindOnEventsDecorators, unbindOnEventsDecorators } from './ts-decorator-on-event';
+import { bindOnElementEventsDecorators, bindOnParentEventsDecorators, hasParentEventsDecorators, unbindParentEventsDecorators } from './ts-decorator-on-event';
 import { bindOnHubDecorators, unbindOnHubDecorators } from './ts-decorator-on-hub';
 
 // component unique sequence number to allow to have cheap UID for each component
@@ -40,7 +40,17 @@ export abstract class BaseHTMLElement extends HTMLElement {
 	/** called in the after the first paint (i.e., requestAnimationFrame(requestAnimationFrame(..))) */
 	postDisplay?(): void;
 
+	// lifecyle _init state
 	private _init = false;
+	// lifecycle internal state (to avoid double un/bindings)
+	private _has_parent_events: boolean | undefined; // when undefined, needs to be determined
+	private _parent_bindings_done = false;
+	private _parent_unbindings_planned = false;
+	private _hub_bindings_done = false;
+	private _preDisplay_attached = false;
+	private _postDisplay_attached = false;
+
+
 	protected get initialized() { return this._init }
 
 	constructor() {
@@ -64,26 +74,66 @@ export abstract class BaseHTMLElement extends HTMLElement {
 	 * - MUST call `super.connectedCallback()` when overriden. 
 	 */
 	connectedCallback() {
-		// TODO: Needs to handle the case where a DOM node is reattached from an events points of view. 
+		const opts = { ns: this._nsObj.ns, ctx: this };
 
-		if (!this._init) {
-			// bind the this.events, this.docEvents, this.winEvents, this.hubEvents
-			bindComponentEvents.call(this);
+		//// Bind the eventual parent events (document, windows)
+		// Note: Parent events are silenced on when el is diconnected, and unbound when next frame still diconnected
+		if (!this._parent_bindings_done) {
+			// bind the @docDoc event
+			if (this.docEvents) bindOnEvents(document, this.docEvents, { ...opts, silenceDisconnectedCtx: true });
+			// bind the @docWin event
+			if (this.winEvents) bindOnEvents(window, this.winEvents, { ...opts, silenceDisconnectedCtx: true });
+			bindOnParentEventsDecorators(this);
+			this._parent_bindings_done = true;
+		}
 
-			// bind the @on... decorated methods
-			bindOnEventsDecorators.call(this);
+		// NOTE: for now, needs to be after the first bindOnParentEventsDecorators, 
+		//       as it will put the hasWin/hasDoc states used in hasParentEventsDecorators
+		if (this._has_parent_events == null) {
+			this._has_parent_events = this.docEvents != null || this.winEvents != null || hasParentEventsDecorators(this);
+		}
+
+		//// Bind the hub if not already done
+		// Note: Hub events are bound and unbound on each connect and disconnect. 
+		//       (could use the parent event optimation later)
+		if (!this._hub_bindings_done) {
+			if (this.hubEvents) bindHubEvents(this.hubEvents, opts)
 			bindOnHubDecorators.call(this);
+			this._hub_bindings_done = true;
+		}
+
+		//// Peform the init
+		if (!this._init) {
+
+			if (this.events) bindOnEvents(this, this.events, opts);
+
+			// bind the @onEvent decorated methods
+			bindOnElementEventsDecorators(this);
 
 			this.init();
 			this._init = true;
 		}
 
-		// On each connectedCallback, when attached to the DOM, we call the eventual pre and post display methods. 
-		if (this.preDisplay) {
-			requestAnimationFrame(() => { this.preDisplay!() });
+		//// Register the eventuall preDisplay / postDisplay
+		// Note: Guard to prevent double registration on successivel connected/disconnected in the same render loop
+
+		if (this.preDisplay && this._preDisplay_attached == false) {
+			this._preDisplay_attached = true;
+			requestAnimationFrame(() => {
+				this.preDisplay!();
+				this._preDisplay_attached = false;
+			});
 		}
-		if (this.postDisplay) {
-			requestAnimationFrame(() => { requestAnimationFrame(() => { this.postDisplay!() }) })
+
+
+		if (this.postDisplay && this._postDisplay_attached == false) {
+			this._postDisplay_attached = true;
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					this.postDisplay!();
+					this._postDisplay_attached = false;
+				})
+			})
 		}
 	}
 
@@ -91,22 +141,33 @@ export abstract class BaseHTMLElement extends HTMLElement {
 	 * Empty implementation to allow `super.disconnectedCallback()` best practices on sub classes
 	 */
 	disconnectedCallback() {
-		// TODO: Needs to handle the case where a DOM node is reattached.
-		// Event on this does not need to be removed (browser will take care of those, need to understand if they persist). 
-		if (this.docEvents) {
-			off(document, this._nsObj);
-		}
-		if (this.winEvents) {
-			off(window, this._nsObj);
-		}
-		if (this.hubEvents) {
-			unbindHubEvents(this.hubEvents, this._nsObj);
+
+		// NOTE: Here we detached
+		if (this._has_parent_events === true) {
+			requestAnimationFrame(() => {
+				if (!this.isConnected) {
+					if (this.docEvents) {
+						off(document, this._nsObj);
+					}
+					if (this.winEvents) {
+						off(window, this._nsObj);
+					}
+					unbindParentEventsDecorators(this);
+					this._parent_bindings_done = false;
+				}
+			});
 		}
 
-		// unbind the @onDoc, @onWin
-		unbindOnEventsDecorators.call(this);
-		unbindOnHubDecorators.call(this);
+		if (this.hubEvents) {
+			unbindHubEvents(this.hubEvents, this._nsObj);
+			unbindOnHubDecorators.call(this);
+			this._hub_bindings_done = false;
+		}
+
+
+
 	}
+
 
 	/**
 	 * Empty implement to allow `super.` best practices on sub classes.
@@ -124,22 +185,9 @@ export function addHubEvents(target: HubBindings | undefined, source: HubBinding
 	(source instanceof Array) ? t.push(...source) : t.push(source);
 	return t;
 }
+
 //// Private utils
 
-function bindComponentEvents(this: BaseHTMLElement) {
-	// Note: ctx is to make sure the context of the function will be this object. 
-	//       If arrow function, this won't have any effect but will be the expected behavior.
-	const opts = { ns: this._nsObj.ns, ctx: this };
-	if (this.events) {
-		bindOnEvents(this, this.events, opts);
-	}
-	if (this.docEvents) {
-		bindOnEvents(document, this.docEvents, opts);
-	}
-	if (this.winEvents) {
-		bindOnEvents(window, this.winEvents, opts);
-	}
-	if (this.hubEvents) {
-		bindHubEvents(this.hubEvents, opts)
-	}
-}
+
+
+

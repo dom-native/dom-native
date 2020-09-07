@@ -5,7 +5,6 @@ import { equal } from './utils';
 
 
 export function _init() {
-	console.log('>>>>');
 }
 
 export function _beforeEach() {
@@ -22,7 +21,6 @@ export function testValSet() {
 	const v = "YEAH!";
 	const obj = { foo: { bar: {} } };
 	val(obj, "foo.bar.name", v);
-	console.log('>>>>');
 
 	equal(val(obj, "foo.bar.name"), v);
 	equal(val(obj, ["foo", "bar", "name"]), v);

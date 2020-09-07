@@ -1,15 +1,22 @@
-import { first, frag, hub, on, addOnEvents, addHubEvents, BaseHTMLElement, customElement, onDoc, onEvent, onHub } from '../../src/index';
+import { addHubEvents, addOnEvents, append, BaseHTMLElement, customElement, first, frag, hub, on, onDoc, onEvent, onHub } from '../../src/index';
 import { equal } from './utils';
 
 let out: string[] = [];
 
 //#region    ---------- Test Components ---------- 
+class SimplestComponent extends BaseHTMLElement {
+	@onEvent('click')
+	onClickEvent() {
+		out.push('SimplestComponent @onEvent onClickEvent');
+	}
+}
+customElements.define('simplest-component', SimplestComponent);
+
 
 // to test life cycle
 class LifecyleComponent extends BaseHTMLElement {
 
 	get info() { return 'some info' };
-
 
 	constructor() {
 		super();
@@ -94,7 +101,15 @@ customElements.define('doc-component', DocEventComponent);
 
 
 export function _beforeEach() {
+
 	out = [];
+}
+
+export function testSimplestComponent() {
+	const contentEl = first('.test-content')!;
+	const [el] = append(contentEl, frag('<simplest-component></simplest-component>'));
+	el.click();
+	equal(out, ['SimplestComponent @onEvent onClickEvent']);
 }
 
 export function testComponentEventBindings() {
@@ -106,9 +121,28 @@ export function testComponentEventBindings() {
 	contentEl.innerHTML = '';
 }
 
+
+
 export function testComponentDocEvent() {
 	const contentEl = first('.test-content')!;
-	contentEl.append(frag('<doc-component></doc-component>'));
+	const [docComp] = append(contentEl, `<doc-component></doc-component>`);
+
+	// click on the parent of doc-component
+	contentEl.click();
+	equal(out, ['DocEventComponent @onDocEvent whenDocClick']);
+
+	// reset out, remove doc-component, and click on contentEl to make sure event was removed
+	out = [];
+	contentEl.innerHTML = '';
+	contentEl.click();
+	equal(out, []);
+}
+
+export function testReattachedComponentDocEvent() {
+	const contentEl = first('.test-content')!;
+	const [docComp] = append(contentEl, `<doc-component></doc-component>`);
+	docComp.remove();
+	contentEl.append(docComp);
 
 	// click on the parent of doc-component
 	contentEl.click();
@@ -175,3 +209,4 @@ export function testLifecycle() {
 	})
 
 }
+

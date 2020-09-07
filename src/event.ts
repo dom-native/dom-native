@@ -22,12 +22,18 @@ export type OnListenerBySelector = { [selector: string]: OnEventListener };
 export interface OnEventOptions {
 	/** The context with which the call back will be called (i.e. 'this' context) */
 	ctx?: object,
+
 	/** The namespace used to bind this event, which will allow to remove all of the binding done with this namespace with .off */
 	ns?: string,
 	/** AddEventListenerOptions.capture */
 	capture?: boolean,
 	/** AddEventListenerOptions.passive */
 	passive?: boolean,
+
+	/** 
+	 * If true, will be quiet if ctx instannceof HTMLElement && ctx.isConnected === false
+	 */
+	silenceDisconnectedCtx?: boolean,
 }
 //#endregion ---------- /Public Types ---------- 
 
@@ -109,6 +115,11 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 		return;
 	}
 
+	const silenceDisconnectedCtx = opts?.silenceDisconnectedCtx;
+	const ctx = opts?.ctx;
+	const ctxEl = (ctx instanceof HTMLElement) ? ctx : undefined;
+
+
 	const typeArray = splitAndTrim(types, ",");
 
 	typeArray.forEach(function (type) {
@@ -127,6 +138,14 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 					const target = evt.target;
 					const currentTarget = evt.currentTarget;
 					const ctx = (opts) ? opts.ctx : null;
+
+					// if the 
+					if (silenceDisconnectedCtx === true && ctxEl != null) {
+						if (!ctxEl.isConnected) {
+							return;
+						}
+					}
+
 					// if the target match the selector, then, easy, we call the listener
 					if (target && (<Element>target).matches(selector!)) {
 						// Note: While mouseEvent are readonly for its properties, it does allow to add custom properties
@@ -134,6 +153,7 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 						evt.selectTarget = target as HTMLElement;
 						listener.call(ctx, evt);
 					}
+
 					// now, if it does not, perhaps something in between the target and currentTarget
 					// might match
 					else {
@@ -156,6 +176,11 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 			// if we do not have a selector, but still havea  opts.ctx, then, need to wrap
 			else if (opts && opts.ctx) {
 				_listener = function (evt) {
+					if (silenceDisconnectedCtx === true && ctxEl != null) {
+						if (!ctxEl.isConnected) {
+							return;
+						}
+					}
 					listener.call(opts!.ctx, evt);
 				};
 			}
@@ -255,7 +280,8 @@ export function off(els: EventTargetOrMore | null, type_or_opts?: string | OffOp
 						if (listenerRefMapByListener && listenerRefMapByListener.has(listenerRef.listener)) {
 							listenerRefMapByListener.delete(listenerRef.listener);
 						} else {
-							console.log("INTERNAL ERROR should have a listener in el.listenerDic for " + typeSelectorKey);
+							// eventua already removed
+							//console.log("INTERNAL INFO - should have a listener in el.listenerDic for " + typeSelectorKey);
 						}
 					});
 					// we remove this namespace now that all event handlers has been removed

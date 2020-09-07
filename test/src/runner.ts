@@ -49,13 +49,12 @@ interface RunController {
 	successInnerHTML: (name: string, val?: any) => string;
 }
 
-function run(fnByNames: { [fnName: string]: Function }, controller: RunController) {
+function run(tests: { [fnName: string]: any }, controller: RunController) {
 	const outputEl = first("#output")!;
 
 	var beforeReturn = null;
-
-	if (fnByNames._init) {
-		beforeReturn = fnByNames._init();
+	if (tests._init) {
+		beforeReturn = tests._init();
 	}
 
 
@@ -64,27 +63,36 @@ function run(fnByNames: { [fnName: string]: Function }, controller: RunControlle
 
 		let result = Promise.resolve();
 
-		let name, names = [];
-		for (name in fnByNames) {
-			if (name.indexOf("_init") !== -1 || name.indexOf("_beforeEach") !== -1) {
-				continue;
+		let name;
+
+		const testFns: Function[] = (tests._only) ? tests._only : [];
+
+		if (testFns.length === 0) {
+			for (name in tests) {
+				if (!name.startsWith("_")) {
+					testFns.push(tests[name]);
+				}
 			}
-			names.push(name);
 		}
 
-		names.forEach(function (name) {
+
+
+		testFns.forEach(function (fn) {
+			const name = fn.name;
+
 			result = result.then(function () {
+				// run this test
+				let p, failEx: string | null = null;
+
 				// do the before each if defined
-				if (fnByNames._beforeEach) {
-					fnByNames._beforeEach();
+				if (tests._beforeEach) {
+					tests._beforeEach();
 				}
 
 				// create the html element for this test
 				const itemEl = controller.createItemEl(name);
 				outputEl.appendChild(itemEl);
 
-				// run this test
-				let p, fn = fnByNames[name], failEx: string | null = null;
 
 				try {
 					p = fn();
