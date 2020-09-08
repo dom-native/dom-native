@@ -1,21 +1,26 @@
-import { off, on, OnEventListener } from './event';
+import { off, on, OnEventListener, OnEventOptions } from './event';
 // import { BaseHTMLElement } from './c-base';
 
 // target === null means the instance object. 
 
-type OnDOMEvent = { target: Window | Document | null, name: string, type: string, selector: string | null };
+type OnDOMEvent = {
+	target: Window | Document | null, // if null, the target should be the el
+	type: string,
+	name: string, // function name
+	selector: string | null
+};
 
 const onEventsByConstructor: Map<Function, OnDOMEvent[]> = new Map();
 
+// Optimization - keep the list of activable OnDomEvent[] per constructor (for on element, win, and doc)
+// Note: null for "computed but nothing found"
+type ComputedOnDOMEvents = {
+	elOnDOMEvents: OnDOMEvent[] | null,
+	docOnDOMEvents: OnDOMEvent[] | null,
+	winOnDOMEvents: OnDOMEvent[] | null,
+}
+const computedOnDOMEventsByConstructor = new WeakMap<Function, ComputedOnDOMEvents>();
 
-// Keep track of which leaf Constructor has windows event
-// NOTE: this has to be initialize at the  bindOnDecorators phase, because at the _onDOMEvent, we do not know all the class inheritance yet.
-// The good news is that it has to be done once. So, undefined means not sure, true, means there is at least once, and false means we already looked and nothing. 
-const hasOnWinEvent: Map<Function, boolean> = new Map();
-const hasOnDocEvent: Map<Function, boolean> = new Map();
-
-// TODO: OPTIMIZATION 
-// const onEventsByTopClazz: Map<Function, OnDOMEvent[]> = new Map();
 
 //#region    ---------- Public onEvent Decorator ---------- 
 export function onEvent(type: string, selector?: string) {
@@ -29,6 +34,7 @@ export function onWin(type: string, selector?: string) {
 }
 //#endregion ---------- /Public onEvent Decorator ---------- 
 
+// the decorator function
 function _onDOMEvent(evtTarget: Window | Document | null, type: string, selector?: string) {
 	// target references the element's class. It will be the constructor function for a static method or the prototype of the class for an instance member
 	return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
@@ -55,106 +61,126 @@ function _onDOMEvent(evtTarget: Window | Document | null, type: string, selector
 	}
 }
 
+/** Bind the element OnDOMEvent registred in the decorator _onDOMEvent  */
 export function bindOnElementEventsDecorators(el: any) {
-	return bindOnEventsDecorators(el, false);
+	const clazz = el.constructor;
+
+	const computedOnDOMEvents = getComputeOnDOMEvents(clazz);
+
+	if (computedOnDOMEvents != null) {
+		const { elOnDOMEvents } = computedOnDOMEvents;
+		if (elOnDOMEvents !== null) {
+			const eventOpts = { ...el._nsObj, ctx: el };
+			for (const onEvent of elOnDOMEvents) {
+				const target = (el.shadowRoot) ? el.shadowRoot : el;
+				const fn = (<any>el)[onEvent.name];
+				on(target, onEvent.type, onEvent.selector, fn, eventOpts);
+			}
+		}
+	}
 }
 
 export function bindOnParentEventsDecorators(el: any) {
-	return bindOnEventsDecorators(el, true);
+	const clazz = el.constructor;
+
+	const computedOnDOMEvents = getComputeOnDOMEvents(clazz);
+
+	const { docOnDOMEvents, winOnDOMEvents } = computedOnDOMEvents;
+
+	const eventOpts: OnEventOptions = { ...el._nsObj, ctx: el, silenceDisconnectedCtx: true };
+	if (docOnDOMEvents !== null) {
+		for (const onEvent of docOnDOMEvents) {
+			const fn = (<any>el)[onEvent.name];
+			on(onEvent.target, onEvent.type, onEvent.selector, fn, eventOpts);
+		}
+	}
+
+	if (winOnDOMEvents !== null) {
+		for (const onEvent of winOnDOMEvents) {
+			const fn = (<any>el)[onEvent.name];
+			on(onEvent.target, onEvent.type, onEvent.selector, fn, eventOpts);
+		}
+	}
 }
 
-// For BaseHTMLElement
-function bindOnEventsDecorators(el: any, bindParents: boolean) {
-	let clazz = el.constructor;
+
+
+// Return (and Compute if needed) the ComputedOnDOMEvents for a topClazz and store it in the 
+// Note: At this point, the parent classes will be process but their ComputedOnDOMEvents won't be computed.
+//       This could be a further optimization at some point, but not sure it will give big gain, since now this logic
+//       happen only one for the first instantiation of the class type object.
+function getComputeOnDOMEvents(clazz: Function): ComputedOnDOMEvents {
+
+	const alreadyComputed = computedOnDOMEventsByConstructor.get(clazz);
+	if (alreadyComputed) {
+		return alreadyComputed;
+	}
+
 	const topClazz = clazz;
 
-	// Determine if we need to set if this class has a doc or win event (this allow to do it only once per leaf class)
-	let setHasDocEvent = !hasOnDocEvent.has(topClazz);
-	let setHasWinEvent = !hasOnWinEvent.has(topClazz);
+	const elOnDOMEvents: OnDOMEvent[] = [];
+	const docOnDOMEvents: OnDOMEvent[] = [];
+	const winOnDOMEvents: OnDOMEvent[] = [];
 
 	// keep track of the function name that were bound, to not double bind overriden parents
 	// This is the intuitive behavior, aligning with inheritance behavior.
 	const fnNameBoundSet = new Set<string>();
 
-	const baseOpts = { ...el._nsObj, ctx: el };
-
-	// TODO: OPTIMIZATION - cache the list of events for topClazz on first passthrough
-	// let onEvents = onEventsByTopClazz.get(topClazz) ?? processOnEventsByTopClazz(topClazz);
-
-
-	while (clazz !== HTMLElement) {
+	//// Compute the ComputedOnDOMEvents
+	do {
 		const onEvents = onEventsByConstructor.get(clazz);
 		if (onEvents) {
 			for (const onEvent of onEvents) {
+				const target = onEvent.target;
 				const fnName = onEvent.name;
+
+				// to not double bind same function name (aligning with inheritance behavior)
 				if (!fnNameBoundSet.has(fnName)) {
-					const fn = (<any>el)[fnName];
-					let isParent = false;
-
-					if (onEvent.target === document || onEvent.target === window) {
-						isParent = true;
-					}
-
-					if (setHasDocEvent && onEvent.target === document) {
-						hasOnDocEvent.set(topClazz, true);
-						setHasDocEvent = false; // this will ignore the parent class same function name @docEvent
-					}
-
-					if (setHasWinEvent && onEvent.target === window) {
-						hasOnWinEvent.set(topClazz, true);
-						setHasWinEvent = false; // this will ignore the parent class same function name @winEvent
-					}
-
-					let target = onEvent.target || el;
-
-					// TODO: offer a decorator flag to turn off the automatic .shadowRoot selection if present 
-					//      (However, if no flag, taking the .shadowRoot if most intuitive default for a @onEvent decorator)
-					target = (target.shadowRoot) ? target.shadowRoot : target;
-					const opts = isParent ? { ...baseOpts, silenceDisconnectedCtx: true } : baseOpts;
-
-					// bind the parent only (win and doc)
-					if (isParent && bindParents) {
-						on(target, onEvent.type, onEvent.selector, fn, opts);
-					}
-					// bind the element only
-					else if (!isParent && !bindParents) {
-						on(target, onEvent.type, onEvent.selector, fn, opts);
-					}
-
-					// to not double bind same function name (aligning with inheritance behavior)
 					fnNameBoundSet.add(fnName);
+
+					if (target === window) {
+						winOnDOMEvents.push(onEvent);
+					} else if (target === document) {
+						docOnDOMEvents.push(onEvent);
+					} else {
+						elOnDOMEvents.push(onEvent);
+					}
 				}
 			}
 		}
+
+		// get the parent class
 		// clazz = (<any>clazz).__proto__;
 		clazz = Object.getPrototypeOf(clazz);
-	}
 
-	//// set the hasWinEvent and hasDocEvent to false if they have not been set yet but should be. 
-	if (setHasDocEvent) {
-		hasOnDocEvent.set(topClazz, false);
-	}
-	if (setHasWinEvent) {
-		hasOnWinEvent.set(topClazz, false);
-	}
+	} while (clazz !== HTMLElement)
 
+	const computedOnDOMEvents: ComputedOnDOMEvents = {
+		elOnDOMEvents: elOnDOMEvents.length > 0 ? elOnDOMEvents : null,
+		docOnDOMEvents: docOnDOMEvents.length > 0 ? docOnDOMEvents : null,
+		winOnDOMEvents: winOnDOMEvents.length > 0 ? winOnDOMEvents : null,
+	}
+	computedOnDOMEventsByConstructor.set(topClazz, computedOnDOMEvents);
+
+	return computedOnDOMEvents;
 }
-
 
 export function hasParentEventsDecorators(el: any) {
 	const clazz = el.constructor;
 
-	return hasOnDocEvent.get(clazz) != null || hasOnWinEvent.get(clazz) != null;
+	const computed = getComputeOnDOMEvents(clazz);
+	return (computed.docOnDOMEvents != null || computed.winOnDOMEvents != null);
 }
 
 // only unbind docEvent and winEvent
 export function unbindParentEventsDecorators(el: any) {
 	const clazz = el.constructor;
+	const computed = getComputeOnDOMEvents(clazz);
 
-	if (hasOnDocEvent.get(clazz)) {
+	if (computed.docOnDOMEvents != null) {
 		off(document, el._nsObj);
 	}
-	if (hasOnWinEvent.get(clazz)) {
+	if (computed.winOnDOMEvents != null) {
 		off(window, el._nsObj);
 	}
 }

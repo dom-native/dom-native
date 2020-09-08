@@ -101,16 +101,18 @@ customElements.define('doc-component', DocEventComponent);
 
 
 export function _beforeEach() {
-
 	out = [];
 }
 
+
+// export const _only = [testSimplestComponent];
 export function testSimplestComponent() {
 	const contentEl = first('.test-content')!;
-	const [el] = append(contentEl, frag('<simplest-component></simplest-component>'));
+	const [el] = append(contentEl, frag('<simplest-component></simplest-component><simplest-component></simplest-component>'));
 	el.click();
 	equal(out, ['SimplestComponent @onEvent onClickEvent']);
 }
+
 
 export function testComponentEventBindings() {
 	const contentEl = first('.test-content')!;

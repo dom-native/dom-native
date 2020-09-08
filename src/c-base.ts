@@ -76,9 +76,13 @@ export abstract class BaseHTMLElement extends HTMLElement {
 	connectedCallback() {
 		const opts = { ns: this._nsObj.ns, ctx: this };
 
+		if (this._has_parent_events == null) {
+			this._has_parent_events = this.docEvents != null || this.winEvents != null || hasParentEventsDecorators(this);
+		}
+
 		//// Bind the eventual parent events (document, windows)
 		// Note: Parent events are silenced on when el is diconnected, and unbound when next frame still diconnected
-		if (!this._parent_bindings_done) {
+		if (this._has_parent_events && !this._parent_bindings_done) {
 			// bind the @docDoc event
 			if (this.docEvents) bindOnEvents(document, this.docEvents, { ...opts, silenceDisconnectedCtx: true });
 			// bind the @docWin event
@@ -87,11 +91,7 @@ export abstract class BaseHTMLElement extends HTMLElement {
 			this._parent_bindings_done = true;
 		}
 
-		// NOTE: for now, needs to be after the first bindOnParentEventsDecorators, 
-		//       as it will put the hasWin/hasDoc states used in hasParentEventsDecorators
-		if (this._has_parent_events == null) {
-			this._has_parent_events = this.docEvents != null || this.winEvents != null || hasParentEventsDecorators(this);
-		}
+
 
 		//// Bind the hub if not already done
 		// Note: Hub events are bound and unbound on each connect and disconnect. 
@@ -109,6 +109,7 @@ export abstract class BaseHTMLElement extends HTMLElement {
 
 			// bind the @onEvent decorated methods
 			bindOnElementEventsDecorators(this);
+
 
 			this.init();
 			this._init = true;
