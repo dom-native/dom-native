@@ -3,7 +3,7 @@
 > Legend: `.` minor; `+` addition; `^` enhancement, `*` major; `-` fix; `!` change; 
 
 
-### v0.9.10 Sep 9, 2020
+### v0.9.11 Sep 9, 2020
 
 - `+` css - added `css(string)` and css\` tag template to create `<style>` element
 - `+` html - added `html(string)` and html\` tag template to create DocumentFragment (@deprecate `frag`)
