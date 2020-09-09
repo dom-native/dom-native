@@ -1,3 +1,4 @@
+import { frag } from './dom-builders';
 import { asNodeArray } from './utils';
 
 export type AppendPosition = "first" | "last" | "empty" | "before" | "after";
@@ -196,42 +197,9 @@ export function append(this: any, refEl: HTMLElement | DocumentFragment, newEl: 
 }
 
 
-/**
- * Returns a DocumentFragment for the html string. If html is null or undefined, returns an empty document fragment.
- * @param html the html string or null/undefined
- */
-export function frag(html: string | null | undefined) {
-	// make it null proof
-	html = (html) ? html.trim() : null;
 
-	const template = document.createElement("template");
-	if (html) {
-		template.innerHTML = html;
-	}
-	return template.content;
-}
 //#endregion ---------- /DOM Manipulation ---------- 
 
 
 
-//#region    ---------- elem ---------- 
 
-/**
- * Shorthand for document.createElement(name)
- * @param name tag name 
- */
-export function elem(name: string): HTMLElement;
-
-/**
- * Create multiple HTMLElement via document.createElement
- * @param names tag names
- */
-export function elem(...names: string[]): HTMLElement[];
-export function elem(...names: string[]): HTMLElement | HTMLElement[] {
-	if (names.length === 1) {
-		return document.createElement(names[0]);
-	} else {
-		return names.map(n => { return document.createElement(n) });
-	}
-}
-//#endregion ---------- /elem ----------

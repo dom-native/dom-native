@@ -1,21 +1,22 @@
 
-## Making the DOM Scale (**< 5kb compressed**)
+## **Making the DOM SCALE** @<7kb (< 17kb minimized)
+## **THE DOM IS THE FRAMEWORK**
 
 `dom-native` is a minimalistic DOM library that uses the DOM as the foundation for scalable MVC foundation rather than working against it. 
 
-It can be used to build simple to rich Web and Mobile Web frontends. The key concept is that **Simple Scales Better.**
+>  **Why:** **THE DOM is THE FRAMEWORK** & **Simple Scale Better** & **Learn what matters**
 
- **Why:** **IT'S 2020** & **THE DOM is THE FRAMEWORK** & **Learn what matters**  & **Simple Scale Better**
+> [QUICK DEMO](https://demo.dom-native.org/core/index.html) (under development)
 
-### Key features and approach:
+### **Key features and approach**:
 
 - **ZERO IE TAX**! Only **target modern browsers** (e.g., modern Chrome, Edge Chromium, Firefox, and Safari). NO Polyfill or Shiming.
 
-- **NO VIRTUAL DOM**! Fully embrace DOM **native customElement** and **web component**. 
+- **NO VIRTUAL DOM**! Fully embrace **native DOM customElement** and **web component**. 
 
-- **JUST A LIB** not a framework (**DOM is THE FRAMEWORK**). 
+- **JUST A LIB** not a framework (uses the DOM customElement / webcomponent as the framework). 
 
-- **SMALL** **< 5kb gzipped** (< 13kb minimized) and **ZERO dependency**!
+- **SMALL** **< 7kb gzipped** (< 17kb minimized) and **ZERO dependency**!
 
 - **SIMPLE** base class providing expressive lifecycle by hooking to native DOM custom elements 
   - e.g., `BaseHMLElement extends HTMLElement` with `.init` `.preDisplay` `.postDisplay`. 
@@ -25,7 +26,7 @@ It can be used to build simple to rich Web and Mobile Web frontends. The key con
 on(containerEl, 'pointerup', '.my-div', (evt) => { 
     console.log('clicked')
 }, {ns: 'some_namespace'});
-// or a la jquery: on(containerEl, 'pointerup.some_namespace', ...)
+// or can namespace "a la jquery": on(containerEl, 'pointerup.some_namespace', ...)
 
 // ...
 
@@ -38,12 +39,16 @@ import {customElement, BaseHTMLElement, onEvent} from 'dom-native';
 
 @customElement('my-element') 
 class MyElement extends BaseHTMLElement{
-  @onEvent('pointerdown', '.big-button')
-  bigButtonClick(evt: PointerEvent & {S})
+  @onEvent('pointerup', '.big-button')
+  bigButtonClick(evt) { ... }
+
+  @onDoc('pointerup', '.main-menu')
+  mainMenuClicked(evt) { ... }  
+  // document binding will be removed on HTMLElement detached
 }
 ```
 
-- **LIGHT** and expressive** DOM API wrappers (e.g., `first(el, selector)` `all(el, selector)`)
+- **LIGHT** and expressive DOM API wrappers (e.g., `first(el, selector)` `all(el, selector)`)
   - e.g., `const itemsEl = first(el, 'ul.items'); all(itemsEl,'li').map(liEl => console.log(liEl))`
 
 - **PUB/SUB** - Unleash state management with a Minimalistic pub/sub api (see below)
@@ -54,7 +59,7 @@ class MyElement extends BaseHTMLElement{
 > IN SHORT - **Simple Scales Better** - **Learn what matters** - **favor pattern over frameworks** - **The DOM is the Framework!** - **Real DOM is Back!!!**
 
 
-\>>> [QUICK DEMO](https://demo.dom-native.org/core/index.html) <<< (under construction!)
+
 
 
 ## Hello World
