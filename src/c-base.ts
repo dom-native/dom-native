@@ -170,11 +170,6 @@ export abstract class BaseHTMLElement extends HTMLElement {
 
 	}
 
-	/**
-	 * Empty implement to allow `super.` best practices on sub classes.
-	 */
-	// attributeChangedCallback(attrName: string, oldVal: any, newVal: any) { }
-
 }
 
 export function addDOMEvents(target: OnListenerBySelector | undefined, source: OnListenerBySelector): OnListenerBySelector {
@@ -186,9 +181,6 @@ export function addHubEvents(target: HubBindings | undefined, source: HubBinding
 	(source instanceof Array) ? t.push(...source) : t.push(source);
 	return t;
 }
-
-//// Private utils
-
 
 
 
