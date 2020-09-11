@@ -65,7 +65,7 @@ class MyComponent extends MyBaseComponent {
 		'dataHub; topic1': (data: any, info: any) => {
 			out.push('MyComponent dataHub; topic1');
 		}
-	})
+	});
 
 	init() {
 		super.init();
@@ -105,7 +105,6 @@ export function _beforeEach() {
 }
 
 
-// export const _only = [testSimplestComponent];
 export function testSimplestComponent() {
 	const contentEl = first('.test-content')!;
 	const [el] = append(contentEl, frag('<simplest-component></simplest-component><simplest-component></simplest-component>'));
