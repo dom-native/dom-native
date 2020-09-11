@@ -10,7 +10,7 @@ type OnDOMEvent = {
 	selector: string | null
 };
 
-const onEventsByConstructor: Map<Function, OnDOMEvent[]> = new Map();
+const _onEventsByConstructor: Map<Function, OnDOMEvent[]> = new Map();
 
 // Optimization - keep the list of activable OnDomEvent[] per constructor (for on element, win, and doc)
 // Note: null for "computed but nothing found"
@@ -19,7 +19,7 @@ type ComputedOnDOMEvents = {
 	docOnDOMEvents: OnDOMEvent[] | null,
 	winOnDOMEvents: OnDOMEvent[] | null,
 }
-const computedOnDOMEventsByConstructor = new WeakMap<Function, ComputedOnDOMEvents>();
+const _computedOnDOMEventsByConstructor = new WeakMap<Function, ComputedOnDOMEvents>();
 
 
 //#region    ---------- Public onEvent Decorator ---------- 
@@ -43,10 +43,10 @@ function _onDOMEvent(evtTarget: Window | Document | null, type: string, selector
 		const clazz = target.constructor;
 
 		// get the onEvents array for this clazz
-		let onEvents = onEventsByConstructor.get(clazz);
+		let onEvents = _onEventsByConstructor.get(clazz);
 		if (onEvents == null) {
 			onEvents = [];
-			onEventsByConstructor.set(clazz, onEvents);
+			_onEventsByConstructor.set(clazz, onEvents);
 		}
 
 		// create and push the event
@@ -104,14 +104,13 @@ export function bindOnParentEventsDecorators(el: any) {
 }
 
 
-
 // Return (and Compute if needed) the ComputedOnDOMEvents for a topClazz and store it in the 
 // Note: At this point, the parent classes will be process but their ComputedOnDOMEvents won't be computed.
 //       This could be a further optimization at some point, but not sure it will give big gain, since now this logic
 //       happen only one for the first instantiation of the class type object.
 function getComputeOnDOMEvents(clazz: Function): ComputedOnDOMEvents {
 
-	const alreadyComputed = computedOnDOMEventsByConstructor.get(clazz);
+	const alreadyComputed = _computedOnDOMEventsByConstructor.get(clazz);
 	if (alreadyComputed) {
 		return alreadyComputed;
 	}
@@ -128,7 +127,7 @@ function getComputeOnDOMEvents(clazz: Function): ComputedOnDOMEvents {
 
 	//// Compute the ComputedOnDOMEvents
 	do {
-		const onEvents = onEventsByConstructor.get(clazz);
+		const onEvents = _onEventsByConstructor.get(clazz);
 		if (onEvents) {
 			for (const onEvent of onEvents) {
 				const target = onEvent.target;
@@ -160,7 +159,7 @@ function getComputeOnDOMEvents(clazz: Function): ComputedOnDOMEvents {
 		docOnDOMEvents: docOnDOMEvents.length > 0 ? docOnDOMEvents : null,
 		winOnDOMEvents: winOnDOMEvents.length > 0 ? winOnDOMEvents : null,
 	}
-	computedOnDOMEventsByConstructor.set(topClazz, computedOnDOMEvents);
+	_computedOnDOMEventsByConstructor.set(topClazz, computedOnDOMEvents);
 
 	return computedOnDOMEvents;
 }

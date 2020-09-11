@@ -3,7 +3,7 @@
 import { bindOnEvents, off, OnListenerBySelector } from './event';
 import { bindHubEvents, HubBindings, unbindHubEvents } from './hub';
 import { bindOnElementEventsDecorators, bindOnParentEventsDecorators, hasParentEventsDecorators, unbindParentEventsDecorators } from './ts-decorator-on-event';
-import { bindOnHubDecorators, unbindOnHubDecorators } from './ts-decorator-on-hub';
+import { bindOnHubDecorators, hasHubEventDecorators, unbindOnHubDecorators } from './ts-decorator-on-hub';
 
 // component unique sequence number to allow to have cheap UID for each component
 let c_seq = 0;
@@ -159,21 +159,21 @@ export abstract class BaseHTMLElement extends HTMLElement {
 			});
 		}
 
-		if (this.hubEvents) {
-			unbindHubEvents(this.hubEvents, this._nsObj);
+		if (this.hubEvents || hasHubEventDecorators(this)) {
+			if (this.hubEvents != null) {
+				unbindHubEvents(this.hubEvents, this._nsObj);
+			}
+
 			unbindOnHubDecorators.call(this);
 			this._hub_bindings_done = false;
 		}
 
-
-
 	}
-
 
 	/**
 	 * Empty implement to allow `super.` best practices on sub classes.
 	 */
-	attributeChangedCallback(attrName: string, oldVal: any, newVal: any) { }
+	// attributeChangedCallback(attrName: string, oldVal: any, newVal: any) { }
 
 }
 

@@ -1,4 +1,4 @@
-import { addHubEvents, addOnEvents, append, BaseHTMLElement, customElement, first, frag, hub, on, onDoc, onEvent, onHub } from '../../src/index';
+import { addHubEvents, addOnEvents, append, BaseHTMLElement, customElement, first, frag, html, hub, on, onDoc, onEvent, onHub } from '../../src/index';
 import { equal } from './utils';
 
 let out: string[] = [];
@@ -96,6 +96,15 @@ class DocEventComponent extends BaseHTMLElement {
 }
 customElements.define('doc-component', DocEventComponent);
 
+
+@customElement('at-hub-component')
+class AtHubComponent extends BaseHTMLElement {
+	@onHub('dataHub', 'topic1')
+	onTopic1() {
+		out.push('AtHubComponent onTopic1');
+	}
+}
+
 //#endregion ---------- /Test Components ---------- 
 
 
@@ -158,7 +167,7 @@ export function testReattachedComponentDocEvent() {
 
 export function testComponentHubEvents() {
 	const contentEl = first('.test-content')!;
-	contentEl.append(frag('<my-component></my-component>'));
+	contentEl.append(html('<my-component></my-component>'));
 
 	// test listening
 	hub('dataHub').pub('topic1', 'topic1 msg 1'); // bind with this.hubEvents = addHubEvents(...);
@@ -173,6 +182,19 @@ export function testComponentHubEvents() {
 	hub('dataHub').pub('topic1', 'topic1 msg 2');
 	hub('dataHub').pub('topic2', 'msg2'); // for the @onHub...
 	equal(out, []);
+}
+
+export function testAtHubEventsComponent() {
+	const contentEl = first('.test-content')!;
+	append(contentEl, '<at-hub-component></at-hub-component>');
+
+	hub('dataHub').pub('topic1', 'topic1 msg 1');
+	equal(out, ['AtHubComponent onTopic1']);
+
+	out = [];
+	contentEl.innerHTML = '';
+	hub('dataHub').pub('topic1', 'topic1 msg 1');
+	equal(out, []); // should be empty, as the element was detached
 }
 
 export function testLifecycle() {
