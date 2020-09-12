@@ -1,5 +1,10 @@
 
+export function contains(txt: string, value: string) {
 
+	if (txt == null ?? !txt.includes(value)) {
+		throw new Error(`FAILED - cannot find '${value}' in string \n${txt}`);
+	}
+}
 export function equal(actual: any, expected: any, txt?: string) {
 	const result = fast_equal(actual, expected);
 	if (!result) {

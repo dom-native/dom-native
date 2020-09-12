@@ -2,8 +2,9 @@ export const version = '0.9.11';
 
 export { attr } from './attribute';
 export { BaseHTMLElement } from './c-base';
+export { adoptStyleSheet, css } from './css';
 export { all, append, AppendPosition, closest, first, next, prev } from './dom';
-export { css, elem, frag, html } from './dom-builders';
+export { elem, frag, html } from './dom-builders';
 export { pull, puller, push, pusher } from './dx';
 export { escapeAttr, escapeHtml } from './escapes';
 export { addOnEvents, bindOnEvent, bindOnEvents, off, on, OnEvent, OnEventListener, OnListenerBySelector, trigger } from './event';

@@ -21,34 +21,6 @@ export function elem(...names: string[]): HTMLElement | HTMLElement[] {
 }
 //#endregion ---------- /elem ----------
 
-
-//#region    ---------- Style Element builder ---------- 
-/** Create a <style> element with the innerHTML content passed */
-export function css(str: string): HTMLElement
-export function css(strings: TemplateStringsArray, ...values: any[]): HTMLElement
-export function css(strings: string | TemplateStringsArray, ...values: any[]) {
-
-	let content: string | undefined;
-	if (typeof strings === 'string') {
-		content = strings.trim();
-	} else {
-		let r = '';
-		for (let i = 0; i < strings.length; i++) {
-			r += strings[i] + (values[i] ?? '');
-		}
-		// make it null proof
-		content = r;
-	}
-
-	const styleEl = document.createElement("style");
-
-	if (content) {
-		styleEl.innerHTML = content;
-	}
-	return styleEl;
-}
-//#endregion ---------- /Style Element builder ----------
-
 //#region    ---------- DocumentFragment builder ---------- 
 /** Create a DocumentFragment from an HTML string (using template.innerHTML and returning template.content ) */
 export function html(str: string): DocumentFragment
