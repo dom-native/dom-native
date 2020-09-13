@@ -1,5 +1,5 @@
 
-## **Making the DOM SCALE** @<7kb (< 17kb minimized)
+## **Making the DOM SCALE** @<7kb (<17kb min.js)
 ## **THE DOM IS THE FRAMEWORK**
 
 `dom-native` is a minimalistic DOM library that uses the DOM as the foundation for scalable MVC foundation rather than working against it. 
@@ -14,7 +14,7 @@
 
 - **NO VIRTUAL DOM**! Fully embrace **native DOM customElement** and **web component**. 
 
-- **JUST A LIB** not a framework (uses the DOM customElement / webcomponent as the framework). 
+- **JUST A LIB** not a framework (uses the native DOM customElement / webcomponent as the framework). 
 
 - **SMALL** **< 7kb gzipped** (< 17kb minimized) and **ZERO dependency**!
 
@@ -57,8 +57,6 @@ class MyElement extends BaseHTMLElement{
 
 
 > IN SHORT - **Simple Scales Better** - **Learn what matters** - **favor pattern over frameworks** - **The DOM is the Framework!** - **Real DOM is Back!!!**
-
-
 
 
 

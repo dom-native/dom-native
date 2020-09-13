@@ -1,6 +1,6 @@
 
 import { router } from 'cmdrouter';
-import { readFile, saferRemove, stat, writeFile } from 'fs-extra-plus';
+import { readFile, readJSON, saferRemove, stat, writeFile } from 'fs-extra-plus';
 import { spawn } from 'p-spawn';
 import * as Terser from 'terser';
 import { buildDemoCode, uploadSite } from './helpers';
@@ -8,7 +8,7 @@ import { buildDemoCode, uploadSite } from './helpers';
 const DIST_FILE = './.dist-lib/dom-native.js';
 const DIST_MIN_FILE = './.dist-lib/dom-native.min.js';
 
-router({ build, build_lib, watch, site }).route();
+router({ build, build_lib, watch, site, cdn }).route();
 
 async function build() {
 	await saferRemove('./dist');
@@ -49,3 +49,14 @@ async function site() {
 	uploadSite('demo/', 'dom-native/demo/core/')
 }
 
+async function cdn() {
+	const pkg = await readJSON('./package.json');
+	const version = pkg.version;
+
+	await build_lib();
+
+	await uploadSite('.dist-lib/dom-native.js', `dom-native/demo/dom-native-${version}.js`);
+	await uploadSite('.dist-lib/dom-native.min.js', `dom-native/demo/dom-native-${version}.min.js`);
+
+
+}

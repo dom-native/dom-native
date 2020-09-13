@@ -1,6 +1,6 @@
 {
   "name": "dom-native",
-  "version": "0.9.12-SNAPSHOT",
+  "version": "0.9.12-SNAPSHOT-1",
   "description": "DOM Native micro library to build small to big web application (zero dependency, < 12kb min, < 5kb gzip)",
   "main": "dist/index.js",
   "repository": {
@@ -31,7 +31,7 @@
     "@types/lodash.debounce": "^4.0.6",
     "autoprefixer": "^9.8.6",
     "chokidar": "^3.4.2",
-    "cloud-bucket": "^0.3.7",
+    "cloud-bucket": "^0.3.8",
     "cmdrouter": "^0.3.1",
     "fs-extra-plus": "^0.5.19",
     "js-yaml": "^3.14.0",
@@ -62,7 +62,8 @@
     "build-dev-css": "./node_modules/.bin/postcss --config ./demo/ -o demo/dist/demo-bundle.css  demo/pcss/main.pcss",
     "build-lib": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts build_lib",
     "watch": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts watch",
-    "site": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts site"
+    "site": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts site",
+    "cdn": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts cdn"
   },
   "author": "Jeremy Chone <jeremy.chone@gmail.com> (http://jeremychone.com)",
   "license": "MIT"
