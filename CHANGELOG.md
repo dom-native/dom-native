@@ -3,7 +3,7 @@
 > Legend: `.` minor; `+` addition; `^` enhancement, `*` major; `-` fix; `!` change; 
 
 
-### v0.9.12 PENDING
+### v0.9.12 - Sept 13, 2020
 
 - `+` adoptStyleSheet - adopt a `CSSObject` to a shadowRoot, using constructable stylesheets if supported or append style element if not.
 - `!^` css - now css returns a `CSSObject` which is composable and can be used in `adoptStyleSheet`
@@ -17,7 +17,7 @@
 - `^` event - refactor BaseHTMLElement bindings (performance update)
 
 
-### v0.9.10 Sep 6, 2020
+### v0.9.10 - Sep 6, 2020
 
 - `^` event - `@onEvent` binds to .shadowRoot when .shadowRoot exist after constructor.
 - `+` escape - added `escapeHtml(string)` and `escapeAttr(string)` (using the DOM element to do the escaping)
@@ -26,7 +26,7 @@
 - `.` build - changed build system and related scripts (still use rollup)
 
 
-### v0.9.9 May 13, 2020
+### v0.9.9 - May 13, 2020
 
 - Inital release from [mvdom](https://github.com/mvdom/mvdom)
 
