@@ -2,7 +2,7 @@ export const version = '0.9.13-SNAPSHOT';
 
 export { attr } from './attribute';
 export { BaseHTMLElement } from './c-base';
-export { adoptStyleSheet, css } from './css';
+export { adoptStyleSheets, css } from './css';
 export { all, append, AppendPosition, closest, first, next, prev } from './dom';
 export { elem, frag, html } from './dom-builders';
 export { pull, puller, push, pusher } from './dx';

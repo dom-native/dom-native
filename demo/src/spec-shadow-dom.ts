@@ -1,5 +1,5 @@
 import { CodeDoc, SpecView } from '@dom-native/demo-infra';
-import { BaseHTMLElement, customElement, frag } from '../../src';
+import { adoptStyleSheets, BaseHTMLElement, css, customElement, frag } from '../../src';
 import { code_shadowPart, code_shadowSimple, code_shadowSlot } from './_codes';
 
 @customElement('spec-shadow-dom')
@@ -12,23 +12,21 @@ export class SpecShadowDom extends SpecView {
 }
 
 //#region    ---------- code: shadowSimple ---------- 
+const _shadow_simple_css = css`
+h3{ 
+	display: inline; 
+	color: red; 
+	font-size: 1rem;
+}
+`;
+
 @customElement('shadow-simple')
 class ShadowSimple extends BaseHTMLElement {
 	constructor() {
 		super();
 		const s = this.attachShadow({ mode: 'open' });
-		s.innerHTML = `
-<style>
-:host h3{ 
-	display: inline; 
-	color: red; 
-	font-size: 1rem;
-}
-</style>
-
-Hello from <h3>ShadowSimple</h3> constructor
-
-		`;
+		s.innerHTML = `Hello from <h3>ShadowSimple</h3> constructor`;
+		adoptStyleSheets(this, _shadow_simple_css);
 	}
 }
 //#endregion ---------- /code: shadowSimple ---------- 

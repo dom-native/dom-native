@@ -1,4 +1,4 @@
-import { adoptStyleSheet, append, BaseHTMLElement, css, customElement, first } from '../../src/index';
+import { adoptStyleSheets, append, BaseHTMLElement, css, customElement, first } from '../../src/index';
 import { contains, equal } from './utils';
 
 
@@ -16,7 +16,7 @@ const shadowStyleCss = css`
 class ShadowStyle extends BaseHTMLElement {
 	constructor() {
 		super();
-		adoptStyleSheet(this.attachShadow({ mode: 'open' }), shadowStyleCss).innerHTML = '<strong>hello</strong> world';
+		adoptStyleSheets(this.attachShadow({ mode: 'open' }), shadowStyleCss).innerHTML = '<strong>hello</strong> world';
 	}
 }
 

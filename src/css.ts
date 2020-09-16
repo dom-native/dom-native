@@ -8,17 +8,18 @@ type ExtShadowRoot = ShadowRoot & { adoptedStyleSheets: CSSStyleSheet[] }
  * @param el - Host to a shadowRoot or the shadowRoot itself (throw exception if not supported)
  * @return el for chainability
  */
-export function adoptStyleSheet(el: HTMLElement | ShadowRoot, cssObject: CSSObject) {
+export function adoptStyleSheets(el: HTMLElement | ShadowRoot, cssObject: CSSObject | CSSObject[]) {
 	const shadow = isShadowRoot(el) ? el : el.shadowRoot;
 	if (shadow == null) {
 		throw new Error('DOM-NATIVE ERROR - Cannot adoptStyleSheets of a non shadowRoot or an element that does not have a shadowRoot');
 	}
 
+	const cssObjects = (cssObject instanceof Array) ? cssObject : [cssObject]
 	if (supportsAdoptingStyleSheets) {
 		const extShadow = shadow as ExtShadowRoot;
-		extShadow.adoptedStyleSheets = [...extShadow.adoptedStyleSheets, cssObject.sheet!];
+		extShadow.adoptedStyleSheets = [...extShadow.adoptedStyleSheets, ...cssObjects.map(co => co.sheet!)];
 	} else {
-		shadow.append(cssObject.newStyle);
+		shadow.append(...cssObjects.map(co => co.newStyle));
 	}
 	return el;
 }
