@@ -2,6 +2,9 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement, `*` major; `-` fix; `!` change; 
 
+### v0.9.13 - Sept 17, 2020
+
+- `^` - adoptStyleSheets - added support adopt multiple CSSObject, and added 's' to the api
 
 ### v0.9.12 - Sept 13, 2020
 

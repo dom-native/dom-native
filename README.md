@@ -2,9 +2,9 @@
 ## **Making the DOM SCALE** @<7Kb (<18Kb min.js)
 ## **THE DOM IS THE FRAMEWORK**
 
-`dom-native` is a minimalistic DOM library that uses the DOM as the foundation for scalable MVC foundation rather than working against it. 
+`dom-native` is a micro-library (<7kb gzip) that scales REAL DOM application development by embracing the DOM component model rather than fighting it (lower learning curve, longer run rate). **#LearnWhatMatters** (i.e. the DOM), **#SimpleScaleBetter**
 
->  **Why:** **THE DOM is THE FRAMEWORK** & **Simple Scale Better** & **Learn what matters**
+
 
 
 [QUICK DEMO](https://demo.dom-native.org/core/index.html) (under development)

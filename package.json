@@ -1,6 +1,6 @@
 {
   "name": "dom-native",
-  "version": "0.9.13-SNAPSHOT",
+  "version": "0.9.13",
   "description": "DOM Native micro library to build small to big web application (zero dependency, < 18kb min, < 8kb gzip)",
   "main": "dist/index.js",
   "repository": {
