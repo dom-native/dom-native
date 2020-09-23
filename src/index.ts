@@ -1,4 +1,4 @@
-export const version = '0.9.13';
+export const version = '0.9.14-SNAPSHOT';
 
 export { attr } from './attribute';
 export { BaseHTMLElement } from './c-base';
