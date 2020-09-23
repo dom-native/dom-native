@@ -3,9 +3,17 @@ import { asNodeArray, ensureMap, ensureSet, splitAndTrim } from './utils';
 type EventTargetOrMore = EventTarget | NodeList | [Node];
 
 
+/** 
+ * Extension type for events bound with dom-native on(...) or onEvent/onDoc/onWin decorator.
+ * - Add the selectTarget
+ * - Parameterized detail
+ * - Makes target and currentTarget HTMLElement to avoid redundant typescript casting
+ */
 export interface OnEvent<T = any | undefined> extends Event {
 	selectTarget: HTMLElement;
 	detail: T;
+	target: HTMLElement;
+	currentTarget: HTMLElement;
 }
 
 //#region    ---------- Public Types ---------- 
