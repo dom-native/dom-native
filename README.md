@@ -2,9 +2,7 @@
 ## **Making the DOM SCALE** @<7Kb (<18Kb min.js)
 ## **THE DOM IS THE FRAMEWORK**
 
-`dom-native` is a micro-library (<7kb gzip) that scales REAL DOM application development by embracing the DOM component model rather than fighting it (lower learning curve, longer run rate). **#LearnWhatMatters** (i.e. the DOM), **#SimpleScaleBetter**
-
-
+`dom-native` is just a set of utilities (<7kb gzip) that scales REAL DOM application development by embracing the DOM Web Component model rather than fighting or abstracting it (lower learning curve, longer run rate). **#LearnWhatMatters** (i.e. the DOM), **#SimpleScaleBetter**
 
 
 [QUICK DEMO](https://demo.dom-native.org/core/index.html) (under development)

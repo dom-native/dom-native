@@ -1,7 +1,7 @@
 {
   "name": "dom-native",
-  "version": "0.9.14-SNAPSHOT",
-  "description": "DOM Native micro library to build small to big web application (zero dependency, < 18kb min, < 8kb gzip)",
+  "version": "0.9.14",
+  "description": "Small set of utilities for building small to big native Web Component based applications (zero dependency, < 18kb min, < 7kb gzip)",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
