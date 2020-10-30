@@ -49,7 +49,7 @@ export function html(strings: string | TemplateStringsArray, ...values: any[]) {
 
 
 /**
- * NOTE: might become deprecated in favor of html
+ * NOTE: deprecated in favor of html
  * 
  * Returns a DocumentFragment for the html string. If html is null or undefined, returns an empty document fragment.
  * @param html the html string or null/undefined

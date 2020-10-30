@@ -8,7 +8,7 @@ export { elem, frag, html } from './dom-builders';
 export { pull, puller, push, pusher } from './dx';
 export { escapeAttr, escapeHtml } from './escapes';
 export { addOnEvents, bindOnEvent, bindOnEvents, off, on, OnEvent, OnEventListener, OnListenerBySelector, trigger } from './event';
-export { addHubEvents, bindHubEvents, hub, Hub, HubBindings, unbindHubEvents } from './hub';
+export { addHubEvents, bindHubEvents, hub, Hub, HubBindings, HubEventInfo, unbindHubEvents } from './hub';
 export { className, style } from './style';
 export { customElement } from './ts-decorator-custom-element';
 export { onDoc, onEvent, onWin } from './ts-decorator-on-event';

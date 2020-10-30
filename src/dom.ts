@@ -1,4 +1,4 @@
-import { frag } from './dom-builders';
+import { html } from './dom-builders';
 import { asNodeArray } from './utils';
 
 export type AppendPosition = "first" | "last" | "empty" | "before" | "after";
@@ -126,7 +126,7 @@ export function append(this: any, refEl: HTMLElement | DocumentFragment, newEl: 
 
 	// make newEl a document fragment if string passed
 	if (typeof newEl === 'string') {
-		newEl = frag(newEl);
+		newEl = html(newEl);
 	}
 
 	// NOTE: need to do it before we append in the case for DocumentFragment case.

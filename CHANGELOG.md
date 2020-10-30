@@ -3,6 +3,10 @@
 > Legend: `.` minor; `+` addition; `^` enhancement, `*` major; `-` fix; `!` change; 
 
 
+### v0.9.15 - Oct 30, 2020
+
+- `.` update build dependencies, and export `HubEventInfo`
+
 ### v0.9.14 - Sept 23, 2020
 
 - `^` event - onEvent override target and currentTarget as HTMLElement to avoid boilercasting.
