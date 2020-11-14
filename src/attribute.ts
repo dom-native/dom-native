@@ -1,7 +1,6 @@
 // conditional typing
-
-type Val = string | null;
-type NameValMap = { [name: string]: string | null | boolean };
+type AttrValType = string | null;
+type NameValMap = { [name: string]: string | number | boolean | null };
 
 /**
  * setAttribute DOM helper to Get and Set attribute to DOM HTMLElement(s).
@@ -29,13 +28,13 @@ export function attr(els: HTMLElement[], name: string): (string | null)[];
 export function attr(el: HTMLElement, names: string[]): (string | null)[];
 export function attr(els: HTMLElement[], names: string[]): (string | null)[][];
 
-export function attr(el: HTMLElement, nameValues: { [name: string]: string | null | boolean }): HTMLElement;
-export function attr(els: HTMLElement[], nameValues: { [name: string]: string | null | boolean }): HTMLElement[];
-export function attr(el: HTMLElement, name: string, val: string | null | boolean): HTMLElement;
-export function attr(els: HTMLElement[], name: string, val: string | null | boolean): HTMLElement[];
+export function attr(el: HTMLElement, nameValues: { [name: string]: string | number | boolean | null }): HTMLElement;
+export function attr(els: HTMLElement[], nameValues: { [name: string]: string | number | boolean | null }): HTMLElement[];
+export function attr(el: HTMLElement, name: string, val: string | number | boolean | null): HTMLElement;
+export function attr(els: HTMLElement[], name: string, val: string | number | boolean | null): HTMLElement[];
 
 // implementation
-export function attr<E extends HTMLElement | HTMLElement[], A extends string | string[] | NameValMap>(els: E, arg: A, val?: string | null | boolean): Val | Val[] | Val[][] | E {
+export function attr<E extends HTMLElement | HTMLElement[], A extends string | string[] | NameValMap>(els: E, arg: A, val?: string | number | boolean | null): AttrValType | AttrValType[] | AttrValType[][] | E {
 
 	// if we have a val, then, its a single attribute setting (on one or more element)
 	if (val !== undefined) {
@@ -79,17 +78,18 @@ function _setAttributes(el: HTMLElement, nameValueObject: NameValMap) {
 	}
 }
 
-function _setAttribute(el: HTMLElement, name: string, val: string | null | boolean) {
+function _setAttribute(el: HTMLElement, name: string, val: string | number | null | boolean) {
 	// if it is a boolean, true will set the attribute empty, and false will set txtVal to null, which will remove it.
-	const txtVal = (typeof val !== 'boolean') ? val : (val === true) ? '' : null;
+	let txtVal = (typeof val !== 'boolean') ? val : (val === true) ? '' : null;
 	if (txtVal !== null) {
+		if (typeof txtVal !== 'string') txtVal = '' + txtVal;
 		el.setAttribute(name, txtVal);
 	} else {
 		el.removeAttribute(name);
 	}
 }
 
-export function _attrGet<E extends HTMLElement | HTMLElement[], A extends string | string[]>(els: E, arg: A): Val | Val[] | Val[][] | E {
+export function _attrGet<E extends HTMLElement | HTMLElement[], A extends string | string[]>(els: E, arg: A): AttrValType | AttrValType[] | AttrValType[][] | E {
 	// If HTMLElement[]
 	if (els instanceof Array) {
 		const ells = els as HTMLElement[];

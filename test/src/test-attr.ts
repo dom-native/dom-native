@@ -1,5 +1,6 @@
-import { attr } from '../../src/index';
-import { equal, elem } from './utils';
+import { attr, elem } from '../../src/index';
+import { equal } from './utils';
+
 
 const V1 = 'test val 1';
 const V2 = 'test val 2';
@@ -19,7 +20,7 @@ export function testGetElWithName() {
 }
 
 export function testGetElsWithName() {
-	const els = elem(['div', 'div']).map(el => { el.setAttribute('name', V1); return el; });
+	const els = elem('div', 'div').map(el => { el.setAttribute('name', V1); return el; });
 
 	let result = attr(els, 'name');
 	equal(result, [V1, V1]);
@@ -44,7 +45,7 @@ export function testGetElWithNames() {
 }
 
 export function testGetElsWithNames() {
-	const els = elem(['div', 'div']).map(el => {
+	const els = elem('div', 'div').map(el => {
 		el.setAttribute('name', V1);
 		el.setAttribute('value', V2);
 		return el;
@@ -68,7 +69,7 @@ export function testSetElWithObj() {
 }
 
 export function testSetElsWithObj() {
-	const els = elem(['div', 'div']);
+	const els = elem('div', 'div');
 
 	let elReturned = attr(els, { name: V1, value: V2 });
 	let result = attr(elReturned, ['name', 'value']);
@@ -84,7 +85,7 @@ export function testSetElSingleNameValue() {
 }
 
 export function testSetElsSingleNameValue() {
-	const els = elem(['div', 'div']);
+	const els = elem('div', 'div');
 
 	let elReturned = attr(els, 'name', V1);
 	let result = attr(elReturned, 'name');
@@ -92,9 +93,17 @@ export function testSetElsSingleNameValue() {
 }
 
 export function testSetBoolean() {
-	const els = elem(['div', 'div']);
+	const els = elem('div', 'div');
 
 	let elReturned = attr(els, 'placeholder', true);
 	let result = attr(elReturned, 'placeholder');
 	equal(result, ['', '']);
+}
+
+export function testSetNumber() {
+	const els = elem('div', 'div');
+
+	let elReturned = attr(els, 'num', 1);
+	let result = attr(elReturned, 'num');
+	equal(result, ['1', '1']);
 }
