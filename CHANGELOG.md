@@ -2,6 +2,9 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement, `*` major; `-` fix; `!` change; 
 
+### v0.9.16 - Nov 14, 2020
+
+- `^` elem(tagNammes) - add type support for return types
 
 ### v0.9.15 - Oct 30, 2020
 
