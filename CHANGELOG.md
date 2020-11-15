@@ -2,6 +2,10 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement, `*` major; `-` fix; `!` change; 
 
+### v0.9.17 - Nov 15, 2020
+
+- `+` anim - added simple anim(callback(normalizedTime), duration, ease?) function for requestAnimationFrame based animation. 
+
 ### v0.9.16 - Nov 14, 2020
 
 - `^` elem(tagNammes) - add type support for return types

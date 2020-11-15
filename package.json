@@ -1,6 +1,6 @@
 {
   "name": "dom-native",
-  "version": "0.9.16",
+  "version": "0.9.17-SNAPSHOT",
   "description": "Small set of utilities for building small to big native Web Component based applications (zero dependency, < 18kb min, < 7kb gzip)",
   "main": "dist/index.js",
   "repository": {
@@ -27,12 +27,14 @@
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-multi-entry": "^4.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
+    "@types/d3-ease": "^2.0.0",
     "@types/js-yaml": "^3.12.5",
     "@types/lodash.debounce": "^4.0.6",
     "autoprefixer": "^10.0.2",
     "chokidar": "^3.4.3",
     "cloud-bucket": "^0.3.10",
     "cmdrouter": "^0.3.1",
+    "d3-ease": "^2.0.0",
     "fs-extra-plus": "^0.5.20",
     "js-yaml": "^3.14.0",
     "lodash.debounce": "^4.0.8",

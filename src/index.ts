@@ -1,5 +1,6 @@
-export const version = '0.9.15-SNAPSHOT';
+export const version = '0.9.17-SNAPSHOT';
 
+export { anim } from './anim';
 export { attr } from './attribute';
 export { BaseHTMLElement } from './c-base';
 export { adoptStyleSheets, css } from './css';
