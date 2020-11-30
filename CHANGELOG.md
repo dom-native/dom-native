@@ -2,6 +2,10 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement, `*` major; `-` fix; `!` change; 
 
+### v0.9.18 - Nov 30, 2020
+
+- `.` anim - fixed type and added raftime on callback
+
 ### v0.9.17 - Nov 15, 2020
 
 - `+` anim - added simple anim(callback(normalizedTime), duration, ease?) function for requestAnimationFrame based animation. 
