@@ -1,16 +1,18 @@
 
-## **THE DOM IS THE FRAMEWORK** @<7Kb (<18Kb min.js)
+## **MAKING THE DOM SCALE** @<7Kb (<18Kb min.js)
 
-`dom-native` is just a set of utilities (<7kb gzip) that scales REAL DOM application development by embracing the DOM Web Component model rather than fighting or abstracting it (lower learning curve, longer run rate). **#LearnWhatMatters** (i.e. the DOM), **#SimpleScaleBetter**
+`dom-native` is just a set of utilities (<7kb gzip) that scales REAL DOM application development by embracing the DOM Web Components model rather than fighting or abstracting it (lower learning curve, longer run rate). **#LearnWhatMatters** (i.e. the DOM), **#SimpleScaleBetter**
 
 
-[QUICK DEMO](https://demo.dom-native.org/core/index.html) (under development)
+[QUICK DEMO](https://demo.dom-native.org/core/index.html) 
+
+**THE DOM IS THE FRAMEWORK**
 
 ### Key features and approach:
 
 - **ZERO IE TAX**! Only target modern browsers (e.g., modern Chrome, Edge Chromium, Firefox, and Safari). NO Polyfill or Shiming.
 
-- **NO VIRTUAL DOM**! Fully embrace native DOM customElement and web component. 
+- **NO VIRTUAL DOM**! Fully embrace native DOM customElement and web components. 
 
 - **JUST A LIB** not a framework (uses the native DOM customElement / webcomponent as the framework). 
 
@@ -189,13 +191,16 @@ class FullComponent extends BaseHTMLElement{
 
 To fully understand the power of `BaseHTMLElement` it is important to understand the lifecycle of the DOM customElement elements. 
 
-In very short, the customElement class get instantiated for its registered tag name by the DOM ONLY when the element is added to the main `document`. Before that point, the DOM element is just a generic DOM Element. 
+In very short, the customElement class get instantiated with the following rules: 
+- When using `document.createElement('my-comp')` the `MyComp` custom element get immediately instantiated (meaning constructor will get called) only if called AFTER the `DOMContentLoaded` browser event. 
+  - If called before, the element will be created, but not yet assigned to the `MyComp` instance. 
+- When using document template `.innerHTML = '<my-comp></my-comp>`, the `my-comp` MyComp constructor will get called only when thhe content `template.content` will be added to the `document.body`. 
 
 `BaseHTMLElement` provides some convenient methods that enable to take full advantage of this lifecycle. Here is a simple example showing this lifecyle.
 
 
 ```ts
-@customElement('my-component') // no magic, just call a customElement.register('my-component',MyComponent);
+@customElement('my-comp') // no magic, just call a customElement.register('my-comp',MyComponent);
 class MyComponent extends BaseHTMLElement{
   private _data?: string;
 
@@ -220,7 +225,7 @@ class MyComponent extends BaseHTMLElement{
   }  
 }
 
-const el = document.createElement('my-component'); 
+const el = document.createElement('my-comp'); 
 // NOTHING is printed, the element is not added to the dom. 
 // DO NOT call `el.customData = 'test data'` MyComponent is not instantiated
 
@@ -229,18 +234,28 @@ document.body.appendChild(el);
 // -- print --> '-- init undefined'
 
 // now 'el' has been upgraded to MyComponent instance
-el.customData = 'test-data'; 
+el.customData = 'test-data-1'; 
+
+document.addEventListener('DOMContentLoaded', function () {
+  const el2 = document.createElement('my-comp'); 
+  // NOTE: Since called after the DOMContentLoaded, MyComponent got instantiated
+  // -- print --> '-- constructor undefined'
+  // -- print --> '-- init undefined'  
+  el2.data = 'test-data-2'; // works, as the setter/getter got instantiated
+}); 
 
 // this will ask the browser to do a call back before first paint, but it will do after preDisplay, because the myComponent instance was created before
 requireAnimationFrame(function(){
 
-  // -- print --> '-- preDisplay test-data'
+  // -- print --> '-- preDisplay test-data-1'
+  // -- print --> '-- preDisplay test-data-2'
 
   // this will ask the browser to register a callback for the upcoming paint (which is the one after this one).
   // Since MyComponent had a postDisplay, it was also registered with a double requireAnimationFrame and will be called before
   requireAnimationFrame(function(){
 
-    // -- print --> '-- postDisplay test-data'
+    // -- print --> '-- postDisplay test-data-1'
+    // -- print --> '-- postDisplay test-data-2'
 
   });
 });
@@ -333,7 +348,11 @@ const el = document.createElement('happy-message');
 
 > `constructor()` v.s. `init()`: Many Web Component tutorials show how to create/attach `ShadowDom` at the constructor, but calling `this.innerHTML` at the constructor is not permitted. `init()` get called at the first `connectedCallback` and is a safe place to set `this.innerHTML` value. This allows to decouple the ShadowDom requirements from the component model, making it optional. 
 
-> `ShadowDom` is a good concept. However, unfortunately the lack of effective ShadowDom styling (CSS piercing was removed, and CSS Shadow Parts is still not well supported by modern browsers) makes it not a very pragmatic choice for now ([#SelfInflictedComplexity](https://twitter.com/jeremychone/status/1170378327116222464)). The good news is that the key componentization model comes from the `customElement` API, which is very mature and well supported, and ShadowDom is mostly a component implementation detail that can be added later when fully ready. 
+#### 4) ShadowDOM
+
+`ShadowDom` is now, since Safari supports `cssParts` a robust concept to follow. It allows to high component internals while exposing part of the component structure that should be visibile to the rest of the application. 
+
+See [Dialog Box with Native Web Components - Part 1](https://www.youtube.com/watch?v=pdrpeF0P7gY) and [Part 2](https://www.youtube.com/watch?v=e3Z1SXH_pOw) for best practices.
 
 
 # APIs

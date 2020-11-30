@@ -1,4 +1,4 @@
-export const version = '0.9.18-SNAPSHOT';
+export const version = '0.9.18';
 
 export { anim } from './anim';
 export { attr } from './attribute';
