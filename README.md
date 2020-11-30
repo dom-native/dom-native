@@ -189,14 +189,15 @@ class FullComponent extends BaseHTMLElement{
 
 ## Understanding DOM customElement lifecycle
 
-To fully understand the power of `BaseHTMLElement` it is important to understand the lifecycle of the DOM customElement elements. 
+To fully understand `BaseHTMLElement` lifecycle, which is just an extension of the browser native `HTMLElement` one, it is essential to understand the nuances of the native HTMLElement lifecycle. 
 
-In very short, the customElement class get instantiated with the following rules: 
-- When using `document.createElement('my-comp')` the `MyComp` custom element get immediately instantiated (meaning constructor will get called) only if called AFTER the `DOMContentLoaded` browser event. 
-  - If called before, the element will be created, but not yet assigned to the `MyComp` instance. 
-- When using document template `.innerHTML = '<my-comp></my-comp>`, the `my-comp` MyComp constructor will get called only when thhe content `template.content` will be added to the `document.body`. 
+In very short, the custom element class get instantiated upon the following rules: 
+- When using `document.createElement('my-comp')` after the page's `DOMContentLoaded` event the `MyComp` class get immediately instantiated (meaning constructor will get called) and assigned to this element. (it is immediately "upgraded" to the custom element)
+- However, if `document.createElement('my-comp')` is called before the `DOMContentLoaded` the `MyComp` "upgrade" will be deferred for when the element will be added to the document body tree.
+- Similarly, when creating a document template and using `.innerHTML = '<my-comp></my-comp>`, regardless if it is before or after the `DOMContentLoaded`, the custom elements get "upgraded" to their class instances only when they are added to the document body tree. (adding the template to the document body does not "upgrade" the element, template content are just parsed HTML)
 
-`BaseHTMLElement` provides some convenient methods that enable to take full advantage of this lifecycle. Here is a simple example showing this lifecyle.
+With this in mind, here are the `BaseHTMLElement` extended lifecycle methods based on the native HTMLELement ones. 
+
 
 
 ```ts
