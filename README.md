@@ -191,10 +191,16 @@ class FullComponent extends BaseHTMLElement{
 
 To fully understand `BaseHTMLElement` lifecycle, which is just an extension of the browser native `HTMLElement` one, it is essential to understand the nuances of the native HTMLElement lifecycle. 
 
-In very short, the custom element class get instantiated upon the following rules: 
-- When using `document.createElement('my-comp')` after the page's `DOMContentLoaded` event the `MyComp` class get immediately instantiated (meaning constructor will get called) and assigned to this element. (it is immediately "upgraded" to the custom element)
-- However, if `document.createElement('my-comp')` is called before the `DOMContentLoaded` the `MyComp` "upgrade" will be deferred for when the element will be added to the document body tree.
-- Similarly, when creating a document template and using `.innerHTML = '<my-comp></my-comp>`, regardless if it is before or after the `DOMContentLoaded`, the custom elements get "upgraded" to their class instances only when they are added to the document body tree. (adding the template to the document body does not "upgrade" the element, template content are just parsed HTML)
+See MDN documation about [custom element lifecycle callbacks](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#Using_the_lifecycle_callbacks)
+
+In short, there are 
+- First you associate a class which extends `HTMLElement` with a tag name using `customElements.define('my-comp', 'MyComponent')`
+  - `dom-native` provides an optional convenient `@customElement('my-comp')` TypeScript decorator
+- Then, the class can define the following methods: 
+  - `connectedCallback`: Invoked each time the custom element is appended into a document-connected element. This will happen each time the node is moved, and may happen before the element's contents have been fully parsed.
+  - `disconnectedCallback`: Invoked each time the custom element is disconnected from the document's DOM.
+  - `attributeChangedCallback`: Invoked each time one of the custom element's attributes is added, removed, or changed. Which attributes to notice change for is specified in a static get observedAttributes method
+  - There is a `adoptedCallback`, but it is used mostly in the iframe case, which is not common. 
 
 With this in mind, here are the `BaseHTMLElement` extended lifecycle methods based on the native HTMLELement ones. 
 
@@ -261,6 +267,12 @@ requireAnimationFrame(function(){
   });
 });
 ```
+
+#### NOTE - element upgrade
+
+There is an essential detail on when the component class `MyComponent` gets associated with its tag `my-comp`, and it follows the following "element upgrade" rule. 
+- When using `document.createElement('my-comp')` if the `MyComponent` associated class was defined before, then it will get immediately 'upgraded', meaning that the returned value will be of type `MyComponent`
+- However, if when using `document.createElement('my-comp')` the `MyComponent` was not defined, or if the `<my-comp></my-comp>` was created via a template (i.e. in a document fragment), then the `MyComponent` will get instantiated and associated to the tag `my-comp` when the element is added to the `document.body` DOM tree. This is important if the `MyComponent` has some setters/getters, as they won't be defined until after the DOM is added to the body.
 
 ### Best Practices
 
