@@ -3,20 +3,31 @@
 //#region    ---------- elem ---------- 
 type TagName = keyof HTMLElementTagNameMap;
 
+
 /**
  * Shorthand for document.createElement(name)
+ * 
+ * Note: If name match a name in the HTMLElementTagNameMap type, it will return the appropriate type
+ * So, `const el = elem('input'); // type returned is HTMLInputElement
+ * But, `const el = elem('my-comp'); // type is HTMLElement (assuming HTMLElementTagNameMap namespace was not augmented with this tag name)
  */
 export function elem<A extends string | TagName>(tagName: A): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
 
 /**
- * Shorthand for document.createElement(tagName) for a series of names
- */
-export function elem<A extends (string | TagName)[]>(...tagNames: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
-
-/**
  * Create multiple HTMLElement via document.createElement
+ * 
  * @param names tag names
+ *
+ * Note: If name match a name in the HTMLElementTagNameMap type, it will return the appropriate type
+ * So, `const el = elem('input', 'canvas'); // type returned is [HTMLInputElement, HTMLCanvasElement]
+ * But, `const el = elem('input', 'my-comp'); // type is [HTMLInputElement, HTMLElement] (assuming HTMLElementTagNameMap namespace was not augmented with this tag name)
+
  */
+export function elem<A extends (TagName | String)[]>(...tagNames: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
+// NOTE: Using 'String' rather than 'string' in the typing above is critical to allow to get A[K] to match TagName type. 
+//       Which will allow to correctly type `elem('input', 'un-known') // type[HTMLInputElement, HTMLElement]`
+//       Otherwise, if use 'string', all A[K] will become "wider" and won't match to TagName, so all types are HTMLElement
+
 export function elem(...names: string[]): HTMLElement | HTMLElement[] {
 	if (names.length === 1) {
 		return document.createElement(names[0]);
