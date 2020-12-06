@@ -2,6 +2,10 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement, `*` major; `-` fix; `!` change; 
 
+### v0.9.19 - Dec 06, 2020
+
+- `^` elem - enhanced the elem(...tagNames) to return the typed tuple based on the HTMLElementTagNameMap
+
 ### v0.9.18 - Nov 30, 2020
 
 - `.` anim - fixed type and added raftime on callback
