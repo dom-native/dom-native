@@ -1,23 +1,25 @@
 
 import { router } from 'cmdrouter';
+import execa from 'execa';
 import { readFile, readJSON, saferRemove, stat, writeFile } from 'fs-extra-plus';
-import { spawn } from 'p-spawn';
 import * as Terser from 'terser';
 import { buildDemoCode, uploadSite } from './helpers';
 
 const DIST_FILE = './.dist-lib/dom-native.js';
 const DIST_MIN_FILE = './.dist-lib/dom-native.min.js';
 
+const { stdout, stderr } = process;
+
 router({ build, build_lib, watch, site, cdn }).route();
 
 async function build() {
 	await saferRemove('./dist');
-	await spawn('./node_modules/.bin/tsc');
+	await execa('./node_modules/.bin/tsc', { stdout, stderr });
 }
 
 async function build_lib() {
 	await saferRemove('./.dist-lib');
-	await spawn('./node_modules/.bin/rollup', ['-c']);
+	await execa('./node_modules/.bin/rollup', ['-c'], { stdout, stderr });
 	await min();
 }
 
@@ -38,8 +40,11 @@ async function watch() {
 
 	// generate first to have the ts able to compile
 	await buildDemoCode(false);
-	spawn('npm', ['run', 'build-dev-js', '--', '-w']);
-	spawn('npm', ['run', 'build-dev-css', '--', '-w', '--verbose']);
+	execa('npm', ['run', 'build-dev-js', '--', '-w'], { stdout, stderr });
+	execa('npm', ['run', 'build-dev-css', '--', '-w', '--verbose'], { stdout, stderr });
+
+	// start the webhere web server
+	execa('./node_modules/.bin/webhere', ['-p', '8888'], { stderr });
 
 	buildDemoCode(true);
 }
