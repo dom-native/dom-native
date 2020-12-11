@@ -3,8 +3,9 @@
 
 `dom-native` is just a set of utilities (<7kb gzip) that scales REAL DOM application development by embracing the DOM Web Components model rather than fighting or abstracting it (lower learning curve, longer run rate). **#LearnWhatMatters** (i.e. the DOM), **#SimpleScaleBetter**
 
+[QUICK DEMO](https://demo.dom-native.org/core/index.html)
 
-[QUICK DEMO](https://demo.dom-native.org/core/index.html) 
+YouTube tutorials: [Native Web Components](https://youtube.com/playlist?list=PL7r-PXl6ZPcA1Sxvf68VEu7dXECL8pV03) | [Quickstart introduction](https://www.youtube.com/watch?v=ltUP17kRmYM) 
 
 **THE DOM IS THE FRAMEWORK**
 
@@ -37,12 +38,12 @@ off(containerEl, {ns: 'some_namespace'});
 ```ts 
 import {customElement, BaseHTMLElement, onEvent} from 'dom-native';
 
-@customElement('my-element') 
+@customElement('my-element') // shorthand for customElements.define('my-element', MyElement)
 class MyElement extends BaseHTMLElement{
-  @onEvent('pointerup', '.big-button')
+  @onEvent('pointerup', '.big-button') // bind on this element, and call if match '.big-button'
   bigButtonClick(evt) { ... }
 
-  @onDoc('pointerup', '.main-menu')
+  @onDoc('pointerup', '.main-menu') // bind on document, will unbind on disconnected
   mainMenuClicked(evt) { ... }  
   // document binding will be removed on HTMLElement detached
 }
@@ -55,8 +56,7 @@ class MyElement extends BaseHTMLElement{
 
 - **AGNOSTIC** - NO templating included. Feel free to use [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals), handlebars, or [lit-html](https://github.com/Polymer/lit-html, or even vuejs). 
 
-
-> IN SHORT - **Simple Scales Better** - **Learn what matters** - **favor pattern over frameworks** - **The DOM is the Framework!** - **Real DOM is Back!!!**
+IN SHORT - **Simple Scales Better** - **Learn what matters** - **favor pattern over frameworks** - **The DOM is the Framework!** - **Real DOM is Back!!!**
 
 
 
@@ -187,10 +187,11 @@ class FullComponent extends BaseHTMLElement{
 }
 ```
 
-## Understanding DOM customElement lifecycle
+
 
 To fully understand `BaseHTMLElement` lifecycle, which is just an extension of the browser native `HTMLElement` one, it is essential to understand the nuances of the native HTMLElement lifecycle. 
 
+## Understanding DOM customElement lifecycle
 See MDN documation about [custom element lifecycle callbacks](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements#Using_the_lifecycle_callbacks)
 
 In short, there are 
@@ -367,10 +368,9 @@ const el = document.createElement('happy-message');
 
 See [Dialog Box with Native Web Components - Part 1](https://www.youtube.com/watch?v=pdrpeF0P7gY) and [Part 2](https://www.youtube.com/watch?v=e3Z1SXH_pOw) for best practices.
 
+## APIs
 
-# APIs
-
-## DOM Navigation & Manipulation APIs Overview
+### DOM Navigation & Manipulation APIs Overview
 
 
 ```ts
@@ -421,12 +421,26 @@ const newEl = append(refEl, newEl, "empty"); // Will empty refEl before .appendC
 const newEl = append(refEl, newEl, "after"); // Append newEl after the refEl, use appendChild if no next sibling
 const newEl = append(refEl, newEl, "before"); // Here for symmetry, refEl.parentNode.insertBefore(newEl, refEl)
 
-const frag = frag("<div>any</div><td>html</td>"); // Create document fragment (use 'template' with fallback )
+// create a document fragment
+const htmlFrag = html`<div>any</div><td>html</td>`; // Create document fragment (use 'template' with fallback )
+
+// create a element
+const div = elem('div'); // same as document.createElement('div')
+const [div, myComp] = elem('div', 'my-comp'); // myComp could be of type MyComp if HTMLElementTagNameMap was augmented
 // --------- /DOM Helpers --------- //
+
+// --------- /CSS Helpers --------- //
+// create a css Object that can be used with adoptStyleSheets
+const cssObj = css`
+  :host{ border: solid 1px red}
+`;
+// on chrome will use adoptStyleSheet, on safari will create a new style element.
+adoptStyleSheets(this, cssObj); 
+// --------- /CSS Helpers --------- //
 
 ```
 
-## Pub / Sub APIs overview
+### Pub / Sub APIs overview
 
 ```ts
 import { hub } from 'dom-native';
@@ -443,7 +457,7 @@ myHub.unsub(opts.ns); // unsubscribe
 ```
 
 
-## Dom Data eXchange (push/pull)
+### Dom Data eXchange (push/pull)
 
 `push` and `pull` provides a simple and extensible way to extract or inject data from and to a DOM subtree. 
 
@@ -494,6 +508,26 @@ const data = pull(myEl);
 const updateData = {address: {street: "124 Second Street"}};
 push(myEl, updateData)
 ```
+
+### Anim
+
+`anim(callback, duration, ease?)` is a very simple but convenient method to make animation based on `requestAnimationFrame`
+
+```ts
+
+// will call the callback, every animationFrame, with the ntime being the normalized time 0..1 for the given duration.
+anim((ntime) => {
+  // to animation with ntime, usually * ntime
+}, 200);
+
+// Optional easing method can be passed, which should return the eased number from a normalized number (0..1)
+import { easeBounceOut } from 'd3-ease';
+anim((ntime) => {
+  // ntime is not the normalized eased time
+}, 200, easeBounceOut);
+
+```
+
 
 
 [changlogs](CHANGELOG.md)
