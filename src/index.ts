@@ -1,4 +1,4 @@
-export const version = '0.9.19';
+export const version = '0.9.20';
 
 export { anim } from './anim';
 export { attr } from './attribute';
