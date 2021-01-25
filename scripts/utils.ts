@@ -1,9 +1,4 @@
 
-export async function wait(ms: number) {
-	return new Promise(function (resolve) {
-		setTimeout(() => { resolve(); }, ms);
-	});
-}
 
 // return now in milliseconds using high precision
 export function now() {
