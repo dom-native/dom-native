@@ -30,7 +30,7 @@ async function loadBucket(bucketName: string): Promise<Bucket> {
 		throw new Error(`ERROR - loadBucket - cannot find file '${fileName}' is the root or 3 parent directories`)
 	}
 
-	const yamlObj = await yaml(content);
+	const yamlObj = await yaml(content) as any;
 	const bucketConfig = yamlObj.buckets?.[bucketName];
 
 	if (bucketConfig == null) {
