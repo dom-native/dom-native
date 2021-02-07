@@ -1,6 +1,6 @@
 export const version = '0.9.20';
 
-export { anim } from './anim';
+export { anim, AnimCallback } from './anim';
 export { attr } from './attribute';
 export { BaseHTMLElement } from './c-base';
 export { adoptStyleSheets, css } from './css';
