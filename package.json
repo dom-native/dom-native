@@ -1,6 +1,6 @@
 {
   "name": "dom-native",
-  "version": "0.9.21-SNAPSHOT",
+  "version": "0.9.21",
   "description": "Small set of utilities for building small to big native Web Component based applications (zero dependency, < 18kb min, < 7kb gzip)",
   "main": "dist/index.js",
   "repository": {
