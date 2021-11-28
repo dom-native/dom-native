@@ -1,7 +1,7 @@
 import { CodeDoc, SpecView } from '@dom-native/demo-infra';
 import { wait } from 'utils-min';
-import { BaseHTMLElement, customElement, first, on, onEvent } from '../../src';
-import { code_perfSimplest } from './_codes';
+import { BaseHTMLElement, customElement, first, on, onEvent } from '../../src/index.js';
+import { code_perfSimplest } from './_codes.js';
 
 const IT = 10000;
 

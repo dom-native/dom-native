@@ -1,6 +1,6 @@
 import { CodeDoc, SpecView } from '@dom-native/demo-infra';
-import { BaseHTMLElement, customElement } from '../../src';
-import { code_simpleElement, code_simpleElement2 } from './_codes';
+import { BaseHTMLElement, customElement } from '../../src/index.js';
+import { code_simpleElement, code_simpleElement2 } from './_codes.js';
 
 @customElement('spec-basic')
 export class SpecBasicView extends SpecView {

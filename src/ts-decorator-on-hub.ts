@@ -1,5 +1,5 @@
-import type { BaseHTMLElement } from './c-base';
-import { hub } from './hub';
+import type { BaseHTMLElement } from './c-base.js';
+import { hub } from './hub.js';
 
 type OnHubEvent = { methodName: string, hubName: string, topic: string, label?: string };
 

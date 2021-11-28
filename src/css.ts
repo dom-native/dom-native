@@ -1,4 +1,4 @@
-import { supportsAdoptingStyleSheets } from './support';
+import { supportsAdoptingStyleSheets } from './support.js';
 
 type ExtShadowRoot = ShadowRoot & { adoptedStyleSheets: CSSStyleSheet[] }
 

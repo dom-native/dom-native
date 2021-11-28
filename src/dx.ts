@@ -1,5 +1,5 @@
-import { all } from './dom';
-import { asArray, val } from './utils';
+import { all } from './dom.js';
+import { asArray, val } from './utils.js';
 
 type PusherFn = (value: any) => void;
 type PullerFn = (existingValue: any) => any;

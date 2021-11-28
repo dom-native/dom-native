@@ -1,6 +1,6 @@
 import { CodeDoc, SpecView } from '@dom-native/demo-infra';
-import { BaseHTMLElement, customElement, on, onEvent, OnEvent } from '../../src';
-import { code_eventShadow, code_eventSimple } from './_codes';
+import { BaseHTMLElement, customElement, on, onEvent, OnEvent } from '../../src/index.js';
+import { code_eventShadow, code_eventSimple } from './_codes.js';
 
 @customElement('spec-event')
 export class SpecEventView extends SpecView {

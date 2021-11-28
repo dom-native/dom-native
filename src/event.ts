@@ -1,4 +1,4 @@
-import { asNodeArray, ensureMap, ensureSet, splitAndTrim } from './utils';
+import { asNodeArray, ensureMap, ensureSet, splitAndTrim } from './utils.js';
 
 type EventTargetOrMore = EventTarget | NodeList | [Node];
 

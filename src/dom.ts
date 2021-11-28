@@ -1,5 +1,5 @@
-import { html } from './dom-builders';
-import { asNodeArray } from './utils';
+import { html } from './dom-builders.js';
+import { asNodeArray } from './utils.js';
 
 export type AppendPosition = "first" | "last" | "empty" | "before" | "after";
 

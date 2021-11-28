@@ -1,9 +1,9 @@
 // (c) 2019 BriteSnow, inc - This code is licensed under MIT license (see LICENSE for details)
 
-import { bindOnEvents, off, OnListenerBySelector } from './event';
-import { bindHubEvents, HubBindings, unbindHubEvents } from './hub';
-import { bindOnElementEventsDecorators, bindOnParentEventsDecorators, hasParentEventsDecorators, unbindParentEventsDecorators } from './ts-decorator-on-event';
-import { bindOnHubDecorators, hasHubEventDecorators, unbindOnHubDecorators } from './ts-decorator-on-hub';
+import { bindOnEvents, off, OnListenerBySelector } from './event.js';
+import { bindHubEvents, HubBindings, unbindHubEvents } from './hub.js';
+import { bindOnElementEventsDecorators, bindOnParentEventsDecorators, hasParentEventsDecorators, unbindParentEventsDecorators } from './ts-decorator-on-event.js';
+import { bindOnHubDecorators, hasHubEventDecorators, unbindOnHubDecorators } from './ts-decorator-on-hub.js';
 
 // component unique sequence number to allow to have cheap UID for each component
 let c_seq = 0;
