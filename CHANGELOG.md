@@ -2,6 +2,10 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement, `*` major; `-` fix; `!` change; 
 
+### v0.10.0 - Dec 5, 2021
+
+- `!` es module only! - Now package.json have `"type": "module"`
+
 ### v0.9.19 - Dec 06, 2020
 
 - `^` elem - enhanced the elem(...tagNames) to return the typed tuple based on the HTMLElementTagNameMap

@@ -1,7 +1,9 @@
 
-## **MAKING THE DOM SCALE** @<7Kb (<18Kb min.js)
+## **Framework-LESS** Web Component Library for 
 
-`dom-native` is just a set of utilities (<7kb gzip) that scales REAL DOM application development by embracing the DOM Web Components model rather than fighting or abstracting it (lower learning curve, longer run rate). **#LearnWhatMatters** (i.e. the DOM), **#SimpleScaleBetter**
+Goal: **MAKING THE DOM SCALE** with a @<7Kb gzip library (<18Kb min.js)
+
+`dom-native` is a minimalistic utility (<7kb gzip) embracing the DOM Native Web Components model to build simple to big applications the DOM way.  **#LearnWhatMatters** **#SimpleScaleBetter**
 
 [QUICK DEMO](https://demo.dom-native.org/core/index.html)
 
@@ -11,11 +13,11 @@ YouTube tutorials: [Native Web Components](https://youtube.com/playlist?list=PL7
 
 ### Key features and approach:
 
-- **ZERO IE TAX**! Only target modern browsers (e.g., modern Chrome, Edge Chromium, Firefox, and Safari). NO Polyfill or Shiming.
+- **ZERO IE TAX**! Only target modern browsers (e.g., Chrome, Edge Chromium, Firefox, and Safari). NO Polyfill or Shiming.
 
 - **NO VIRTUAL DOM**! Fully embrace native DOM customElement and web components. 
 
-- **JUST A LIB** not a framework (uses the native DOM customElement / webcomponent as the framework). 
+- **JUST A LIB** NOT a framework (uses the native DOM customElement / webcomponent as the framework). 
 
 - **SMALL** <7kb gzipped (< 18kb minimized) and ZERO dependency!
 
@@ -34,7 +36,7 @@ on(containerEl, 'pointerup', '.my-div', (evt) => {
 off(containerEl, {ns: 'some_namespace'});
 ```
  
-- **TYPED** for expressiveness and robustness (big thanks to TypeScript) with some minimalistic but powerfull TS **decorators**
+- **TYPED** for expressiveness and robustness with some minimalistic but powerfull TS **decorators**
 ```ts 
 import {customElement, BaseHTMLElement, onEvent} from 'dom-native';
 
@@ -57,7 +59,6 @@ class MyElement extends BaseHTMLElement{
 - **AGNOSTIC** - NO templating included. Feel free to use [template literals](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals), handlebars, or [lit-html](https://github.com/Polymer/lit-html, or even vuejs). 
 
 IN SHORT - **Simple Scales Better** - **Learn what matters** - **favor pattern over frameworks** - **The DOM is the Framework!** - **Real DOM is Back!!!**
-
 
 
 ## Hello World
@@ -198,7 +199,7 @@ In short, there are
 - First you associate a class which extends `HTMLElement` with a tag name using `customElements.define('my-comp', 'MyComponent')`
   - `dom-native` provides an optional convenient `@customElement('my-comp')` TypeScript decorator
 - Then, the class can define the following methods: 
-  - `connectedCallback`: Invoked each time the custom element is appended into a document-connected element. This will happen each time the node is moved, and may happen before the element's contents have been fully parsed.
+  - `connectedCallback`: Invoked each time the custom element is appended into a document-connected element. Each time the node is moved, this may happen before the element's contents have been fully parsed.
   - `disconnectedCallback`: Invoked each time the custom element is disconnected from the document's DOM.
   - `attributeChangedCallback`: Invoked each time one of the custom element's attributes is added, removed, or changed. Which attributes to notice change for is specified in a static get observedAttributes method
   - There is a `adoptedCallback`, but it is used mostly in the iframe case, which is not common. 
