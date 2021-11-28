@@ -1,9 +1,10 @@
 
 import { router } from 'cmdrouter';
-import execa from 'execa';
-import { readFile, readJSON, saferRemove, stat, writeFile } from 'fs-extra-plus';
+import { execa } from 'execa';
+import { saferRemove } from 'fs-extra-plus';
 import * as Terser from 'terser';
-import { buildDemoCode, uploadSite } from './helpers';
+import { buildDemoCode, uploadSite } from './helpers.js';
+const { readFile, readJSON, writeFile, stat } = (await import('fs-extra')).default;
 
 const DIST_FILE = './.dist-lib/dom-native.js';
 const DIST_MIN_FILE = './.dist-lib/dom-native.min.js';

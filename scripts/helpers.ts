@@ -1,9 +1,10 @@
 import chokidar from 'chokidar';
 import { Bucket, getBucket } from 'cloud-bucket';
-import { glob, pathExists, readFile, writeFile } from 'fs-extra-plus';
+import { glob, pathExists } from 'fs-extra-plus';
 import * as jsyaml from 'js-yaml';
 import debounce from 'lodash.debounce';
 import * as Path from 'path';
+const { readFile, writeFile } = (await import('fs-extra')).default;
 
 //#region    ---------- site ---------- 
 
