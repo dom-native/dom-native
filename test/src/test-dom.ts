@@ -1,5 +1,5 @@
 
-import { all, append, BaseHTMLElement, closest, customElement, first, frag, html, next, prev } from '../../src/index';
+import { all, append, BaseHTMLElement, closest, customElement, first, frag, getChild, getChildren, html, next, prev } from '../../src/index';
 import { equal } from './utils';
 
 
@@ -160,6 +160,27 @@ export function testFirstWithType() {
 	let ctest: CTest | null = first(document, 'c-test');
 	// NOTE - this is just a type test, so, if it compiles, all good. 
 	// console.log('->> ctest', ctest);
+}
+
+export function testGetChid() {
+	let container = first(document, 'div.el-g')!;
+	let ctest: CTest = getChild(container, 'c-test');
+	let unknown = getChild(container, 'unknown-comp');
+	let span: HTMLSpanElement = getChild(container, 'span');
+	equal(ctest.tagName, 'C-TEST');
+	equal(unknown.tagName, 'UNKNOWN-COMP');
+	equal(span.tagName, 'SPAN');
+	// NOTE - this is just a type test, so, if it compiles, all good. 
+}
+
+
+export function testGetChildren() {
+	let container = first(document, 'div.el-g')!;
+	let [ctest, span, unknown] = getChildren(container, 'c-test', 'span', 'unknown-comp');
+	// NOTE - this is just a type test, so, if it compiles, all good. 
+	equal(ctest.tagName, 'C-TEST');
+	equal(span.tagName, 'SPAN');
+	equal(unknown.tagName, 'UNKNOWN-COMP');
 }
 
 // to mimic union type

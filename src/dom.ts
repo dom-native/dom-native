@@ -2,7 +2,7 @@ import { html } from './dom-builders.js';
 import { asNodeArray } from './utils.js';
 
 export type AppendPosition = "first" | "last" | "empty" | "before" | "after";
-
+type TagName = keyof HTMLElementTagNameMap;
 
 // #region    --- first
 /** Shortchut to el.querySelector, but allow el to be null (in which case will return null) */
@@ -51,15 +51,75 @@ export function first(el_or_selector: Document | HTMLElement | DocumentFragment 
 
 // #region    --- all
 // TODO: might need to return readonly HTMLElement[] to be consistent with asNodeArray
-/** Convenient and normalized API for .querySelectorAll. Return Array (and not node list) */
+/** 
+ * Convenient and normalized API for .querySelectorAll. Return Array (and not node list) 
+*/
 export function all(el: Document | HTMLElement | DocumentFragment | null | undefined, selector: string): HTMLElement[];
 export function all(selector: string): HTMLElement[];
 export function all(el: Document | HTMLElement | DocumentFragment | null | undefined | string, selector?: string) {
 	const nodeList = _execQuerySelector(true, el, selector);
 	return (nodeList != null) ? asNodeArray(nodeList) : [];
 }
-
 // #endregion --- all
+
+// #region    --- getChild
+/**
+ * Get the first direct children that matches the selector. If selector match a HTMLElementTagNameMap, will return appropriate type.
+ * 
+ * @throws Error no matching child.
+ * 
+ * Note: For a more flexible function that give full querySelector capability, use `all(el, _full_query_filter_string)`
+ */
+export function getChild<K extends keyof HTMLElementTagNameMap>(el: Document | HTMLElement | DocumentFragment, selector: K): HTMLElementTagNameMap[K];
+export function getChild(el: Document | HTMLElement | DocumentFragment, selector: string): HTMLElement;
+export function getChild(el: Document | HTMLElement | DocumentFragment, name: string): HTMLElement {
+	name = name.toUpperCase();
+	for (const child of el.children) {
+		if (child.tagName === name) {
+			return child as HTMLElement;
+		}
+	}
+	throw new Error(`dom-native - getChild - No child found for selector ${name}`)
+}
+// #endregion --- getChild
+
+
+// #region    --- getChildren
+/** 
+ * Cherry pick direct HTMlElement children in order of the names (can be partial, but all have to be present and match is done in orders) 
+ * If name matches known TagName (in HTMLElementTagNameMap), then, the appropriate type will be returned.
+ * 
+ * @throws Error if one or more names are not match.
+ * 
+ * Note: For a more flexible function that give full querySelector capability, use `all(el, _full_query_filter_string)`
+*/
+export function getChildren<A extends (TagName | String)[]>(el: Document | HTMLElement | DocumentFragment, ...names: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
+export function getChildren(el: Document | HTMLElement | DocumentFragment, ...names: string[]): HTMLElement | HTMLElement[] {
+	const childrenCount = el.childElementCount;
+	if (childrenCount < names.length) {
+		throw new Error("dom-native - getChildren - node has less children than requested names");
+	}
+	const result: HTMLElement[] = [];
+	let nameIdx = 0;
+	for (const child of el.children) {
+		let name = names[nameIdx].toUpperCase();
+		if (child.tagName === name) {
+			// Note: could do an instanceof HTMLElement (need measure perf impact vs value of the check)
+			result.push(child as HTMLElement);
+			nameIdx += 1;
+		}
+		if (nameIdx >= childrenCount || nameIdx >= names.length) {
+			break;
+		}
+	}
+
+	if (result.length < names.length) {
+		throw new Error("dom-native - getChildren - node has match children than requested");
+	}
+
+	return result;
+}
+// #endregion --- getChildren
 
 // #region    --- next & prev
 /**
