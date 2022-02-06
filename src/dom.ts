@@ -3,14 +3,21 @@ import { asNodeArray } from './utils.js';
 
 export type AppendPosition = "first" | "last" | "empty" | "before" | "after";
 
-// --------- DOM Query Shortcuts --------- //
 
-// Shortcut for .querySelector
-// return the first element matching the selector from this el (or document if el is not given)
+// #region    --- first
+/** Shortchut to el.querySelector, but allow el to be null (in which case will return null) */
+export function first<K extends keyof HTMLElementTagNameMap>(el: Document | HTMLElement | DocumentFragment | null | undefined, selector: K): HTMLElementTagNameMap[K] | null;
 /** Shortchut to el.querySelector, but allow el to be null (in which case will return null) */
 export function first(el: Document | HTMLElement | DocumentFragment | null | undefined, selector: string): HTMLElement | null;
+
+/** Returns the first HTMLElement from the document if exists, otherwise returns null */
 export function first(selector: string): HTMLElement | null;
+/** Returns the first HTMLElement from the document if exists, otherwise returns null */
+export function first<K extends keyof HTMLElementTagNameMap>(selector: K): HTMLElementTagNameMap[K] | null;
+
+/** Return the first HTMLElement child if exists, otherwise returns null */
 export function first(el: Document | HTMLElement | DocumentFragment | null | undefined): HTMLElement | null;
+
 export function first(el_or_selector: Document | HTMLElement | DocumentFragment | string | null | undefined, selector?: string) {
 	// We do not have a selector at all, then, this call is for firstElementChild
 	if (!selector && typeof el_or_selector !== "string") {
@@ -40,7 +47,9 @@ export function first(el_or_selector: Document | HTMLElement | DocumentFragment 
 	}
 
 }
+// #endregion --- first
 
+// #region    --- all
 // TODO: might need to return readonly HTMLElement[] to be consistent with asNodeArray
 /** Convenient and normalized API for .querySelectorAll. Return Array (and not node list) */
 export function all(el: Document | HTMLElement | DocumentFragment | null | undefined, selector: string): HTMLElement[];
@@ -50,6 +59,9 @@ export function all(el: Document | HTMLElement | DocumentFragment | null | undef
 	return (nodeList != null) ? asNodeArray(nodeList) : [];
 }
 
+// #endregion --- all
+
+// #region    --- next & prev
 /**
  * Get the eventual next sibling of an HTMLElement given (optionally as selector)
  */
@@ -63,7 +75,6 @@ export function next(el: Node | null | undefined, selector?: string): HTMLElemen
 export function prev(el: Node | null | undefined, selector?: string): HTMLElement | null {
 	return _sibling(false, el, selector) as HTMLElement;  // assume HTMLElement
 }
-
 
 /**
  * Return the next or previous Element sibling
@@ -86,6 +97,9 @@ function _sibling(next: boolean, el: Node | undefined | null, selector?: string)
 	}
 	return null;
 }
+// #endregion --- next & prev
+
+
 
 // util: querySelector[All] wrapper
 function _execQuerySelector(all: boolean, elOrSelector?: Document | HTMLElement | DocumentFragment | null | string, selector?: string) {
@@ -105,17 +119,18 @@ function _execQuerySelector(all: boolean, elOrSelector?: Document | HTMLElement 
 }
 
 
+// #region    --- closest
 
-// By default use the document.closest (if not implemented, use the matches to mimic the logic) 
-// return null if not found
-// TODO: support shadow-dom piercing
+/**
+ * call el.closest, but allow el to be null (return null in this case)
+ */
 export function closest(el: HTMLElement | null | undefined, selector: string): HTMLElement | null {
 	return (el) ? el.closest(selector) as HTMLElement | null : null;
 }
-// --------- /DOM Query Shortcuts --------- //
+// #endregion --- closest
 
 
-//#region    ---------- DOM Manipulation ---------- 
+// #region    --- append
 export function append<T extends HTMLElement | HTMLElement[] | DocumentFragment | string>(this: any, refEl: HTMLElement | DocumentFragment, newEl: T, position?: AppendPosition): T extends HTMLElement ? HTMLElement : HTMLElement[];
 
 export function append(this: any, refEl: HTMLElement | DocumentFragment, newEl: HTMLElement | HTMLElement[] | DocumentFragment | string, position?: AppendPosition): HTMLElement | HTMLElement[] {
@@ -196,9 +211,7 @@ export function append(this: any, refEl: HTMLElement | DocumentFragment, newEl: 
 	return result;
 }
 
-
-
-//#endregion ---------- /DOM Manipulation ---------- 
+// #endregion --- append
 
 
 

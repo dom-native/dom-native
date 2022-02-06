@@ -1,5 +1,5 @@
 
-import { first, all, on, off, trigger, OnEvent, closest, next, prev, append, frag } from '../../src/index';
+import { all, append, BaseHTMLElement, closest, customElement, first, frag, html, next, prev } from '../../src/index';
 import { equal } from './utils';
 
 
@@ -45,8 +45,8 @@ export function testNext() {
 	nextEl = next(firstEl, ".rect.el-c")!;
 	equal(nextEl.innerHTML, "C 1");
 
-	let lastEl: HTMLElement | null = next(firstEl, ".rect.el-f")!;
-	equal(lastEl.classList.toString(), "rect el-f container");
+	let lastEl: HTMLElement | null = next(firstEl, ".rect.el-g")!;
+	equal(lastEl.classList.toString(), "rect el-g");
 
 	nextEl = next(lastEl, ".rect");
 	equal(nextEl, null);
@@ -156,6 +156,12 @@ export function testAppendFragReturnValue() {
 
 }
 
+export function testFirstWithType() {
+	let ctest: CTest | null = first(document, 'c-test');
+	// NOTE - this is just a type test, so, if it compiles, all good. 
+	// console.log('->> ctest', ctest);
+}
+
 // to mimic union type
 function createElOrFrag(html: string): DocumentFragment | HTMLElement {
 	return frag(html);
@@ -166,4 +172,20 @@ function createEl(classNames: string, text: string) {
 	el.setAttribute("class", "rect " + classNames);
 	el.innerText = text;
 	return el;
+}
+
+@customElement('c-test')
+class CTest extends BaseHTMLElement { // extends HTMLElement
+
+	init() {
+		this.append(html`<p>c-test</p>`);
+	}
+
+}
+
+// Augment the global TagName space to match runtime
+declare global {
+	interface HTMLElementTagNameMap {
+		'c-test': CTest;
+	}
 }
