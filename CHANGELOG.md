@@ -1,6 +1,14 @@
 # CHANGELOG
 
-> Legend: `.` minor; `+` addition; `^` enhancement, `*` major; `-` fix; `!` change; 
+> Legend: `.` minor; `+` addition; `^` enhancement, `*` refactor; `-` fix; `!` change; 
+
+### v0.10.2 - Jun 21, 2022
+
+- `!` minor change - `preDisplay` and `postDisplay` will be called on re-attached, first params is `firstCall: boolean`.
+
+### v0.10.1 - Feb 6, 2022
+
+- `+` `getChildren` and `getChild` to get direct child by tag names
 
 ### v0.10.0 - Dec 5, 2021
 
