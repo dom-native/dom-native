@@ -34,11 +34,11 @@ export abstract class BaseHTMLElement extends HTMLElement {
 
 	hubEvents?: HubBindings;
 
-	/** called in the first requestAnimationFrame (i.e., before the very first paint) */
-	preDisplay?(): void;
+	/** Called at the first requestAnimationFrame (i.e., before the very first paint) */
+	preDisplay?(firstCall: boolean): void;
 
-	/** called in the after the first paint (i.e., requestAnimationFrame(requestAnimationFrame(..))) */
-	postDisplay?(): void;
+	/** Called in the SECOND requestAnimationFrame (i.e., requestAnimationFrame(requestAnimationFrame(..))) */
+	postDisplay?(firstCall: boolean): void;
 
 	// lifecyle _init state
 	private _init = false;
@@ -49,7 +49,6 @@ export abstract class BaseHTMLElement extends HTMLElement {
 	private _hub_bindings_done = false;
 	private _preDisplay_attached = false;
 	private _postDisplay_attached = false;
-
 
 	protected get initialized() { return this._init }
 
@@ -108,26 +107,26 @@ export abstract class BaseHTMLElement extends HTMLElement {
 			// bind the @onEvent decorated methods
 			bindOnElementEventsDecorators(this);
 
-
 			this.init();
 			this._init = true;
 		}
 
 		// --- Register the eventual preDisplay / postDisplay
-		// Note: Guard to prevent double registration on successive connected/disconnected in the same render loop
-		if (this.preDisplay && this._preDisplay_attached == false) {
-			this._preDisplay_attached = true;
+		// Note - Will pass the "firstCall" flag to both method. 
+		if (this.preDisplay) {
+			let firstCall = !(this._preDisplay_attached === true);
 			requestAnimationFrame(() => {
-				this.preDisplay!();
+				this.preDisplay!(firstCall);
 				this._preDisplay_attached = false;
 			});
 		}
 
-		if (this.postDisplay && this._postDisplay_attached == false) {
+		if (this.postDisplay) {
+			let firstCall = !(this._postDisplay_attached === true)
 			this._postDisplay_attached = true;
 			requestAnimationFrame(() => {
 				requestAnimationFrame(() => {
-					this.postDisplay!();
+					this.postDisplay!(firstCall);
 					this._postDisplay_attached = false;
 				})
 			})

@@ -29,12 +29,12 @@ class LifecyleComponent extends BaseHTMLElement {
 		out.push('LifecycleComponent init');
 	}
 
-	preDisplay() {
-		out.push('LifecycleComponent preDisplay');
+	preDisplay(firstCall: boolean) {
+		out.push(`LifecycleComponent preDisplay ${firstCall}`);
 	}
 
-	postDisplay() {
-		out.push('LifecycleComponent postDisplay');
+	postDisplay(firstCall: boolean) {
+		out.push(`LifecycleComponent postDisplay ${firstCall}`);
 	}
 }
 customElements.define('lifecycle-component', LifecyleComponent);
@@ -222,13 +222,13 @@ export function testLifecycle() {
 
 	// This request animationFrame will be called in the same frame as the preDisplay, but just after, so, we will have the preDisplay
 	requestAnimationFrame(() => {
-		equal(out, ["LifecycleComponent constructor", "LifecycleComponent init", "LifecycleComponent preDisplay"]);
+		equal(out, ["LifecycleComponent constructor", "LifecycleComponent init", "LifecycleComponent preDisplay true"]);
 	});
 
 	// This is the nextAnimationFrame, and then, we will have the postDisplay
 	requestAnimationFrame(() => {
 		requestAnimationFrame(() => {
-			equal(out, ["LifecycleComponent constructor", "LifecycleComponent init", "LifecycleComponent preDisplay", "LifecycleComponent postDisplay"])
+			equal(out, ["LifecycleComponent constructor", "LifecycleComponent init", "LifecycleComponent preDisplay true", "LifecycleComponent postDisplay true"])
 		})
 	})
 
