@@ -64,14 +64,14 @@ export function all(el: Document | HTMLElement | DocumentFragment | null | undef
 
 // #region    --- getChild
 /**
- * Get the first direct children that matches the selector. If selector match a HTMLElementTagNameMap, will return appropriate type.
+ * Get the first direct child matching a tag name. If selector match a HTMLElementTagNameMap, will return appropriate type.
  * 
  * @throws Error no matching child.
  * 
  * Note: For a more flexible function that give full querySelector capability, use `all(el, _full_query_filter_string)`
  */
-export function getChild<K extends keyof HTMLElementTagNameMap>(el: Document | HTMLElement | DocumentFragment, selector: K): HTMLElementTagNameMap[K];
-export function getChild(el: Document | HTMLElement | DocumentFragment, selector: string): HTMLElement;
+export function getChild<K extends keyof HTMLElementTagNameMap>(el: Document | HTMLElement | DocumentFragment, tagName: K): HTMLElementTagNameMap[K];
+export function getChild(el: Document | HTMLElement | DocumentFragment, tagName: string): HTMLElement;
 export function getChild(el: Document | HTMLElement | DocumentFragment, name: string): HTMLElement {
 	name = name.toUpperCase();
 	for (const child of el.children) {
