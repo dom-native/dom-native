@@ -1,6 +1,6 @@
+import { adoptStyleSheets, anim, append, BaseHTMLElement, css, customElement } from '#dom-native';
 import { CodeDoc, SpecView } from '@dom-native/demo-infra';
 import { easeBounce } from 'd3-ease';
-import { adoptStyleSheets, anim, append, BaseHTMLElement, css, customElement } from '../../src/index.js';
 import { code_animPie } from './_codes.js';
 
 @customElement('spec-anim')

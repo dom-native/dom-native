@@ -1,4 +1,4 @@
-import { first, frag } from '../../src/index';
+import { first, frag } from '#dom-native';
 
 
 //#region    ---------- Test Runner ---------- 

@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		// For browser client, we target edge and above (use es2016 for [].includes for example)
-		"target": "es2018",
+		"target": "ES2021",
 
 		// Resolve to es module for rollup
 		"module": "es2015",

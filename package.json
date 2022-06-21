@@ -4,6 +4,53 @@
   "description": "Small set of utilities for building small to big native Web Component based applications (zero dependency, < 18kb min, < 7kb gzip)",
   "main": "dist/index.js",
   "type": "module",
+  "scripts": {
+    "prepack": "npm run build",
+    "build": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm ./scripts/cmds.ts build",
+    "build-dev-js": "./node_modules/.bin/rollup -c dev.rollup.config.js",
+    "build-dev-css": "./node_modules/.bin/postcss --config ./demo/ -o demo/dist/demo-bundle.css  demo/pcss/main.pcss",
+    "build-lib": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm scripts/cmds.ts build_lib",
+    "watch": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm ./scripts/cmds.ts watch",
+    "site": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts site",
+    "cdn": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts cdn"
+  },
+  "imports": {
+    "#dom-native": "./src/index.js"
+  },
+  "devDependencies": {
+    "@dom-native/demo-infra": "0.0.0-internal-4",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-multi-entry": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^8.3.3",
+    "@types/d3-ease": "^3.0.0",
+    "@types/js-yaml": "^4.0.5",
+    "@types/lodash.debounce": "^4.0.7",
+    "autoprefixer": "^10.4.7",
+    "chokidar": "^3.5.3",
+    "cloud-bucket": "^0.4.2",
+    "cmdrouter": "^0.3.1",
+    "d3-ease": "^3.0.1",
+    "execa": "^6.1.0",
+    "fs-aux": "^0.1.0",
+    "js-yaml": "^4.1.0",
+    "lodash.debounce": "^4.0.8",
+    "postcss": "^8.4.14",
+    "postcss-cli": "^9.1.0",
+    "postcss-import": "^14.1.0",
+    "postcss-nested": "^5.0.6",
+    "rollup": "^2.75.7",
+    "rollup-plugin-typescript2": "^0.32.1",
+    "terser": "^5.14.1",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.7.4",
+    "utils-min": "^0.2.0",
+    "webhere": "^1.1.0"
+  },
+  "files": [
+    "src/",
+    "dist/"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/dom-native/dom-native.git"
@@ -20,54 +67,6 @@
     "mvc",
     "html5"
   ],
-  "devDependencies": {
-    "@dom-native/demo-infra": "0.0.0-internal-4",
-    "@rollup/plugin-alias": "^3.1.9",
-    "@rollup/plugin-commonjs": "^21.0.1",
-    "@rollup/plugin-multi-entry": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.1.3",
-    "@types/d3-ease": "^3.0.0",
-    "@types/js-yaml": "^4.0.5",
-    "@types/lodash.debounce": "^4.0.6",
-    "autoprefixer": "^10.4.2",
-    "chokidar": "^3.5.3",
-    "cloud-bucket": "^0.4.1",
-    "cmdrouter": "^0.3.1",
-    "d3-ease": "^3.0.1",
-    "execa": "^6.0.0",
-    "js-yaml": "^4.1.0",
-    "lodash.debounce": "^4.0.8",
-    "postcss": "^8.4.6",
-    "postcss-cli": "^9.1.0",
-    "postcss-import": "^14.0.2",
-    "postcss-nested": "^5.0.6",
-    "rollup": "^2.67.0",
-    "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-typescript2": "^0.31.2",
-    "terser": "^5.10.0",
-    "ts-node": "^10.4.0",
-    "typescript": "^4.5.5",
-    "utils-min": "^0.2.0",
-    "webhere": "^1.1.0"
-  },
-  "files": [
-    "src/",
-    "dist/"
-  ],
-  "scripts": {
-    "prepack": "npm run build",
-    "build": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm ./scripts/cmds.ts build",
-    "build-dev-js": "./node_modules/.bin/rollup -c dev.rollup.config.js",
-    "build-dev-css": "./node_modules/.bin/postcss --config ./demo/ -o demo/dist/demo-bundle.css  demo/pcss/main.pcss",
-    "build-lib": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm scripts/cmds.ts build_lib",
-    "watch": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm ./scripts/cmds.ts watch",
-    "site": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts site",
-    "cdn": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts cdn"
-  },
   "author": "Jeremy Chone <jeremy.chone@gmail.com> (http://jeremychone.com)",
-  "license": "MIT",
-  "dependencies": {
-    "fs-aux": "^0.1.0"
-  }
+  "license": "MIT"
 }

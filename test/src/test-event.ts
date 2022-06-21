@@ -1,5 +1,5 @@
 
-import { first, on, off, trigger, OnEvent } from '../../src/index';
+import { first, off, on, OnEvent, trigger } from '#dom-native';
 import { equal } from './utils';
 
 let out: string[] = [];

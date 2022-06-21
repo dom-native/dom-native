@@ -80,7 +80,7 @@ export abstract class BaseHTMLElement extends HTMLElement {
 			this._has_parent_events = this.docEvents != null || this.winEvents != null || hasParentEventsDecorators(this);
 		}
 
-		//// Bind the eventual parent events (document, windows)
+		// --- Bind the eventual parent events (document, windows)
 		// Note: Parent events are silenced on when el is diconnected, and unbound when next frame still diconnected
 		if (this._has_parent_events && !this._parent_bindings_done) {
 			// bind the @docDoc event
@@ -91,9 +91,7 @@ export abstract class BaseHTMLElement extends HTMLElement {
 			this._parent_bindings_done = true;
 		}
 
-
-
-		//// Bind the hub if not already done
+		// --- Bind the hub if not already done
 		// Note: Hub events are bound and unbound on each connect and disconnect. 
 		//       (could use the parent event optimation later)
 		if (!this._hub_bindings_done) {
@@ -102,7 +100,7 @@ export abstract class BaseHTMLElement extends HTMLElement {
 			this._hub_bindings_done = true;
 		}
 
-		//// Peform the init
+		// --- Peform the init
 		if (!this._init) {
 
 			if (this.events) bindOnEvents(this, this.events, opts);
@@ -115,9 +113,8 @@ export abstract class BaseHTMLElement extends HTMLElement {
 			this._init = true;
 		}
 
-		//// Register the eventuall preDisplay / postDisplay
-		// Note: Guard to prevent double registration on successivel connected/disconnected in the same render loop
-
+		// --- Register the eventual preDisplay / postDisplay
+		// Note: Guard to prevent double registration on successive connected/disconnected in the same render loop
 		if (this.preDisplay && this._preDisplay_attached == false) {
 			this._preDisplay_attached = true;
 			requestAnimationFrame(() => {
@@ -125,7 +122,6 @@ export abstract class BaseHTMLElement extends HTMLElement {
 				this._preDisplay_attached = false;
 			});
 		}
-
 
 		if (this.postDisplay && this._postDisplay_attached == false) {
 			this._postDisplay_attached = true;

@@ -1,4 +1,4 @@
-import { attr, elem } from '../../src/index';
+import { attr, elem } from '#dom-native';
 import { equal } from './utils';
 
 

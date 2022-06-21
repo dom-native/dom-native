@@ -1,5 +1,5 @@
+import { BaseHTMLElement, customElement } from '#dom-native';
 import { CodeDoc, SpecView } from '@dom-native/demo-infra';
-import { BaseHTMLElement, customElement } from '../../src/index.js';
 import { code_simpleElement, code_simpleElement2 } from './_codes.js';
 
 @customElement('spec-basic')

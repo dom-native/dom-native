@@ -1,5 +1,5 @@
 
-import { val } from '../../src/index';
+import { val } from '#dom-native';
 import { equal } from './utils';
 
 

@@ -1,5 +1,5 @@
 
-import { all, append, BaseHTMLElement, closest, customElement, first, frag, getChild, getChildren, html, next, prev } from '../../src/index';
+import { all, append, BaseHTMLElement, closest, customElement, first, frag, getChild, getChildren, html, next, prev } from '#dom-native';
 import { equal } from './utils';
 
 

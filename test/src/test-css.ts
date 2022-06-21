@@ -1,4 +1,4 @@
-import { adoptStyleSheets, append, BaseHTMLElement, css, customElement, first } from '../../src/index';
+import { adoptStyleSheets, append, BaseHTMLElement, css, customElement, first } from '#dom-native';
 import { contains, equal } from './utils';
 
 

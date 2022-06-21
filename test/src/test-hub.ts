@@ -1,5 +1,5 @@
 
-import { hub, Hub } from '../../src/index';
+import { hub, Hub } from '#dom-native';
 import { equal } from './utils';
 
 let hub1: Hub;

@@ -34,8 +34,10 @@
 		"esModuleInterop": true,
 
 		"paths": {
-			"dom-native": ["../dist/index.js"] // does not work
-		}, 
+			"#dom-native": [
+				"../../src/index.js"
+			]
+		},
 
 		"skipLibCheck": true,                     /* Skip type checking of declaration files. */
 	},

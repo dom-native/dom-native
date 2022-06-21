@@ -1,5 +1,5 @@
+import { adoptStyleSheets, BaseHTMLElement, css, customElement, frag } from '#dom-native';
 import { CodeDoc, SpecView } from '@dom-native/demo-infra';
-import { adoptStyleSheets, BaseHTMLElement, css, customElement, frag } from '../../src/index.js';
 import { code_shadowPart, code_shadowSimple, code_shadowSlot } from './_codes.js';
 
 @customElement('spec-shadow-dom')

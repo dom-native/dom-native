@@ -1,5 +1,5 @@
+import { all, first, frag, pull, push } from '#dom-native';
 import { equal } from './utils';
-import { first, pull, push, all, frag } from '../../src';
 
 let outs = [];
 
