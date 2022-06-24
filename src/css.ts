@@ -14,7 +14,7 @@ export function adoptStyleSheets(el: HTMLElement | ShadowRoot, cssObject: CSSObj
 		throw new Error('DOM-NATIVE ERROR - Cannot adoptStyleSheets of a non shadowRoot or an element that does not have a shadowRoot');
 	}
 
-	const cssObjects = (cssObject instanceof Array) ? cssObject : [cssObject]
+	const cssObjects = (cssObject instanceof Array) ? cssObject : [cssObject];
 	if (supportsAdoptingStyleSheets) {
 		const extShadow = shadow as ExtShadowRoot;
 		extShadow.adoptedStyleSheets = [...extShadow.adoptedStyleSheets, ...cssObjects.map(co => co.sheet!)];
@@ -32,13 +32,14 @@ function isShadowRoot(el: HTMLElement | ShadowRoot): el is ShadowRoot {
 
 
 //#region    ---------- css ---------- 
+
+
 const constructGuard = Symbol();
 
-// private properties
+// Note - use legacy way to do private for maximum Safari compatiblity (primary field was added 14.1 / 14.8, ~ 2021)
 const cssTextProp = Symbol();
 const styleRefProp = Symbol();
 const sheetProp = Symbol();
-
 
 /**
  * 
@@ -65,7 +66,7 @@ export class CSSObject {
 	 **/
 	get newStyle() {
 		this[styleRefProp] ??= Object.assign(document.createElement('style'), { innerHTML: this[cssTextProp] });
-		return this[styleRefProp]!.cloneNode(true) as HTMLElement;
+		return this[styleRefProp].cloneNode(true) as HTMLElement;
 	}
 
 	/** 
@@ -74,19 +75,25 @@ export class CSSObject {
 	 * NOTE: while the CSSObject.cssText is immutable, the returned sheet is not, and since it would not 
 	 *            make sense to create a new sheet on each call (defeating its purpose), it is up to the user 
 	 *            to have the appropriate strategy to mutate the returned sheet.
+	 * 
+	 * NOTE: The sheet returned is only initialized once. The user is responsible to not mute it, or if muted, it is 
+	 *       assumed the user wants it for all node that share this sheet (which is the point of shared sheet)
 	 **/
 	get sheet() {
 		if (supportsAdoptingStyleSheets) {
-			this[sheetProp] ??= new CSSStyleSheet();
-			(<any>this[sheetProp]!).replaceSync(this[cssTextProp]); // supportsAdoptingStyleSheets make sure this function exist
+			if (this[sheetProp] == null) {
+				this[sheetProp] = new CSSStyleSheet();
+				(<any>this[sheetProp]!).replaceSync(this[cssTextProp]); // supportsAdoptingStyleSheets make sure this function exist
+
+			}
 			return this[sheetProp]!;
+
 		} else {
 			return null;
 		}
 	}
 
 }
-
 
 /**
  * Create an immutable CSSObject. Can be used as a function or tagged template
@@ -104,7 +111,7 @@ export function css(strings: string | TemplateStringsArray, ...values: any[]) {
 		let r = '', i = 0, vl = values.length;
 		for (; i < vl; i++) {
 			const v = values[i];
-			const vStr = (v instanceof CSSObject) ? v[cssTextProp] : v;
+			const vStr = (v instanceof CSSObject) ? v.text : v;
 			r += strings[i] + vStr;
 		}
 

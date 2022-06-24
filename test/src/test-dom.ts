@@ -159,7 +159,6 @@ export function testAppendFragReturnValue() {
 export function testFirstWithType() {
 	let ctest: CTest | null = first(document, 'c-test');
 	// NOTE - this is just a type test, so, if it compiles, all good. 
-	// console.log('->> ctest', ctest);
 }
 
 export function testGetChid() {

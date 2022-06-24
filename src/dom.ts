@@ -64,7 +64,7 @@ export function all(el: Document | HTMLElement | DocumentFragment | null | undef
 
 // #region    --- getChild
 /**
- * Get the first direct child matching a tag name. If selector match a HTMLElementTagNameMap, will return appropriate type.
+ * Get the first direct child matching a tagName. If tagName match a HTMLElementTagNameMap, it will return appropriate type.
  * 
  * @throws Error no matching child.
  * 
@@ -87,7 +87,7 @@ export function getChild(el: Document | HTMLElement | DocumentFragment, name: st
 // #region    --- getChildren
 /** 
  * Cherry pick direct HTMlElement children in order of the names (can be partial, but all have to be present and match is done in orders) 
- * If name matches known TagName (in HTMLElementTagNameMap), then, the appropriate type will be returned.
+ * If name matches known tagName (in HTMLElementTagNameMap), then, the appropriate type will be returned.
  * 
  * @throws Error if one or more names are not match.
  * 
@@ -114,7 +114,7 @@ export function getChildren(el: Document | HTMLElement | DocumentFragment, ...na
 	}
 
 	if (result.length < names.length) {
-		throw new Error("dom-native - getChildren - node has match children than requested");
+		throw new Error("dom-native - getChildren - node has less match children than requested");
 	}
 
 	return result;
