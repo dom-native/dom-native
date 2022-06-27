@@ -1,6 +1,5 @@
 import { addHubEvents, addOnEvents, append, BaseHTMLElement, customElement, first, frag, html, hub, on, onDoc, onEvent, onHub } from '#dom-native';
 import { equal } from './utils';
-;
 
 let out: string[] = [];
 

@@ -3,15 +3,21 @@
 //#region    ---------- elem ---------- 
 type TagName = keyof HTMLElementTagNameMap;
 
+type ElemProps = { [k: string]: string | boolean };
 
 /**
  * Shorthand for document.createElement(name)
  * 
+ * @param tagName - The tag name of the element to be created
+ * @param props - The element attributes name:value to be set. Special property name:
+ * 			- `_textContent` which will do a el.textContent assignment in the element created
+ * 
  * Note: If name match a name in the HTMLElementTagNameMap type, it will return the appropriate type
+ * 
  * So, `const el = elem('input'); // type returned is HTMLInputElement
  * But, `const el = elem('my-comp'); // type is HTMLElement (assuming HTMLElementTagNameMap namespace was not augmented with this tag name)
  */
-export function elem<A extends string | TagName>(tagName: A): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
+export function elem<A extends string | TagName>(tagName: A, props?: ElemProps): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
 
 /**
  * Create multiple HTMLElement via document.createElement
@@ -21,19 +27,53 @@ export function elem<A extends string | TagName>(tagName: A): A extends TagName 
  * Note: If name match a name in the HTMLElementTagNameMap type, it will return the appropriate type
  * So, `const el = elem('input', 'canvas'); // type returned is [HTMLInputElement, HTMLCanvasElement]
  * But, `const el = elem('input', 'my-comp'); // type is [HTMLInputElement, HTMLElement] (assuming HTMLElementTagNameMap namespace was not augmented with this tag name)
-
  */
 export function elem<A extends (TagName | String)[]>(...tagNames: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
-// NOTE: Using 'String' rather than 'string' in the typing above is critical to allow to get A[K] to match TagName type. 
+
+// Implementation Note: Using 'String' rather than 'string' in the typing above is critical to allow to get A[K] to match TagName type. 
 //       Which will allow to correctly type `elem('input', 'un-known') // type[HTMLInputElement, HTMLElement]`
 //       Otherwise, if use 'string', all A[K] will become "wider" and won't match to TagName, so all types are HTMLElement
 
-export function elem(...names: string[]): HTMLElement | HTMLElement[] {
-	if (names.length === 1) {
-		return document.createElement(names[0]);
-	} else {
-		return names.map(n => { return document.createElement(n) });
+export function elem(...args: any[]): HTMLElement | HTMLElement[] {
+	const arg0Type = typeof args[0];
+	const arg1Type = typeof args[1];
+
+	// if we have a single element create
+	if (arg0Type == 'string' && (arg1Type == 'object' || arg1Type == 'undefined')) {
+		return createEl(args[0], args[1]);
 	}
+	// otherwise, have a list of tagNames (for now, do not support properties for list of tag name)
+	else {
+		return args.map(n => { return document.createElement(n) });
+	}
+}
+
+// private function to create a el with some eventual properties. 
+function createEl(tagName: string, props?: { [k: string]: string | Element | boolean }) {
+	let el = document.createElement(tagName);
+
+	if (props != null) {
+		for (const [name, rawVal] of Object.entries(props)) {
+			// if it is a boolean, true will set the attribute empty, and false will set txtVal to null, which will remove it.
+			const val = (typeof rawVal !== 'boolean') ? rawVal : (rawVal === true) ? '' : null;
+
+			if (val !== null) {
+
+				const valTxt = (typeof val == 'string') ? val : ('' + val);
+
+				// if _textContent then, it's the el.textContent
+				if (name == '_textContent') {
+					el.textContent = valTxt;
+				} else {
+					el.setAttribute(name, valTxt);
+				}
+
+			}
+			// if the value is null, we do nothing
+		}
+	}
+
+	return el;
 }
 //#endregion ---------- /elem ----------
 

@@ -77,29 +77,5 @@ function fast_equal(a: any, b: any) {
 //#endregion ---------- /fast-deep-qual ---------- 
 
 
-//#region    ---------- elem ---------- 
 
-//// NOTE: for now, just in dom-native test/src/utils.ts
-
-/**
- * Minimalist createElement helper. Create or or more HTMLElements given one or more tag name. Uses `document.createElement` with the given tag.
- * 
- * Examples:
- *   - `elem('div')` return `HTMLElement` 
- *   - `elem(['div', 'span'])` return `HTMLElement`
- * 
- * Future: Will support css class selector `elem('div.cool')`
- * 
- * @param names div element names
- */
-export function elem(names: string): HTMLElement;
-export function elem(names: string[]): HTMLElement[];
-export function elem(names: string | string[]): HTMLElement | HTMLElement[] {
-	if (names instanceof Array) {
-		return names.map(n => { return document.createElement(n) });
-	} else {
-		return document.createElement(names);
-	}
-}
-//#endregion ---------- /elem ----------
 

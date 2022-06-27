@@ -1,109 +1,73 @@
-import { attr, elem } from '#dom-native';
+import { elem, setAttr } from '#dom-native';
 import { equal } from './utils';
 
 
 const V1 = 'test val 1';
 const V2 = 'test val 2';
 
-export function testGetElWithName() {
-	// setup the el
+export function testSetSimple() {
 	const el = elem('div');
-	el.setAttribute('name', V1);
 
-	// test the get name attribute
-	let result = attr(el, 'name');
-	equal(result, V1);
+	const returnedEl = setAttr(el, "test_01", "test_val_01");
 
-	// test the get name attribute
-	result = attr(el, 'no-exist');
-	equal(result, null);
+	equal(returnedEl.getAttribute("test_01"), "test_val_01");
 }
 
-export function testGetElsWithName() {
-	const els = elem('div', 'div').map(el => { el.setAttribute('name', V1); return el; });
-
-	let result = attr(els, 'name');
-	equal(result, [V1, V1]);
-
-	result = attr(els, 'no-exist');
-	equal(result, [null, null]);
-}
-
-export function testGetElWithNames() {
-	// setup the el
+export function testGetSimple() {
 	const el = elem('div');
-	el.setAttribute('name', V1);
-	el.setAttribute('value', V2);
+	el.setAttribute("test_01", "test_val_01")
 
-	// test the get name attribute
-	let result = attr(el, ['name', 'value']);
-	equal(result, [V1, V2]);
-
-	// test the get name attribute
-	result = attr(el, ['name', 'value', 'no-exist']);
-	equal(result, [V1, V2, null]);
+	equal(el.getAttribute("test_01"), "test_val_01");
 }
 
-export function testGetElsWithNames() {
-	const els = elem('div', 'div').map(el => {
-		el.setAttribute('name', V1);
-		el.setAttribute('value', V2);
-		return el;
+
+export function testSetTrue() {
+	const el = elem('div');
+
+	const returnedEl = setAttr(el, "test_01", true);
+
+	equal(el.getAttribute("test_01"), "");
+}
+
+export function testSetFalse() {
+	const el = elem('div');
+
+	const returnedEl = setAttr(el, "test_01", false);
+
+	equal(el.getAttribute("test_01"), null);
+}
+
+export function testSetNum() {
+	const el = elem('div');
+
+	const returnedEl = setAttr(el, "test_01", 1);
+
+	equal(el.getAttribute("test_01"), "1");
+}
+
+export function testSetMap() {
+	const el = elem('div');
+
+	setAttr(el, {
+		test_01: 1,
+		test_02: "test_val_02"
 	});
 
-	// test the get name attribute
-	let result = attr(els, ['name', 'value']);
-	equal(result, [[V1, V2], [V1, V2]]);
-
-	// test the get name attribute
-	result = attr(els, ['name', 'value', 'no-exist']);
-	equal(result, [[V1, V2, null], [V1, V2, null]]);
+	equal(el.getAttribute("test_01"), "1");
+	equal(el.getAttribute("test_02"), "test_val_02");
 }
 
-export function testSetElWithObj() {
+export function testSetNullInMap() {
 	const el = elem('div');
+	el.setAttribute("test_03", "test_val_03");
 
-	let elReturned = attr(el, { name: V1, value: V2 });
-	let result = attr(elReturned, ['name', 'value']);
-	equal(result, [V1, V2]);
-}
+	setAttr(el, {
+		test_01: 1,
+		test_02: "test_val_02",
+		test_03: false
+	});
 
-export function testSetElsWithObj() {
-	const els = elem('div', 'div');
-
-	let elReturned = attr(els, { name: V1, value: V2 });
-	let result = attr(elReturned, ['name', 'value']);
-	equal(result, [[V1, V2], [V1, V2]]);
-}
-
-export function testSetElSingleNameValue() {
-	const el = elem('div');
-
-	let elReturned = attr(el, 'name', V1);
-	let result = attr(elReturned, 'name');
-	equal(result, V1);
-}
-
-export function testSetElsSingleNameValue() {
-	const els = elem('div', 'div');
-
-	let elReturned = attr(els, 'name', V1);
-	let result = attr(elReturned, 'name');
-	equal(result, [V1, V1]);
-}
-
-export function testSetBoolean() {
-	const els = elem('div', 'div');
-
-	let elReturned = attr(els, 'placeholder', true);
-	let result = attr(elReturned, 'placeholder');
-	equal(result, ['', '']);
-}
-
-export function testSetNumber() {
-	const els = elem('div', 'div');
-
-	let elReturned = attr(els, 'num', 1);
-	let result = attr(elReturned, 'num');
-	equal(result, ['1', '1']);
+	equal(el.getAttribute("test_01"), "1");
+	equal(el.getAttribute("test_02"), "test_val_02");
+	equal(el.getAttribute("test_03"), null);
 }
