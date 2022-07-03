@@ -2,12 +2,17 @@ import { off, on, OnEventListener, OnEventOptions } from './event.js';
 // import { BaseHTMLElement } from './c-base';
 
 // target === null means the instance object. 
+type OnDOMEventOptions = {
+	passive?: boolean, // default false
+	capture?: boolean, // default false
+}
 
 type OnDOMEvent = {
 	target: Window | Document | null, // if null, the target should be the el
 	type: string,
 	name: string, // function name
-	selector: string | null
+	selector: string | null,
+	opts?: OnDOMEventOptions
 };
 
 const _onEventsByConstructor: Map<Function, OnDOMEvent[]> = new Map();
@@ -22,20 +27,24 @@ type ComputedOnDOMEvents = {
 const _computedOnDOMEventsByConstructor = new WeakMap<Function, ComputedOnDOMEvents>();
 
 
+
 //#region    ---------- Public onEvent Decorator ---------- 
-export function onEvent(type: string, selector?: string) {
-	return _onDOMEvent(null, type, selector);
+export function onEvent(type: string, selector_or_opts?: string | OnDOMEventOptions, opts?: OnDOMEventOptions) {
+	return _onDOMEvent(null, type, selector_or_opts, opts);
 }
-export function onDoc(type: string, selector?: string) {
-	return _onDOMEvent(document, type, selector);
+export function onDoc(type: string, selector_or_opts?: string | OnDOMEventOptions, opts?: OnDOMEventOptions) {
+	return _onDOMEvent(document, type, selector_or_opts, opts);
 }
-export function onWin(type: string, selector?: string) {
-	return _onDOMEvent(window, type, selector);
+export function onWin(type: string, selector_or_opts?: string | OnDOMEventOptions, opts?: OnDOMEventOptions) {
+	return _onDOMEvent(window, type, selector_or_opts, opts);
 }
 //#endregion ---------- /Public onEvent Decorator ---------- 
 
 // the decorator function
-function _onDOMEvent(evtTarget: Window | Document | null, type: string, selector?: string) {
+function _onDOMEvent(evtTarget: Window | Document | null, type: string, selector_or_opts?: string | OnDOMEventOptions, opts?: OnDOMEventOptions) {
+	let selector = (typeof selector_or_opts == 'string') ? selector_or_opts : null;
+	opts = (selector === null) ? selector_or_opts as OnDOMEventOptions | undefined : opts;
+
 	// target references the element's class. It will be the constructor function for a static method or the prototype of the class for an instance member
 	return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
 		const fn: OnEventListener = descriptor.value;
@@ -54,7 +63,8 @@ function _onDOMEvent(evtTarget: Window | Document | null, type: string, selector
 			target: evtTarget,
 			name: propertyKey,
 			type: type,
-			selector: selector || null
+			selector: selector,
+			opts
 		};
 		onEvents.push(onEvent);
 
@@ -74,7 +84,8 @@ export function bindOnElementEventsDecorators(el: any) {
 			for (const onEvent of elOnDOMEvents) {
 				const target = (el.shadowRoot) ? el.shadowRoot : el;
 				const fn = (<any>el)[onEvent.name];
-				on(target, onEvent.type, onEvent.selector, fn, eventOpts);
+				_bindOn(target, onEvent, fn, eventOpts);
+
 			}
 		}
 	}
@@ -91,16 +102,25 @@ export function bindOnParentEventsDecorators(el: any) {
 	if (docOnDOMEvents !== null) {
 		for (const onEvent of docOnDOMEvents) {
 			const fn = (<any>el)[onEvent.name];
-			on(onEvent.target, onEvent.type, onEvent.selector, fn, eventOpts);
+			_bindOn(onEvent.target!, onEvent, fn, eventOpts);
 		}
 	}
 
 	if (winOnDOMEvents !== null) {
 		for (const onEvent of winOnDOMEvents) {
 			const fn = (<any>el)[onEvent.name];
-			on(onEvent.target, onEvent.type, onEvent.selector, fn, eventOpts);
+			_bindOn(onEvent.target!, onEvent, fn, eventOpts);
 		}
 	}
+}
+
+// Private bindOn. Here the target should be resolved before, won't take the onEvent.target
+function _bindOn(target: Document | Window | Element, onEvent: OnDOMEvent, fn: any, baseEventOpts: OnEventOptions) {
+	let opts = baseEventOpts;
+	if (onEvent.opts) {
+		opts = { ...baseEventOpts, ...onEvent.opts };
+	}
+	on(target, onEvent.type, onEvent.selector, fn, opts);
 }
 
 

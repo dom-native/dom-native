@@ -66,7 +66,7 @@ export class CSSObject {
 	 **/
 	get newStyle() {
 		this[styleRefProp] ??= Object.assign(document.createElement('style'), { innerHTML: this[cssTextProp] });
-		return this[styleRefProp].cloneNode(true) as HTMLElement;
+		return this[styleRefProp]!.cloneNode(true) as HTMLElement;
 	}
 
 	/** 
