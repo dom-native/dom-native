@@ -85,7 +85,6 @@ export function bindOnElementEventsDecorators(el: any) {
 				const target = (el.shadowRoot) ? el.shadowRoot : el;
 				const fn = (<any>el)[onEvent.name];
 				_bindOn(target, onEvent, fn, eventOpts);
-
 			}
 		}
 	}
@@ -141,30 +140,44 @@ function getComputeOnDOMEvents(clazz: Function): ComputedOnDOMEvents {
 	const docOnDOMEvents: OnDOMEvent[] = [];
 	const winOnDOMEvents: OnDOMEvent[] = [];
 
-	// keep track of the function name that were bound, to not double bind overriden parents
+	// Keep track of the `function_name` already bound by children classes to avoid double bind for the name function name.
 	// This is the intuitive behavior, aligning with inheritance behavior.
-	const fnNameBoundSet = new Set<string>();
+	// This works because we are walking the hierarchy tree from child to parent.
+	const childrenBoundFnNames = new Set<string>();
 
-	//// Compute the ComputedOnDOMEvents
+	// --- Compute the ComputedOnDOMEvents
 	do {
 		const onEvents = _onEventsByConstructor.get(clazz);
 		if (onEvents) {
+			const clazzBoundFnNames = new Set<string>();
+
 			for (const onEvent of onEvents) {
 				const target = onEvent.target;
 				const fnName = onEvent.name;
 
-				// to not double bind same function name (aligning with inheritance behavior)
-				if (!fnNameBoundSet.has(fnName)) {
-					fnNameBoundSet.add(fnName);
-
+				// bind only if this function name was not already bound by a children
+				if (!childrenBoundFnNames.has(fnName)) {
+					// get the appropriate onDOMEvents list to push this event given the target
+					let onDOMEvents;
 					if (target === window) {
-						winOnDOMEvents.push(onEvent);
+						onDOMEvents = winOnDOMEvents;
 					} else if (target === document) {
-						docOnDOMEvents.push(onEvent);
+						onDOMEvents = docOnDOMEvents;
 					} else {
-						elOnDOMEvents.push(onEvent);
+						onDOMEvents = elOnDOMEvents;
 					}
+
+					onDOMEvents.push(onEvent);
+
+					// add the name to this class boundFnNames to be added to the childrenBoundFnNames later
+					clazzBoundFnNames.add(fnName);
 				}
+
+			} // for onEvent of onEvents
+
+			// add this class bound fnNames to the childrenBoudFnNames for next parent class resolution
+			for (const fnName of clazzBoundFnNames) {
+				childrenBoundFnNames.add(fnName);
 			}
 		}
 
