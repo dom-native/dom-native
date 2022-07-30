@@ -1,5 +1,5 @@
 
-## **Framework-LESS** Web Component Library for 
+## **DOM-Native**: A FrameworkLess Utility for Native Web Component development
 
 Goal: **MAKING THE DOM SCALE** with a @<7Kb gzip library (<18Kb min.js)
 
@@ -15,7 +15,7 @@ YouTube tutorials: [Native Web Components](https://youtube.com/playlist?list=PL7
 
 - **ZERO IE TAX**! Only target modern browsers (e.g., Chrome, Edge Chromium, Firefox, and Safari). NO Polyfill or Shiming.
 
-- **NO VIRTUAL DOM**! Fully embrace native DOM customElement and web components. 
+- **NO VIRTUAL DOM**! Fully embrace native DOM customElement and Web Components. 
 
 - **JUST A LIB** NOT a framework (uses the native DOM customElement / webcomponent as the framework). 
 
