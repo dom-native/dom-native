@@ -6,7 +6,7 @@ type TagName = keyof HTMLElementTagNameMap;
 type ElemData = {
 	$?: { [k: string]: any },
 } & {
-	[k: string]: string | boolean | object // TODO: Needs to find a way to remove object from here
+	[k: string]: string | boolean | number | object // TODO: Needs to find a way to remove object from here
 }
 
 /**
@@ -53,7 +53,7 @@ export function elem(...args: any[]): HTMLElement | HTMLElement[] {
 }
 
 // private function to create a el with some eventual properties. 
-function createEl(tagName: string, data?: { [k: string]: string | Element | boolean }) {
+function createEl(tagName: string, data?: { [k: string]: string | Element | boolean | number | object }) {
 	let el = document.createElement(tagName);
 
 	if (data != null) {
