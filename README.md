@@ -1,23 +1,21 @@
 
-## **DOM-Native**: A FrameworkLess Utility for Native Web Component development
-
-Goal: **MAKING THE DOM SCALE** with a @<7Kb gzip library (<18Kb min.js)
+## **DOM-Native**: A Native Web Component TypeScript Optimized Utility
 
 `dom-native` is a minimalistic utility (<7kb gzip) embracing the DOM Native Web Components model to build simple to big applications the DOM way.  **#LearnWhatMatters** **#SimpleScaleBetter**
+
+**THE DOM IS THE FRAMEWORK**
 
 [QUICK DEMO](https://demo.dom-native.org/core/index.html)
 
 YouTube tutorials: [Native Web Components](https://youtube.com/playlist?list=PL7r-PXl6ZPcA1Sxvf68VEu7dXECL8pV03) | [Quickstart introduction](https://www.youtube.com/watch?v=ltUP17kRmYM) 
 
-**THE DOM IS THE FRAMEWORK**
-
 ### Key features and approach:
 
-- **ZERO IE TAX**! Only target modern browsers (e.g., Chrome, Edge Chromium, Firefox, and Safari). NO Polyfill or Shiming.
+- **REAL DOM** (i.e., No Virtual DOM): Fully embrace native DOM customElement and Web Components. 
 
-- **NO VIRTUAL DOM**! Fully embrace native DOM customElement and Web Components. 
+- **Modern** (i.e., ZERO IE TAX): Only target modern browsers (e.g., Chrome, Edge Chromium, Firefox, and Safari). NO Polyfill or Shiming.
 
-- **JUST A LIB** NOT a framework (uses the native DOM customElement / webcomponent as the framework). 
+- **JUST A LIB** NOT a framework, the Browser is the Framework (uses the native DOM customElement / webcomponent as the framework). 
 
 - **SMALL** <7kb gzipped (< 18kb minimized) and ZERO dependency!
 
