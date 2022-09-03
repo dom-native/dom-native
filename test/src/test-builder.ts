@@ -25,16 +25,31 @@ export function testElemSimpleMultiple() {
 	equal(input.tagName, "INPUT");
 }
 
-export function testElemWithProps() {
+export function testElemWithAttrs() {
 	let div: HTMLDivElement;
 	let el = elem("div", { title: "test-title" });
 	equal(el.tagName, "DIV");
 	equal(el.getAttribute("title"), "test-title");
 }
 
-export function testElemWithPropsAndTextContent() {
+export function testElemWithAttrAnd_TextContent() {
 	let div: HTMLDivElement;
 	let el = elem("div", { title: "test-title", _textContent: "test-textContent" });
+	equal(el.tagName, "DIV");
+	equal(el.getAttribute("title"), "test-title");
+	equal(el.textContent, "test-textContent");
+}
+
+type ElemProps = {
+	$props?: object,
+} & {
+	[k: string]: string | boolean | object
+}
+
+export function testElemWithAttrAnd$PropsTextContent() {
+	let div: HTMLDivElement;
+
+	let el = elem("div", { title: "test-title", $: { textContent: "test-textContent" } });
 	equal(el.tagName, "DIV");
 	equal(el.getAttribute("title"), "test-title");
 	equal(el.textContent, "test-textContent");

@@ -89,7 +89,7 @@ export function getChild(el: Document | HTMLElement | DocumentFragment, name: st
  * Cherry pick direct HTMlElement children in order of the names (can be partial, but all have to be present and match is done in orders) 
  * If name matches known tagName (in HTMLElementTagNameMap), then, the appropriate type will be returned.
  * 
- * @throws Error if one or more names are not match.
+ * @throws Error if one or more names do not match.
  * 
  * Note: For a more flexible function that give full querySelector capability, use `all(el, _full_query_filter_string)`
 */

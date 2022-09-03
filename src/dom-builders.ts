@@ -3,21 +3,25 @@
 //#region    ---------- elem ---------- 
 type TagName = keyof HTMLElementTagNameMap;
 
-type ElemProps = { [k: string]: string | boolean };
+type ElemData = {
+	$?: { [k: string]: any },
+} & {
+	[k: string]: string | boolean | object // TODO: Needs to find a way to remove object from here
+}
 
 /**
  * Shorthand for document.createElement(name)
  * 
  * @param tagName - The tag name of the element to be created
- * @param props - The element attributes name:value to be set. Special property name:
- * 			- `_textContent` which will do a el.textContent assignment in the element created
+ * @param data - The element attributes name:value to be set. 
+ * 							 To set the properties, use `$` sub object. e.g., `$: {textContent: "Hello"}` will set the text content of the el.
  * 
  * Note: If name match a name in the HTMLElementTagNameMap type, it will return the appropriate type
  * 
  * So, `const el = elem('input'); // type returned is HTMLInputElement
  * But, `const el = elem('my-comp'); // type is HTMLElement (assuming HTMLElementTagNameMap namespace was not augmented with this tag name)
  */
-export function elem<A extends string | TagName>(tagName: A, props?: ElemProps): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
+export function elem<A extends string | TagName>(tagName: A, data?: ElemData): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
 
 /**
  * Create multiple HTMLElement via document.createElement
@@ -49,11 +53,11 @@ export function elem(...args: any[]): HTMLElement | HTMLElement[] {
 }
 
 // private function to create a el with some eventual properties. 
-function createEl(tagName: string, props?: { [k: string]: string | Element | boolean }) {
+function createEl(tagName: string, data?: { [k: string]: string | Element | boolean }) {
 	let el = document.createElement(tagName);
 
-	if (props != null) {
-		for (const [name, rawVal] of Object.entries(props)) {
+	if (data != null) {
+		for (const [name, rawVal] of Object.entries(data)) {
 			// if it is a boolean, true will set the attribute empty, and false will set txtVal to null, which will remove it.
 			const val = (typeof rawVal !== 'boolean') ? rawVal : (rawVal === true) ? '' : null;
 
@@ -61,8 +65,16 @@ function createEl(tagName: string, props?: { [k: string]: string | Element | boo
 
 				const valTxt = (typeof val == 'string') ? val : ('' + val);
 
-				// if _textContent then, it's the el.textContent
-				if (name == '_textContent') {
+				// "$" does a property assign of it's member
+				if (name == '$') {
+					const props = val;
+					for (const [name, rawVal] of Object.entries(props)) {
+						(<any>el)[name] = rawVal;
+					}
+				}
+				// _textContent (to deprecate) - set the 
+				// if _textContent then, it's the el.textContent ()
+				else if (name == '_textContent') {
 					el.textContent = valTxt;
 				} else {
 					el.setAttribute(name, valTxt);
