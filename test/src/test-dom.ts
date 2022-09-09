@@ -1,5 +1,5 @@
 
-import { all, append, BaseHTMLElement, closest, customElement, first, frag, getChild, getChildren, html, next, prev, xp_first } from '#dom-native';
+import { all, append, BaseHTMLElement, closest, customElement, first, frag, getChild, getChildren, getFirst, html, next, prev } from '#dom-native';
 import { equal } from './utils';
 
 
@@ -11,28 +11,57 @@ export function testFirst() {
 export function testFirstElement() {
 	const testContentEl = first(".test-content");
 	equal("A", first(testContentEl)!.innerHTML);
+
+	const from_doc_single: CTest | null = first("c-test");
+	equal(from_doc_single?.tagName, "C-TEST");
+
+	const first_child: HTMLElement | null = first(document);
+	equal(first_child?.tagName, "HTML");
 }
 
-export function testXpFirstMultiple() {
-	const first_child = xp_first(document);
-	const from_doc_single = xp_first("c-test");
-	const from_doc_multiple = xp_first("c-test", ".el-g");
-	const cel = xp_first(".el-g");
-	const multiple = xp_first(cel, "c-test", "div", "crazy-d");
-	console.log('->> multiple', multiple);
-	const single = xp_first(cel, "div");
-	console.log('->> single', single);
-}
 
 export function testFirstMultiple() {
-	const first_child: HTMLElement | null = xp_first(document);
-	const from_doc_single: CTest | null = xp_first("c-test");
-	const from_doc_multiple = xp_first("c-test", ".el-g");
-	const cel = xp_first(".el-g");
-	const multiple = xp_first(cel, "c-test", "div", "crazy-d");
-	console.log('->> multiple', multiple);
-	const single = xp_first(cel, "div");
-	console.log('->> single', single);
+
+	const from_doc_multiple = first("c-test", ".el-g", "no-div");
+	equal(from_doc_multiple[0]!.tagName, "C-TEST");
+	equal(from_doc_multiple[1]!.tagName, "DIV");
+	equal(from_doc_multiple[2], null);
+
+	const cel = first(".el-g");
+	const multiple = first(cel, "div", "c-test", "crazy-d");
+	equal(multiple[0]!.tagName, "DIV");
+	equal(multiple[1]!.tagName, "C-TEST");
+	equal(multiple[2], null);
+
+}
+
+export function testGetFirstSuccess() {
+
+	const first_child: HTMLElement = getFirst(document);
+	equal(first_child?.tagName, "HTML");
+
+	const from_doc_single: CTest = getFirst("c-test");
+	equal(from_doc_single?.tagName, "C-TEST");
+
+	const from_doc_multiple = getFirst("c-test", ".el-g");
+	equal(from_doc_multiple[0].tagName, "C-TEST");
+	equal(from_doc_multiple[1].tagName, "DIV");
+
+
+	const cel = getFirst(".el-g");
+	const multiple = getFirst(cel, "div", "c-test");
+	equal(multiple[0].tagName, "DIV");
+	equal(multiple[1].tagName, "C-TEST");
+}
+
+export function testGetFirstException() {
+	try {
+		const from_doc_multiple = getFirst("c-test", ".el-g", "no-div");
+	} catch (ex) {
+		return; // all good, should have gotten and exception
+	}
+
+	throw new Error(`call getFirst("c-test", ".el-g", "no-div") should have thrown exception`);
 }
 
 

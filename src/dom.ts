@@ -5,68 +5,133 @@ export type AppendPosition = "first" | "last" | "empty" | "before" | "after";
 type TagName = keyof HTMLElementTagNameMap;
 
 type MaybeEl = Document | HTMLElement | DocumentFragment | null | undefined;
+type El = Document | HTMLElement | DocumentFragment;
+
+
+function process_arg_el_selectors(el_or_selectors: MaybeEl | string | string[], maybe_selectors: string[]): [MaybeEl, string[]] {
+	let selectors: string[];
+	let el: MaybeEl;
+	if (typeof el_or_selectors == "string") {
+		maybe_selectors.unshift(el_or_selectors);
+		selectors = maybe_selectors
+		el = document;
+	} else if (Array.isArray(el_or_selectors)) {
+		selectors = el_or_selectors;
+		el = document;
+	} else {
+		selectors = maybe_selectors;
+		el = el_or_selectors;
+	}
+	return [el, selectors];
+}
 
 // #region    --- first
-export function first(el: MaybeEl): HTMLElement | null; // Must be before others to take precedence
-
+/**
+ * Returns the firstElementChild (as HTMLElement) or null if el is null or nothing. 
+ * 
+ * @param baseEl The eventual base el (document will be the base el if undefined or null)
+ */
+export function first(baseEl: MaybeEl): HTMLElement | null; // Must be before others to take precedence
+/**
+ * Returns the first element match element for a given selector (from the document). 
+ * Returns null if not found
+ */
 export function first<A extends TagName | String>(selector: A): A extends TagName ? HTMLElementTagNameMap[A] | null : HTMLElement | null;
+/**
+ * Will run first(...) for each selector and return the array of (HTMLElement | null)[]
+ */
 export function first<A extends (TagName | String)[]>(...selector: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] | null : HTMLElement | null };
+/**
+ * Returns the first element match element for a given selector from the baseEl.
+ * 
+ * Returns null if not found
+ */
+export function first<A extends TagName | String>(baseEl: MaybeEl, selector: A): A extends TagName ? HTMLElementTagNameMap[A] | null : HTMLElement | null;
+/**
+ * Will run first(baseEl, ...) for each selector and return the array of (HTMLElement | null)[]
+ */
+export function first<A extends (TagName | String)[]>(baseEl: MaybeEl, ...selector: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] | null : HTMLElement | null };
 
-export function first<A extends TagName | String>(el: MaybeEl, selector: A): A extends TagName ? HTMLElementTagNameMap[A] | null : HTMLElement | null;
-export function first<A extends (TagName | String)[]>(el: MaybeEl, ...selector: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] | null : HTMLElement | null };
-
-export function first(el_or_selector: MaybeEl | string, ...selector: string[]): HTMLElement | null | (HTMLElement | null)[] {
-	let el = el_or_selector;
-	if (selector.length == 0) {
-		return _first(el);
-	} if (selector.length == 1) {
-		return _first(el, selector[0]);
+export function first(el_or_selectors: MaybeEl | string | string[], ...maybe_selectors: string[]): HTMLElement | null | (HTMLElement | null)[] {
+	let [el, selectors] = process_arg_el_selectors(el_or_selectors, maybe_selectors);
+	const l = selectors.length;
+	if (l == 0 || l == 1) {
+		return _first(el, selectors[0]);
 	} else {
-		return selector.map(sel => _first(el, sel));
+		return selectors.map(sel => _first(el, sel));
 	}
 }
 
-export function _first(el_or_selector: MaybeEl | string, selector?: string): HTMLElement | null {
+/** 
+ * Strict version of 'first(el)'.
+ * Get the first child element of el. 
+ * 
+ * @throws Error if el is null or if no firstElementChild
+ */
+export function getFirst(el: El): HTMLElement;
+/**
+ * Strict version of 'first(selector)'
+ * 
+ * @throws Error if not found.
+ */
+export function getFirst<A extends TagName | String>(selector: A): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
+/**
+ * Strict version of 'first(selector1, selector2, ...)'
+ * 
+ * @throws Error if any of the selector does not match an Element.
+ */
+export function getFirst<A extends (TagName | String)[]>(...selectors: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
+/**
+ * Strict version of 'first(el, selector)'
+ * 
+ * @throws Error el is null or if no match.
+ */
+export function getFirst<A extends TagName | String>(el: El, selector: A): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
+/**
+ * Strict version of 'first(el, selector1, selector2)'
+ * 
+ * @throws Error el is null or if no match.
+ */
+export function getFirst<A extends (TagName | String)[]>(el: El, ...selectors: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
+
+export function getFirst(el_or_selectors: El | string | string[], ...maybe_selectors: string[]): HTMLElement | HTMLElement[] {
+	let [el, selectors] = process_arg_el_selectors(el_or_selectors, maybe_selectors);
+
+	if (el == null) throw new Error("dom-native - getFirst - requires el to not be null");
+
+	const l = selectors.length;
+	if (l == 0 || l == 1) {
+		const res = _first(el, selectors[0]);
+		if (res == null) throw new Error("dom-native - getFirst - element not found");
+		return res;
+	} else {
+		const res: HTMLElement[] = [];
+		for (const sel of selectors) {
+			const iel = _first(el, sel);
+			if (iel == null) throw new Error(`dom-native - getFirst - element for selector '${sel}' not found`);
+			res.push(iel);
+		}
+		return res;
+	}
+
+}
+
+export function _first(el: MaybeEl, selector?: string): HTMLElement | null {
+	if (el == null) { return null }
+
 	// We do not have a selector at all, then, this call is for firstElementChild
-	if (!selector && typeof el_or_selector !== "string" && el_or_selector != null) {
-		const el = el_or_selector as Document | HTMLElement | DocumentFragment;
+	if (selector == null) {
 		return el.firstElementChild as HTMLElement | null;
 	}
 	// otherwise, the call was either (selector) or (el, selector), so foward to the querySelector
 	else {
-		return _execQuerySelector(false, el_or_selector, selector) as HTMLElement | null;
+		return _execQuerySelector(false, el, selector) as HTMLElement | null;
 	}
 
 }
 // #endregion --- first
 
-export function xp_first(el: MaybeEl): HTMLElement | null; // <-- This one does not work
 
-export function xp_first<A extends TagName | String>(selector: A): A extends TagName ? HTMLElementTagNameMap[A] | null : HTMLElement | null;
-export function xp_first<A extends (TagName | String)[]>(...selector: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] | null : HTMLElement | null };
-
-export function xp_first<A extends TagName | String>(el: MaybeEl, selector: A): A extends TagName ? HTMLElementTagNameMap[A] | null : HTMLElement | null;
-export function xp_first<A extends (TagName | String)[]>(el: MaybeEl, ...selector: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] | null : HTMLElement | null };
-
-export function xp_first(el_or_selector: MaybeEl | string, ...selector: string[]): null | HTMLElement | (HTMLElement | null)[] {
-	let selectors: string[];
-	let el: Document | HTMLElement | DocumentFragment | null = null;
-	if (typeof el_or_selector == "string") {
-		selectors = [el_or_selector];
-		el = document;
-	} else {
-		selectors = selector;
-		el = el_or_selector ?? null;
-	}
-
-	if (selectors.length == 0) {
-		return first(el);
-	} if (selectors.length == 1) {
-		return first(el, selectors[0]);
-	} else {
-		return selectors.map(sel => _first(el, sel));
-	}
-}
 
 // #region    --- all
 // TODO: might need to return readonly HTMLElement[] to be consistent with asNodeArray
@@ -83,15 +148,19 @@ export function all(el: Document | HTMLElement | DocumentFragment | null | undef
 
 // #region    --- getChild
 /**
- * Get the first direct child matching a tagName. If tagName match a HTMLElementTagNameMap, it will return appropriate type.
+ * Fast and narrow way to get the first direct child matching a tagName. 
+ * 
+ * If tagName match a HTMLElementTagNameMap, it will return appropriate type.
  * 
  * @throws Error no matching child.
  * 
- * Note: For a more flexible function that give full querySelector capability, use `all(el, _full_query_filter_string)`
+ * Note: For a more flexible function that give full querySelector capability, use `first, getFirst, all`
  */
 export function getChild<K extends keyof HTMLElementTagNameMap>(el: Document | HTMLElement | DocumentFragment, tagName: K): HTMLElementTagNameMap[K];
 export function getChild(el: Document | HTMLElement | DocumentFragment, tagName: string): HTMLElement;
 export function getChild(el: Document | HTMLElement | DocumentFragment, name: string): HTMLElement {
+	if (el == null) { throw new Error(`dom-native - getChild - requires el to not be null`) };
+
 	name = name.toUpperCase();
 	for (const child of el.children) {
 		if (child.tagName === name) {
