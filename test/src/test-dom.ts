@@ -1,5 +1,5 @@
 
-import { all, append, BaseHTMLElement, closest, customElement, first, frag, getChild, getChildren, html, next, prev } from '#dom-native';
+import { all, append, BaseHTMLElement, closest, customElement, first, frag, getChild, getChildren, html, next, prev, xp_first } from '#dom-native';
 import { equal } from './utils';
 
 
@@ -9,9 +9,28 @@ export function testFirst() {
 }
 
 export function testFirstElement() {
-	var testContentEl = first(".test-content");
+	const testContentEl = first(".test-content");
 	equal("A", first(testContentEl)!.innerHTML);
 }
+
+export function testXpFirstMultiple() {
+	const first_child = xp_first(document)
+	const first_c = xp_first("c-test");
+	const cel = xp_first(".el-g");
+	const multiple = xp_first(cel, "c-test", "div", "crazy-d");
+	console.log('->> multiple', multiple);
+	const single = xp_first(cel, "div");
+	console.log('->> single', single);
+}
+
+// export function testFirstMultiple() {
+// 	const cel = first(".el-g")!;
+// 	const multiple = first(cel, "c-test", "div", "crazy-d");
+// 	console.log('->> multiple', multiple);
+// 	const single = first(cel, "div");
+// 	console.log('->> single', single);
+// }
+
 
 export function testAll() {
 	console.log();

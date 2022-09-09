@@ -5,8 +5,14 @@ export type AppendPosition = "first" | "last" | "empty" | "before" | "after";
 type TagName = keyof HTMLElementTagNameMap;
 
 // #region    --- first
+/** Return the first HTMLElement child if exists, otherwise returns null */
+export function first(el: Document | HTMLElement | DocumentFragment | null | undefined, ...selector: []): HTMLElement | null;
+
 /** Shortchut to el.querySelector, but allow el to be null (in which case will return null) */
 export function first<K extends keyof HTMLElementTagNameMap>(el: Document | HTMLElement | DocumentFragment | null | undefined, selector: K): HTMLElementTagNameMap[K] | null;
+// export function first<A extends (TagName | String)[]>(el: Document | HTMLElement | DocumentFragment | null | undefined, ...selector: A):
+// 	{ [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] | null : HTMLElement | null };
+
 /** Shortchut to el.querySelector, but allow el to be null (in which case will return null) */
 export function first(el: Document | HTMLElement | DocumentFragment | null | undefined, selector: string): HTMLElement | null;
 
@@ -15,10 +21,20 @@ export function first(selector: string): HTMLElement | null;
 /** Returns the first HTMLElement from the document if exists, otherwise returns null */
 export function first<K extends keyof HTMLElementTagNameMap>(selector: K): HTMLElementTagNameMap[K] | null;
 
-/** Return the first HTMLElement child if exists, otherwise returns null */
-export function first(el: Document | HTMLElement | DocumentFragment | null | undefined): HTMLElement | null;
 
-export function first(el_or_selector: Document | HTMLElement | DocumentFragment | string | null | undefined, selector?: string) {
+
+export function first(el_or_selector: Document | HTMLElement | DocumentFragment | string | null | undefined, ...selector: string[]): HTMLElement | null | (HTMLElement | null)[] {
+	let el = el_or_selector;
+	if (selector.length == 0) {
+		return _first(el);
+	} if (selector.length == 1) {
+		return _first(el, selector[0]);
+	} else {
+		return selector.map(sel => _first(el, sel));
+	}
+}
+
+export function _first(el_or_selector: Document | HTMLElement | DocumentFragment | string | null | undefined, selector?: string): HTMLElement | null {
 	// We do not have a selector at all, then, this call is for firstElementChild
 	if (!selector && typeof el_or_selector !== "string" && el_or_selector != null) {
 		const el = el_or_selector as HTMLElement | DocumentFragment;
@@ -26,11 +42,40 @@ export function first(el_or_selector: Document | HTMLElement | DocumentFragment 
 	}
 	// otherwise, the call was either (selector) or (el, selector), so foward to the querySelector
 	else {
-		return _execQuerySelector(false, el_or_selector, selector);
+		return _execQuerySelector(false, el_or_selector, selector) as HTMLElement | null;
 	}
 
 }
 // #endregion --- first
+type MaybeEl = Document | HTMLElement | DocumentFragment | null | undefined;
+
+export function xp_first(el: MaybeEl): HTMLElement | null; // <-- This one does not work
+
+export function xp_first<A extends TagName | String>(selector: A): A extends TagName ? HTMLElementTagNameMap[A] | null : HTMLElement | null;
+export function xp_first<A extends (TagName | String)[]>(...selector: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] | null : HTMLElement | null };
+
+export function xp_first<A extends TagName | String>(el: MaybeEl, selector: A): A extends TagName ? HTMLElementTagNameMap[A] | null : HTMLElement | null;
+export function xp_first<A extends (TagName | String)[]>(el: MaybeEl, ...selector: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] | null : HTMLElement | null };
+
+export function xp_first(el_or_selector: MaybeEl | string, ...selector: string[]): null | HTMLElement | (HTMLElement | null)[] {
+	let selectors: string[];
+	let el: Document | HTMLElement | DocumentFragment | null = null;
+	if (typeof el_or_selector == "string") {
+		selectors = [el_or_selector];
+		el = document;
+	} else {
+		selectors = selector;
+		el = el_or_selector ?? null;
+	}
+
+	if (selectors.length == 0) {
+		return first(el);
+	} if (selectors.length == 1) {
+		return first(el, selectors[0]);
+	} else {
+		return selectors.map(sel => _first(el, sel));
+	}
+}
 
 // #region    --- all
 // TODO: might need to return readonly HTMLElement[] to be consistent with asNodeArray
@@ -145,6 +190,8 @@ function _sibling(next: boolean, el: Node | undefined | null, selector?: string)
 
 
 // util: querySelector[All] wrapper
+function _execQuerySelector(all: false, elOrSelector?: Document | HTMLElement | DocumentFragment | null | string, selector?: string): Element | null;
+function _execQuerySelector(all: true, elOrSelector?: Document | HTMLElement | DocumentFragment | null | string, selector?: string): NodeListOf<Element> | null;
 function _execQuerySelector(all: boolean, elOrSelector?: Document | HTMLElement | DocumentFragment | null | string, selector?: string) {
 	let el: HTMLElement | Document | DocumentFragment | null = null;
 	// if el is null or undefined, means we return nothing. 
