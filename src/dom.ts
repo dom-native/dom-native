@@ -20,26 +20,9 @@ export function first(el: Document | HTMLElement | DocumentFragment | null | und
 
 export function first(el_or_selector: Document | HTMLElement | DocumentFragment | string | null | undefined, selector?: string) {
 	// We do not have a selector at all, then, this call is for firstElementChild
-	if (!selector && typeof el_or_selector !== "string") {
+	if (!selector && typeof el_or_selector !== "string" && el_or_selector != null) {
 		const el = el_or_selector as HTMLElement | DocumentFragment;
-		// try to get 
-		const firstElementChild = el.firstElementChild;
-
-		// if firstElementChild is null/undefined, but we have a firstChild, it is perhaps because not supported
-		if (!firstElementChild && el.firstChild) {
-
-			// If the firstChild is of type Element, return it. 
-			if (el.firstChild.nodeType === 1) {
-				return el.firstChild;
-			}
-			// Otherwise, try to find the next element (using the next)
-			else {
-				// TODO: Needs to look at typing here, this is a ChildNode
-				return next(el.firstChild);
-			}
-		}
-
-		return firstElementChild as HTMLElement;
+		return el.firstElementChild as HTMLElement | null;
 	}
 	// otherwise, the call was either (selector) or (el, selector), so foward to the querySelector
 	else {
