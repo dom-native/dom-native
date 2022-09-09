@@ -117,20 +117,19 @@ export function html(strings: string | TemplateStringsArray, ...values: any[]) {
 
 
 /**
- * NOTE: deprecated in favor of html
- * 
  * Returns a DocumentFragment for the html string. If html is null or undefined, returns an empty document fragment.
  * @param html the html string or null/undefined
- * @deprecated use html()
  */
+export function frag(): DocumentFragment;
+export function frag<T>(items: T[], acc: (item: T) => Element): DocumentFragment
 
-export function frag(html: string | null | undefined) {
-	// make it null proof
-	html = (html) ? html.trim() : null;
+export function frag<T>(items?: T[], acc?: (item: T) => Element): DocumentFragment {
+	const frag = new DocumentFragment();
+	if (items == null) { return frag }
 
-	const template = document.createElement("template");
-	if (html) {
-		template.innerHTML = html;
+	for (const item of items) {
+		const el = acc!(item);
+		frag.appendChild(el);
 	}
-	return template.content;
+	return frag;
 }

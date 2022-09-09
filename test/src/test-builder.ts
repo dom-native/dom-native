@@ -1,4 +1,4 @@
-import { elem } from '#dom-native';
+import { elem, frag } from '#dom-native';
 import { equal } from './utils';
 
 
@@ -55,5 +55,15 @@ export function testElemWithAttrAnd$PropsTextContent() {
 	equal(el.textContent, "test-textContent");
 }
 
+export function testFragEmpty() {
+	let fr = frag();
+	equal(fr.constructor.name, "DocumentFragment");
+}
 
+export function testFragAray() {
+	let fr = frag(['div', 'span'], n => elem(n));
+	equal(fr.constructor.name, "DocumentFragment");
+	equal(fr.children[0].tagName, "DIV");
+	equal(fr.children[1].tagName, "SPAN");
+}
 
