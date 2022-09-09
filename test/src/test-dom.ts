@@ -14,8 +14,9 @@ export function testFirstElement() {
 }
 
 export function testXpFirstMultiple() {
-	const first_child = xp_first(document)
-	const first_c = xp_first("c-test");
+	const first_child = xp_first(document);
+	const from_doc_single = xp_first("c-test");
+	const from_doc_multiple = xp_first("c-test", ".el-g");
 	const cel = xp_first(".el-g");
 	const multiple = xp_first(cel, "c-test", "div", "crazy-d");
 	console.log('->> multiple', multiple);
@@ -23,13 +24,16 @@ export function testXpFirstMultiple() {
 	console.log('->> single', single);
 }
 
-// export function testFirstMultiple() {
-// 	const cel = first(".el-g")!;
-// 	const multiple = first(cel, "c-test", "div", "crazy-d");
-// 	console.log('->> multiple', multiple);
-// 	const single = first(cel, "div");
-// 	console.log('->> single', single);
-// }
+export function testFirstMultiple() {
+	const first_child: HTMLElement | null = xp_first(document);
+	const from_doc_single: CTest | null = xp_first("c-test");
+	const from_doc_multiple = xp_first("c-test", ".el-g");
+	const cel = xp_first(".el-g");
+	const multiple = xp_first(cel, "c-test", "div", "crazy-d");
+	console.log('->> multiple', multiple);
+	const single = xp_first(cel, "div");
+	console.log('->> single', single);
+}
 
 
 export function testAll() {
