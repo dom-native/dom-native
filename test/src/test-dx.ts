@@ -1,4 +1,4 @@
-import { all, first, frag, pull, push } from '#dom-native';
+import { all, first, html, pull, push } from '#dom-native';
 import { equal } from './utils';
 
 let outs = [];
@@ -84,8 +84,8 @@ export function testEmptyProperties() {
 	equal(data, { a: "", b: "", c: "c1", d: "d1" });
 }
 
-export function testPushPullOnFrag() {
-	const content = frag('<input class="dx" name="name1" />');
+export function testPushPullOnHtml() {
+	const content = html('<input class="dx" name="name1" />');
 	push(content, { name1: 'val1' });
 	const result = pull(content);
 }

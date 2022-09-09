@@ -1,4 +1,4 @@
-import { adoptStyleSheets, BaseHTMLElement, css, customElement, frag } from '#dom-native';
+import { adoptStyleSheets, BaseHTMLElement, css, customElement, html } from '#dom-native';
 import { CodeDoc, SpecView } from '@dom-native/demo-infra';
 import { code_shadowPart, code_shadowSimple, code_shadowSlot } from './_codes.js';
 
@@ -56,7 +56,7 @@ Hello from <h3 part="label">ShadowPart</h3> constructor
 
 //#region    ---------- code: shadowSlot ---------- 
 // This will create Template and return its .content, which could be cloned (shadow.innerHTML alternative)
-const shadowSlotTmpl = frag(`
+const shadowSlotTmpl = html(`
 <style>
 ::slotted(h3){
 	display: inline; 

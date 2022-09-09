@@ -1,4 +1,4 @@
-import { addHubEvents, addOnEvents, append, BaseHTMLElement, customElement, first, frag, html, hub, on, onDoc, onEvent, onHub } from '#dom-native';
+import { addHubEvents, addOnEvents, append, BaseHTMLElement, customElement, first, html, hub, on, onDoc, onEvent, onHub } from '#dom-native';
 import { equal } from './utils';
 
 let out: string[] = [];
@@ -116,7 +116,7 @@ export function _beforeEach() {
 
 export function testSimplestComponent() {
 	const contentEl = first('.test-content')!;
-	const [el] = append(contentEl, frag('<simplest-component></simplest-component><simplest-component></simplest-component>'));
+	const [el] = append(contentEl, html('<simplest-component></simplest-component><simplest-component></simplest-component>'));
 	el.click();
 	equal(out, ['SimplestComponent @onEvent onClickEvent']);
 }
@@ -124,7 +124,7 @@ export function testSimplestComponent() {
 
 export function testComponentEventBindings() {
 	const contentEl = first('.test-content')!;
-	contentEl.append(frag('<my-component></my-component>'));
+	contentEl.append(html('<my-component></my-component>'));
 
 	first(contentEl, 'my-component')!.click();
 	equal(out, ['MyComponent this.events', 'MyComponent onEvent whenClick', 'MyBaseComponent @onEvent baseClick', 'MyComponent init on']);
@@ -199,7 +199,7 @@ export function testAtHubEventsComponent() {
 
 export function testLifecycle() {
 	const contentEl = first('.test-content')!;
-	const fragment = frag('<lifecycle-component></lifecycle-component>');
+	const fragment = html('<lifecycle-component></lifecycle-component>');
 
 	const el = fragment.firstElementChild! as any;
 

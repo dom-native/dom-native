@@ -1,4 +1,4 @@
-import { first, frag } from '#dom-native';
+import { first, html } from '#dom-native';
 
 
 //#region    ---------- Test Runner ---------- 
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	if (tests) {
 		run(tests, {
 			createItemEl: (name: string) => {
-				return frag(`<li> ${label(name)} running</li>`).firstElementChild as HTMLElement;
+				return html(`<li> ${label(name)} running</li>`).firstElementChild as HTMLElement;
 			},
 			failInnerHTML: (name: string, ex: any) => {
 				return label(name) + ' FAILED ' + ex;
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	if (perfs) {
 		run(perfs, {
 			createItemEl: (name: string) => {
-				return frag(`<li> ${label(name)} pref running</li>`).firstElementChild as HTMLElement;
+				return html(`<li> ${label(name)} pref running</li>`).firstElementChild as HTMLElement;
 			},
 			failInnerHTML: (name: string, ex: any) => {
 				return label(name) + ' FAILED ' + ex;

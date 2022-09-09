@@ -1,5 +1,5 @@
 
-import { all, append, BaseHTMLElement, closest, customElement, first, frag, getChild, getChildren, getFirst, html, next, prev } from '#dom-native';
+import { all, append, BaseHTMLElement, closest, customElement, first, getChild, getChildren, getFirst, html, next, prev } from '#dom-native';
 import { equal } from './utils';
 
 
@@ -122,19 +122,19 @@ export function testPrev() {
 	equal(prev(null, ".rect"), null);
 }
 
-export function testAppendAndFrag() {
+export function testAppendAndHtml() {
 
 	const testContentEl = first(".test-content")!;
 
 
 	const eContainerEl = append(testContentEl, createEl("el-e container", "container text"));
-	const elA = append(eContainerEl, frag("<div class='rect el-e sm'>A</div>")); //createEl("el-3 sm a","A")
+	const elA = append(eContainerEl, html("<div class='rect el-e sm'>A</div>")); //createEl("el-3 sm a","A")
 	const elB = append(eContainerEl, createEl("el-e sm b", "B"), "first");
 	const elC = append(elB, createEl("el-e sm c", "C"), "before");
 	const elD = append(elC, createEl("el-e sm d", "D"), "after");
 	const elE = append(eContainerEl, createEl("el-e sm E", "E"), "last");
 
-	append(eContainerEl, frag("<div class='rect el-e sm'>F</div> TTT <div class='rect el-e sm'>G</div>"));
+	append(eContainerEl, html("<div class='rect el-e sm'>F</div> TTT <div class='rect el-e sm'>G</div>"));
 
 	const out = [];
 	const nodes = eContainerEl.childNodes;
@@ -151,14 +151,14 @@ export function testAppendAndFrag() {
 
 export function testAppendEmpty() {
 	const testContentEl = first(".container.el-f")!;
-	append(testContentEl, frag("<div>NEW EL</div>EE"), "empty");
+	append(testContentEl, html("<div>NEW EL</div>EE"), "empty");
 	const txt = testContentEl.innerText.replace(/\s/g, "_");
 	equal("NEW_EL_EE", txt);
 }
 
-export function testFirstFromFrag() {
+export function testFirstFromHtml() {
 	let el;
-	const fragment = frag('<div class="first"> <span class="second"></span></div>');
+	const fragment = html('<div class="first"> <span class="second"></span></div>');
 
 	el = first(fragment)!;
 	equal("first", el.getAttribute("class"));
@@ -167,10 +167,10 @@ export function testFirstFromFrag() {
 	equal("second", el.getAttribute("class"));
 }
 
-export function thisAppendToFrag() {
-	const fragment = frag('<div class="first"> <span class="second"></span></div>');
-	append(fragment, frag('<div class="other">one</div><div class="other">two</div>'));
-	append(fragment, frag('<div class="last">three</div>'), "first");
+export function thisAppendToHtml() {
+	const fragment = html('<div class="first"> <span class="second"></span></div>');
+	append(fragment, html('<div class="other">one</div><div class="other">two</div>'));
+	append(fragment, html('<div class="last">three</div>'), "first");
 
 	// .last should be first
 	equal('last', first(fragment)!.getAttribute('class'));
@@ -184,24 +184,24 @@ export function testAppendElReturnValue() {
 	equal(returnEl.classList.contains('test-append-el-return-value'), true);
 }
 
-export function testAppendFragReturnValue() {
+export function testAppendHtmlReturnValue() {
 	const testContentEl = first(".test-content")!;
 
 	// add documentFragment
-	const elToAdd = frag('<div class="rect test-append-frag-return-value">test-append-frag-return-value content</div>');
+	const elToAdd = html('<div class="rect test-append-html-return-value">test-append-html-return-value content</div>');
 	const [returnEl] = append(testContentEl, elToAdd);
-	equal(returnEl.classList.contains('test-append-frag-return-value'), true);
+	equal(returnEl.classList.contains('test-append-html-return-value'), true);
 
 	// add html string
-	const [returnEl2] = append(returnEl!, '<div class="rect test-append-frag-return-value-2">test-append-frag-return-value-2 content</div>', 'before');
-	equal(returnEl2.classList.contains('test-append-frag-return-value-2'), true);
+	const [returnEl2] = append(returnEl!, '<div class="rect test-append-html-return-value-2">test-append-html-return-value-2 content</div>', 'before');
+	equal(returnEl2.classList.contains('test-append-html-return-value-2'), true);
 
 	// add empty html string
 	const [returnEl3] = append(testContentEl, '');
 	equal(returnEl3, undefined);
 
 	// test conditional typing
-	const elToAdd4: DocumentFragment | HTMLElement = createElOrFrag('<div class="rect test-append-frag-return-value-4">test-append-frag-return-value-4 content</div>');
+	const elToAdd4: DocumentFragment | HTMLElement = createElOrHtml('<div class="rect test-append-html-return-value-4">test-append-html-return-value-4 content</div>');
 	if (elToAdd4 instanceof HTMLElement || elToAdd4 instanceof DocumentFragment) {
 		const returnEl4 = append(returnEl!, elToAdd4, 'after');
 	}
@@ -235,8 +235,8 @@ export function testGetChildren() {
 }
 
 // to mimic union type
-function createElOrFrag(html: string): DocumentFragment | HTMLElement {
-	return frag(html);
+function createElOrHtml(html_str: string): DocumentFragment | HTMLElement {
+	return html(html_str);
 }
 
 function createEl(classNames: string, text: string) {
