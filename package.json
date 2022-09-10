@@ -1,6 +1,6 @@
 {
   "name": "dom-native",
-  "version": "0.10.5-SNAPSHOT",
+  "version": "0.10.5",
   "description": "A Native Web Component TypeScript Optimized Utility (zero dependency, < 18kb min, < 7kb gzip)",
   "author": "Jeremy Chone <jeremy.chone@gmail.com> (http://jeremychone.com)",
   "license": "MIT OR Apache-2.0",  
