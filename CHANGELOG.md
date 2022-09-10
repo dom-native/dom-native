@@ -1,6 +1,41 @@
 # CHANGELOG
 
-> Legend: `.` minor; `+` addition; `^` enhancement, `*` refactor; `-` fix; `!` change; 
+> Legend: `.` minor; `+` addition; `^` enhancement; `*` refactor; `-` fix; `!` change; 
+
+### v0.10.5 - Sept 10, 2022
+
+- `!` frag - new `frag` function as `frag(items, item => Element): DocumentFragment`
+- `+` getFirst - strict version of first(..) api (throw error on no match)
+- `^` first - added variadic selectors (e.g., first(el, "div", "my-comp") )
+```ts
+const [divEl, myComp] = first(el, "div", "my-comp");
+// [HTMLDivElement | null, MyComp | null] (MyComp if the global type has been updated for this tag name)
+```
+- `!` first - remove custom implementation when firstElementChild is not supported (should not be the case anymore)
+
+### v0.10.4 - Sep 3, 2022
+
+- `^` elem - add number type as attribute value
+```ts
+elem("div", {data-some-id: 3})
+```
+- `^` elem - add support for `$` `{$: {propName:propValue}` (will set the property of the newly create element)
+```ts
+elem("div", {
+	title: "title tag attribute",          // <-- element attributes
+	"data-some": "Some custom attribute",  // <-- element attributes
+	$: {                                   // <-- element properties
+		info: someData, 
+		textContent: "some content"}
+	});
+```
+- `^` onEvents - allow to have multiple @on... decorators on same method
+- `+` events - added options?: {capture?, passive?) for @onEvent, @docEvent, @winEvent
+
+### v0.10.3 - Jun 27, 2022
+
+- `+` getAttr - get attribute(s) for an single el (replaces the attr as getters)
+- `+` setAttr - set attribute(s) for a single el (replaces the attr as setters)
 
 ### v0.10.2 - Jun 21, 2022
 
