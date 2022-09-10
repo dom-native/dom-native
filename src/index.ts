@@ -1,8 +1,7 @@
-export const version = '0.10.3';
+export const version = '0.10.6';
 
 export { anim, AnimCallback } from './anim';
 export { getAttr, setAttr } from './attr';
-export { attr } from './attr-legacy';
 export { BaseHTMLElement } from './c-base';
 export { adoptStyleSheets, css } from './css';
 export { all, append, AppendPosition, closest, first, getChild, getChildren, getFirst, next, prev } from './dom';

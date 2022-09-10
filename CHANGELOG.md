@@ -2,6 +2,11 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement; `*` refactor; `-` fix; `!` change; 
 
+### v0.10.6 - ...
+
+- `!` Attr - remove the deprecated attr(..) function implementation and signatures
+- `!` elem - remove unused variadic tagNames signature and implementation
+
 ### v0.10.5 - Sept 10, 2022
 
 - `!` frag - new `frag` function as `frag(items, item => Element): DocumentFragment`
