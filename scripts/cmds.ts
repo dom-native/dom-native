@@ -3,6 +3,7 @@ import { router } from 'cmdrouter';
 import { execa } from 'execa';
 import { saferRemove } from 'fs-extra-plus';
 import * as Terser from 'terser';
+import { wait } from 'utils-min';
 import { buildDemoCode, uploadSite } from './helpers.js';
 const { readFile, readJSON, writeFile, stat } = (await import('fs-extra')).default;
 
@@ -44,8 +45,13 @@ async function watch() {
 	execa('npm', ['run', 'build-dev-js', '--', '-w'], { stdout, stderr });
 	execa('npm', ['run', 'build-dev-css', '--', '-w', '--verbose'], { stdout, stderr });
 
-	// start the webhere web server
-	execa('./node_modules/.bin/webhere', ['-p', '8888'], { stderr });
+	// 'webdev' bust have the 'test/dist/test-bundle.js' exists (because of notify)
+	// to be able to start so, needs to wait.
+	await wait(3000);
+
+	// requires webdev server 
+	// cargo install webdev (to install it)
+	execa('webdev', ["-l", "-d", "test", "-w", "test/common", "-w", "test/dist/test-bundle.js"], { stdout, stderr });
 
 	buildDemoCode(true);
 }

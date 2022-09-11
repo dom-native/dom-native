@@ -65,3 +65,54 @@ button,
   border: solid 1px #999;
   border-radius: 3px;
 }
+
+.test-content-position {
+  margin: 8rem;
+  padding: 5rem;
+  display: grid;
+  height: 25rem;
+  grid-template-columns: repeat(auto-fill, 25rem);
+  background: #1E1E1E;
+
+}
+
+
+.pos-ctn {
+  display: block;
+  border: solid 1px red;
+  background: rgb(255, 208, 208);
+  width: 15rem;
+  height: 15rem;
+}
+
+.pos-el {
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  z-index: 100;
+  background: rgb(180, 235, 252);
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.pos-dot {
+  position: absolute;
+  width: .5rem;
+  height: .5rem;
+  display: block;
+  background: rgb(255, 208, 208, .8);
+  border: solid 1px red;
+  border-radius: 1rem;
+}
+
+.pos-label {
+  width: 2rem;
+  height: 2rem;
+  position: absolute;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  color: #fff;
+}
