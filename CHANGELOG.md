@@ -2,8 +2,9 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement; `*` refactor; `-` fix; `!` change; 
 
-### v0.10.6 - ...
+### v0.11.0 - Sep 11, 2022
 
+- `+` position - add position(el, refElOrPoint, Options) to position an absolute element based on a ref
 - `!` Attr - remove the deprecated attr(..) function implementation and signatures
 - `!` elem - remove unused variadic tagNames signature and implementation
 

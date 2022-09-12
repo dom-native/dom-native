@@ -1,6 +1,6 @@
 {
   "name": "dom-native",
-  "version": "0.10.6-SNAPSHOT",
+  "version": "0.11.0",
   "description": "A Native Web Component TypeScript Optimized Utility (zero dependency, < 18kb min, < 7kb gzip)",
   "author": "Jeremy Chone <jeremy.chone@gmail.com> (http://jeremychone.com)",
   "license": "MIT OR Apache-2.0",  
@@ -28,7 +28,7 @@
     "@types/d3-ease": "^3.0.0",
     "@types/js-yaml": "^4.0.5",
     "@types/lodash.debounce": "^4.0.7",
-    "autoprefixer": "^10.4.8",
+    "autoprefixer": "^10.4.9",
     "chokidar": "^3.5.3",
     "cloud-bucket": "^0.4.2",
     "cmdrouter": "^0.3.1",
