@@ -1,4 +1,4 @@
-export const version = '0.11.0';
+export const version = '0.11.1';
 
 export { anim, AnimCallback } from './anim';
 export { getAttr, setAttr } from './attr';

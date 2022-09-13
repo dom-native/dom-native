@@ -4,6 +4,7 @@
 
 ### v0.11.1 - Sep 13, 2022
 
+- `^!` position - make window the default constrain. Allow null value to have no constrain.
 - `+` event - added nextFrame to both on(...) and @on... bindings
 
 ### v0.11.0 - Sep 11, 2022
