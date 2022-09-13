@@ -5,8 +5,8 @@ type NameValMap = { [name: string]: AttrSetType };
 
 
 // #region    --- getAttr
-export function getAttr(el: Element, name: string): AttrReturnType;
-export function getAttr(el: Element, ...names: string[]): AttrReturnType[];
+export function getAttr(el: Element, name: string): string | null;
+export function getAttr(el: Element, ...names: string[]): (string | null)[];
 
 export function getAttr(el: Element, ...names: string[]): AttrReturnType | AttrReturnType[] {
   if (names.length == 1) {
@@ -25,17 +25,21 @@ export function getAttr(el: Element, ...names: string[]): AttrReturnType | AttrR
 // #region    --- setAttr
 /**
  * Set or remove an attribute value by name on a element. 
- * If value type is text or number, string value is set. If null or false, attribute is removed. If true, attribute is set to empty string.
+ * - If value type is text or number, string value is set. 
+ * - If null or false, attribute is removed. 
+ * - If true, attribute is set to empty string.
  * @return The Element given
  */
-export function setAttr<E extends Element | HTMLElement>(el: E, name: string, val: AttrSetType): E;
+export function setAttr<E extends Element | HTMLElement>(el: E, name: string, val: string | number | boolean | null): E;
 
 /**
  * Set or remove a set of attribute name:value for a given el. 
- * If value type is text or number, string value is set. If null or false, attribute is removed. If true, attribute is set to empty string.
+ * - If value type is text or number, string value is set. 
+ * - If null or false, attribute is removed. 
+ * - If true, attribute is set to empty string.
  * @return The Element given
  */
-export function setAttr<E extends Element | HTMLElement>(el: E, nameValues: NameValMap): E;
+export function setAttr<E extends Element | HTMLElement>(el: E, nameValues: { [name: string]: string | number | boolean | null }): E;
 
 // implementation
 export function setAttr<E extends Element | HTMLElement>(el: E, name_or_map: string | NameValMap, val?: AttrSetType): E {
