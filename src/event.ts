@@ -38,6 +38,13 @@ export interface OnEventOptions {
 	/** AddEventListenerOptions.passive */
 	passive?: boolean,
 
+	/**
+	 * If true, event will be bound at next frame 
+	 * (i.e., requestAnimationFrame) 
+	 * Default false
+	 **/
+	nextFrame?: boolean,
+
 	/** 
 	 * If true, will be quiet if ctx instannceof HTMLElement && ctx.isConnected === false
 	 */
@@ -220,7 +227,14 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 
 			// do the binding
 			// TODO: fix typing here.
-			el.addEventListener(type, _listener as EventListener, eventOptions);
+			if (opts != null && opts.nextFrame === true) {
+				requestAnimationFrame(function () {
+					el.addEventListener(type, _listener as EventListener, eventOptions);
+				});
+			} else {
+				el.addEventListener(type, _listener as EventListener, eventOptions);
+			}
+
 
 		}); // /utils.asArray(els).forEach(function(el){
 

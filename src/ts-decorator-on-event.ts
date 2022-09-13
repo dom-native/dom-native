@@ -5,6 +5,12 @@ import { off, on, OnEventListener, OnEventOptions } from './event.js';
 type OnDOMEventOptions = {
 	passive?: boolean, // default false
 	capture?: boolean, // default false
+	/** 
+	 * If true, event will be bound at next frame 
+	 * (i.e., requestAnimationFrame) 
+	 * Default false
+	 **/
+	nextFrame?: boolean,
 }
 
 type OnDOMEvent = {

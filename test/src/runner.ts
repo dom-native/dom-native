@@ -1,5 +1,11 @@
 import { first, html } from '#dom-native';
 
+/** Manual fail test by function name */
+export function fail_test(name: string, message: string) {
+	const el = first(`li[data-test='${name}'`)!;
+	el.classList.add("fail");
+	el.innerHTML = label(name) + `<span class="result">FAILED ` + message + '</span>';;
+}
 
 //#region    ---------- Test Runner ---------- 
 document.addEventListener("DOMContentLoaded", function (event) {
@@ -9,13 +15,13 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	if (tests) {
 		run(tests, {
 			createItemEl: (name: string) => {
-				return html(`<li> ${label(name)} running</li>`).firstElementChild as HTMLElement;
+				return html(`<li data-test="${name}"> ${label(name)} running</li>`).firstElementChild as HTMLElement;
 			},
 			failInnerHTML: (name: string, ex: any) => {
-				return label(name) + ' FAILED ' + ex;
+				return label(name) + `<span class="result">FAILED ` + ex + '</span>';
 			},
 			successInnerHTML: (name: string, val?: any) => {
-				return label(name) + ' OK ';
+				return label(name) + '<span class="result">OK</span>';
 			}
 		});
 	}
@@ -24,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 	if (perfs) {
 		run(perfs, {
 			createItemEl: (name: string) => {
-				return html(`<li> ${label(name)} pref running</li>`).firstElementChild as HTMLElement;
+				return html(`<li> ${label(name)} perf running</li>`).firstElementChild as HTMLElement;
 			},
 			failInnerHTML: (name: string, ex: any) => {
 				return label(name) + ' FAILED ' + ex;
@@ -39,7 +45,7 @@ document.addEventListener("DOMContentLoaded", function (event) {
 });
 
 function label(name: string) {
-	return "<strong>" + name + "</strong>";
+	return "<label>" + name + "</label>";
 }
 //#endregion ---------- /Test Runner ----------
 

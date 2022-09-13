@@ -1,5 +1,6 @@
 
-import { first, off, on, OnEvent, trigger } from '#dom-native';
+import { BaseHTMLElement, customElement, elem, first, off, on, onEvent, OnEvent, trigger } from '#dom-native';
+import { fail_test } from './runner';
 import { equal } from './utils';
 
 let out: string[] = [];
@@ -69,6 +70,54 @@ export function _init() {
 
 export function _beforeEach() {
 	out = [];
+}
+
+export function onEventNextFrameOnFunction() {
+	const ctnEl = first(".container");
+	const el = elem("div", { class: "but", $: { textContent: "onEventNextFrameOnFunction" } });
+
+	let val: string | null = null;
+
+	on(el, "click", function () {
+		val = "NEXT_FRAME";
+	}, { nextFrame: true });
+	el.click();
+	ctnEl?.append(el);
+
+	requestAnimationFrame(() => {
+		// val should be new since it was next frame above
+		// and no more click after the above creation frame
+		if (val != null) {
+			fail_test('onEventNextFrameOnFunction', 'nextFrame: true did not work, still got the event');
+		}
+	});
+}
+
+let nx_frame_component_val: number | null = null;
+
+@customElement('nx-frame-component')
+class NxFrameComponent extends BaseHTMLElement { // extends HTMLElement
+	@onEvent("click", { nextFrame: true })
+	onDocClick() {
+		nx_frame_component_val = 1;
+	}
+}
+
+export function onEventNextFrameOnDecorator() {
+	const ctnEl = first(".container");
+	const el = elem("nx-frame-component", { class: "but", $: { textContent: "onEventNextFrameOnDecorator" } });
+
+	// Note - Here for the test, we can put it above to mimic the case when the click is real. 
+	//        In real scenarios, it does not matter the order, it will get the value.
+	ctnEl?.append(el);
+	el.click();
+
+	requestAnimationFrame(() => {
+		console.log('->> onEventNextFrameOnDecorator', nx_frame_component_val);
+		if (nx_frame_component_val != null) {
+			fail_test('onEventNextFrameOnDecorator', 'value = 1, but should remain null, as nextFrame: true. ');
+		}
+	});
 }
 
 export function docNs() {

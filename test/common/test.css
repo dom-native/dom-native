@@ -29,6 +29,15 @@ body {
   font-size: 13px;
 }
 
+.test-output li label {
+  font-weight: 700;
+}
+
+.test-output li .result {
+  display: inline-block;
+  margin-left: .5rem;
+}
+
 .test-output li.fail {
   color: red;
 }

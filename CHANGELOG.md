@@ -2,13 +2,17 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement; `*` refactor; `-` fix; `!` change; 
 
+### v0.11.1 - Sep 13, 2022
+
+- `+` event - added nextFrame to both on(...) and @on... bindings
+
 ### v0.11.0 - Sep 11, 2022
 
 - `+` position - add position(el, refElOrPoint, Options) to position an absolute element based on a ref
 - `!` Attr - remove the deprecated attr(..) function implementation and signatures
 - `!` elem - remove unused variadic tagNames signature and implementation
 
-### v0.10.5 - Sept 10, 2022
+### v0.10.5 - Sep 10, 2022
 
 - `!` frag - new `frag` function as `frag(items, item => Element): DocumentFragment`
 - `+` getFirst - strict version of first(..) api (throw error on no match)
