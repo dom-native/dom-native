@@ -48,9 +48,9 @@ export interface PositionOptions {
 
   /**
    * Constrain HTMLElement.
-   *  By default, window when constrainOver is defined.
+   * By default window (if not set to null)
    */
-  constrain?: HTMLElement
+  constrain?: Window | HTMLElement | null
 }
 
 type Rect = { x: number, y: number, bottom: number, right: number };
@@ -65,7 +65,7 @@ export function position(el: HTMLElement, point: { x: number, y: number }, opts?
 
 export function position(el: HTMLElement, refElOrPoint: HTMLElement | { x: number, y: number }, opts?: PositionOptions | RefPositionOptions): void {
   const _opts = { ...DEFAULT, ...opts } as RefPositionOptions & typeof DEFAULT; // helping TS
-  const { refPos: ref_pos, pos: el_pos, gap, vGap: _vGap, hGap: _hGap, x: axis_x, y: axis_y, constrain: con_el } = _opts;
+  const { refPos: ref_pos, pos: el_pos, gap, vGap: _vGap, hGap: _hGap, x: axis_x, y: axis_y, constrain } = _opts;
 
   // Note: When no vGap or hGap given, 
   //       The value of the commong 'gap' property 
@@ -75,8 +75,10 @@ export function position(el: HTMLElement, refElOrPoint: HTMLElement | { x: numbe
 
   // --- Extract the eventual constrain
   let con_rec: Rect | null = null;
-  if (con_el) {
-    con_rec = con_el?.getBoundingClientRect() ?? { x: 0, y: 0, right: window.innerWidth, bottom: window.innerHeight };
+  if (constrain === undefined || constrain === window) {
+    con_rec = { x: 0, y: 0, right: window.innerWidth, bottom: window.innerHeight };
+  } else if (constrain instanceof Element) {
+    con_rec = constrain.getBoundingClientRect();
   }
 
   // --- Compute the ref point
