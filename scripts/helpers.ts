@@ -1,53 +1,8 @@
 import chokidar from 'chokidar';
-import { Bucket, getBucket } from 'cloud-bucket';
-import { glob, pathExists } from 'fs-aux';
+import { glob } from 'fs-aux';
 import { readFile, writeFile } from 'fs/promises';
-import * as jsyaml from 'js-yaml';
 import debounce from 'lodash.debounce';
-import * as Path from 'path';
 
-//#region    ---------- site ---------- 
-
-export async function uploadSite(localDir: string, bucketRoot: string) {
-	const bucket = await loadBucket('jc-sites');
-	await bucket.upload(localDir, bucketRoot);
-}
-
-async function loadBucket(bucketName: string): Promise<Bucket> {
-	const fileName = '.buckets.yaml';
-	let relDir = './';
-	let content: string | undefined;
-	let file: string | undefined;
-	for (let i = 0; i < 3; i++) {
-		file = Path.join(relDir, fileName);
-		if (await pathExists(file)) {
-			content = await readFile(file, 'utf-8');
-			break;
-		}
-		relDir += '../';
-	}
-
-	if (content == null) {
-		throw new Error(`ERROR - loadBucket - cannot find file '${fileName}' is the root or 3 parent directories`)
-	}
-
-	const yamlObj = await yaml(content) as any;
-	const bucketConfig = yamlObj.buckets?.[bucketName];
-
-	if (bucketConfig == null) {
-		throw new Error(`ERROR - loadBucket - cannot find 'buckets.${bucketName}' in yaml file ${file}`);
-	}
-	return getBucket({ ...bucketConfig, log: true });
-}
-
-async function yaml(content: string) {
-	const yamlObj = jsyaml.load(content);
-	if (!yamlObj) {
-		throw new Error(`Could not load yaml`);
-	}
-	return yamlObj;
-}
-//#endregion ---------- /site ---------- 
 
 //#region    ---------- demo code ---------- 
 export async function buildDemoCode(watch = false) {
