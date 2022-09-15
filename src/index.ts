@@ -4,7 +4,7 @@ export { anim, AnimCallback } from './anim';
 export { getAttr, setAttr } from './attr';
 export { BaseHTMLElement } from './c-base';
 export { adoptStyleSheets, css } from './css';
-export { all, append, AppendPosition, closest, first, getChild, getChildren, getFirst, next, prev } from './dom';
+export { all, append, AppendPosition, closest, first, getFirst, next, prev, scanChild } from './dom';
 export { elem, frag, html } from './dom-builders';
 export { pull, puller, push, pusher } from './dx';
 export { escapeAttr, escapeHtml, xa, xh } from './escapes';

@@ -1,5 +1,5 @@
 
-import { all, append, BaseHTMLElement, closest, customElement, first, getChild, getChildren, getFirst, html, next, prev } from '#dom-native';
+import { all, append, BaseHTMLElement, closest, customElement, first, getFirst, html, next, prev, scanChild } from '#dom-native';
 import { equal } from './utils';
 
 
@@ -213,21 +213,20 @@ export function testFirstWithType() {
 	// NOTE - this is just a type test, so, if it compiles, all good. 
 }
 
-export function testGetChid() {
+export function testScanChild() {
 	let container = first(document, 'div.el-g')!;
-	let ctest: CTest = getChild(container, 'c-test');
-	let unknown = getChild(container, 'unknown-comp');
-	let span: HTMLSpanElement = getChild(container, 'span');
+	let ctest: CTest = scanChild(container, 'c-test');
+	let unknown = scanChild(container, 'unknown-comp');
+	let span: HTMLSpanElement = scanChild(container, 'span');
 	equal(ctest.tagName, 'C-TEST');
 	equal(unknown.tagName, 'UNKNOWN-COMP');
 	equal(span.tagName, 'SPAN');
 	// NOTE - this is just a type test, so, if it compiles, all good. 
 }
 
-
-export function testGetChildren() {
+export function testScanChildMany() {
 	let container = first(document, 'div.el-g')!;
-	let [ctest, span, unknown] = getChildren(container, 'c-test', 'span', 'unknown-comp');
+	let [ctest, span, unknown] = scanChild(container, 'c-test', 'span', 'unknown-comp');
 	// NOTE - this is just a type test, so, if it compiles, all good. 
 	equal(ctest.tagName, 'C-TEST');
 	equal(span.tagName, 'SPAN');

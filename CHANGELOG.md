@@ -4,6 +4,7 @@
 
 ### v0.11.1 - Sep 13, 2022
 
+- `!` scanChild - rename and collapse getChild and getChrildren to scanChild
 - `^!` position - make window the default constrain. Allow null value to have no constrain.
 - `+` event - added nextFrame to both on(...) and @on... bindings
 
@@ -89,7 +90,7 @@ elem("div", {
 
 - `^` - adoptStyleSheets - added support adopt multiple CSSObject, and added 's' to the api
 
-### v0.9.12 - Sept 13, 2020
+### v0.9.12 - Sep 13, 2020
 
 - `+` adoptStyleSheet - adopt a `CSSObject` to a shadowRoot, using constructable stylesheets if supported or append style element if not.
 - `!^` css - now css returns a `CSSObject` which is composable and can be used in `adoptStyleSheet`

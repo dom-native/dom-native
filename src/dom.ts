@@ -146,68 +146,67 @@ export function all(el: Document | HTMLElement | DocumentFragment | null | undef
 }
 // #endregion --- all
 
-// #region    --- getChild
+// #region    --- scanChild
 /**
- * Fast and narrow way to get the first direct child matching a tagName. 
+ * Fast and narrow way to get the first direct child (or children) matching a tagName. 
+ * 
+ * For performance purpose, this is a very strict api, with the following rules: 
+ * 
+ * - only tag name.
+ * - tagNames must be in order of the matching children.
+ * - must be exhaustive.
+ * 
+ * If need more flexible, use `first` or `getFirst`.
  * 
  * If tagName match a HTMLElementTagNameMap, it will return appropriate type.
  * 
- * @throws Error no matching child.
+ * @throws Error if any rules above it not met
  * 
  * Note: For a more flexible function that give full querySelector capability, use `first, getFirst, all`
  */
-export function getChild<K extends keyof HTMLElementTagNameMap>(el: Document | HTMLElement | DocumentFragment, tagName: K): HTMLElementTagNameMap[K];
-export function getChild(el: Document | HTMLElement | DocumentFragment, tagName: string): HTMLElement;
-export function getChild(el: Document | HTMLElement | DocumentFragment, name: string): HTMLElement {
-	if (el == null) { throw new Error(`dom-native - getChild - requires el to not be null`) };
+// export function scanChild<K extends keyof HTMLElementTagNameMap>(el: Document | HTMLElement | DocumentFragment, tagName: K): HTMLElementTagNameMap[K];
+// export function scanChild(el: Document | HTMLElement | DocumentFragment, tagName: string): HTMLElement;
+export function scanChild<A extends TagName | String>(el: El, tagName: A): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
+export function scanChild<A extends (TagName | String)[]>(el: El, ...tagNames: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
 
-	name = name.toUpperCase();
-	for (const child of el.children) {
-		if (child.tagName === name) {
-			return child as HTMLElement;
-		}
-	}
-	throw new Error(`dom-native - getChild - No child found for selector ${name}`)
-}
-// #endregion --- getChild
+// export function scanChild<A extends (TagName | String)[]>(el: Document | HTMLElement | DocumentFragment, ...tagNames: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
 
+export function scanChild(el: Document | HTMLElement | DocumentFragment, ...tagNames: string[]): HTMLElement | HTMLElement[] {
+	if (el == null) { throw new Error(`dom-native - scanChild - requires el to not be null`) };
+	const tagNamesLength = tagNames.length;
+	const single = tagNamesLength == 1;
 
-// #region    --- getChildren
-/** 
- * Cherry pick direct HTMlElement children in order of the names (can be partial, but all have to be present and match is done in orders) 
- * If name matches known tagName (in HTMLElementTagNameMap), then, the appropriate type will be returned.
- * 
- * @throws Error if one or more names do not match.
- * 
- * Note: For a more flexible function that give full querySelector capability, use `all(el, _full_query_filter_string)`
-*/
-export function getChildren<A extends (TagName | String)[]>(el: Document | HTMLElement | DocumentFragment, ...names: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
-export function getChildren(el: Document | HTMLElement | DocumentFragment, ...names: string[]): HTMLElement | HTMLElement[] {
-	const childrenCount = el.childElementCount;
-	if (childrenCount < names.length) {
-		throw new Error("dom-native - getChildren - node has less children than requested names");
-	}
-	const result: HTMLElement[] = [];
+	// Note: Not sure this speed anything up.
+	// const childrenCount = el.childElementCount;
+	// if (childrenCount < tagNames.length) {
+	// 	throw new Error("dom-native - scanChildren - node has less children than requested names");
+	// }
+
+	const result: HTMLElement[] | null = (single) ? null : [];
 	let nameIdx = 0;
 	for (const child of el.children) {
-		let name = names[nameIdx].toUpperCase();
+		let name = tagNames[nameIdx].toUpperCase();
 		if (child.tagName === name) {
-			// Note: could do an instanceof HTMLElement (need measure perf impact vs value of the check)
-			result.push(child as HTMLElement);
+			// return early if we have only one
+			if (tagNamesLength == 1) return child as HTMLElement;
+
+			// otherwise, add it to the result array
+			result!.push(child as HTMLElement);
 			nameIdx += 1;
 		}
-		if (nameIdx >= childrenCount || nameIdx >= names.length) {
+		if (nameIdx >= tagNamesLength) {
 			break;
 		}
 	}
 
-	if (result.length < names.length) {
-		throw new Error("dom-native - getChildren - node has less match children than requested");
+	if (result!.length < tagNamesLength) {
+		throw new Error("dom-native - scanChildren - node has less match children than requested");
 	}
 
-	return result;
+	return result!;
 }
-// #endregion --- getChildren
+// #endregion --- scanChild
+
 
 // #region    --- next & prev
 /**
