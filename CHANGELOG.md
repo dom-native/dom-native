@@ -2,7 +2,7 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement; `*` refactor; `-` fix; `!` change; 
 
-### v0.11.1 - Sep 13, 2022
+### v0.11.1 - Sep 15, 2022
 
 - `!` scanChild - rename and collapse getChild and getChrildren to scanChild
 - `^!` position - make window the default constrain. Allow null value to have no constrain.
