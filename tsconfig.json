@@ -1,7 +1,8 @@
 {
 	"compilerOptions": {
-		// For browser client, we target edge and above (use es2016 for [].includes for example)
-		"target": "ES2021",
+		// For browser client, we target edge and above. 
+		// ES2018 for now, to support older safari on Catalina which does not support nullish ??, ??=
+		"target": "ES2018",
 
 		// Resolve to es module for rollup
 		"module": "es2015",
