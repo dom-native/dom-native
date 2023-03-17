@@ -2,8 +2,6 @@
 import { all, append, BaseHTMLElement, closest, customElement, first, getFirst, html, next, prev, scanChild } from '#dom-native';
 import { equal } from './utils';
 
-
-
 export function testFirst() {
 	equal("A", first(".el-a")!.innerHTML);
 }
@@ -43,15 +41,15 @@ export function testGetFirstSuccess() {
 	const from_doc_single: CTest = getFirst("c-test");
 	equal(from_doc_single?.tagName, "C-TEST");
 
-	const from_doc_multiple = getFirst("c-test", ".el-g");
+	const from_doc_multiple = getFirst("c-test.some", ".el-g");
 	equal(from_doc_multiple[0].tagName, "C-TEST");
 	equal(from_doc_multiple[1].tagName, "DIV");
 
-
 	const cel = getFirst(".el-g");
-	const multiple = getFirst(cel, "div", "c-test");
+	const multiple = getFirst(cel, "div", "c-test.some") as [HTMLDivElement, CTest];
 	equal(multiple[0].tagName, "DIV");
 	equal(multiple[1].tagName, "C-TEST");
+
 }
 
 export function testGetFirstException() {
@@ -100,7 +98,7 @@ export function testNext() {
 	let lastEl: HTMLElement | null = next(firstEl, ".rect.el-g")!;
 	equal(lastEl.classList.toString(), "rect el-g");
 
-	nextEl = next(lastEl, ".rect");
+	nextEl = next(lastEl, ".nothing");
 	equal(nextEl, null);
 
 	// test with null el
@@ -244,6 +242,8 @@ function createEl(classNames: string, text: string) {
 	el.innerText = text;
 	return el;
 }
+
+
 
 @customElement('c-test')
 class CTest extends BaseHTMLElement { // extends HTMLElement
