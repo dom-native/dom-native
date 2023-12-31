@@ -1,5 +1,5 @@
 import { addHubEvents, addOnEvents, append, BaseHTMLElement, customElement, first, html, hub, on, onDoc, onEvent, onHub } from '#dom-native';
-import { equal } from './utils';
+import { as_test_el, equal, first_test_el } from './utils';
 
 let out: string[] = [];
 
@@ -20,20 +20,20 @@ class LifecyleComponent extends BaseHTMLElement {
 
 	constructor() {
 		super();
-		out.push('LifecycleComponent constructor');
+		as_test_el(this).test_out.push('LifecycleComponent constructor');
 	}
 
 	init() {
 		super.init();
-		out.push('LifecycleComponent init');
+		as_test_el(this).test_out.push('LifecycleComponent init')
 	}
 
 	preDisplay(firstCall: boolean) {
-		out.push(`LifecycleComponent preDisplay ${firstCall}`);
+		as_test_el(this).test_out.push(`LifecycleComponent preDisplay ${firstCall}`);
 	}
 
 	postDisplay(firstCall: boolean) {
-		out.push(`LifecycleComponent postDisplay ${firstCall}`);
+		as_test_el(this).test_out.push(`LifecycleComponent postDisplay ${firstCall}`);
 	}
 }
 customElements.define('lifecycle-component', LifecyleComponent);
@@ -198,7 +198,7 @@ export function testAtHubEventsComponent() {
 }
 
 export function testLifecycle() {
-	const contentEl = first('.test-content')!;
+	const contentEl = first_test_el(".test-content-lifecycle");
 	const fragment = html('<lifecycle-component></lifecycle-component>');
 
 	const el = fragment.firstElementChild! as any;
@@ -207,7 +207,7 @@ export function testLifecycle() {
 	equal(el.info, undefined); // here, the property does not exist
 
 	// Note: DocumentFragment or createElement do NOT instantiate the custom element class, just create a raw HTML element for the tag. 
-	equal(out, []);
+	equal(as_test_el(contentEl).test_out, []);
 
 	// We append it to the DOM
 	contentEl.append(fragment);
@@ -215,19 +215,18 @@ export function testLifecycle() {
 	// now, the same el as above, has been upgraded to LifecycleComponent
 	equal(el.constructor.name, 'LifecyleComponent'); // Now, correct class
 	equal(el.info, 'some info'); // Correct property
-
 	// Here, should NOT have the pre or post display, but contstrutor and init has been created, because animationFrames are not called yet
-	equal(out, ["LifecycleComponent constructor", "LifecycleComponent init"]);
+	equal(as_test_el(el).test_out, ["LifecycleComponent constructor", "LifecycleComponent init"]);
 
 	// This request animationFrame will be called in the same frame as the preDisplay, but just after, so, we will have the preDisplay
 	requestAnimationFrame(() => {
-		equal(out, ["LifecycleComponent constructor", "LifecycleComponent init", "LifecycleComponent preDisplay true"]);
+		equal(as_test_el(el).test_out, ["LifecycleComponent constructor", "LifecycleComponent init", "LifecycleComponent preDisplay true"]);
 	});
 
 	// This is the nextAnimationFrame, and then, we will have the postDisplay
 	requestAnimationFrame(() => {
 		requestAnimationFrame(() => {
-			equal(out, ["LifecycleComponent constructor", "LifecycleComponent init", "LifecycleComponent preDisplay true", "LifecycleComponent postDisplay true"])
+			equal(as_test_el(el).test_out, ["LifecycleComponent constructor", "LifecycleComponent init", "LifecycleComponent preDisplay true", "LifecycleComponent postDisplay true"])
 		})
 	})
 

@@ -1,5 +1,9 @@
 import { first, html } from '#dom-native';
 
+
+// JC-NOTE 2023-12-31: Test order are probably still dependent on order. Need to cleanup.
+
+
 /** Manual fail test by function name */
 export function fail_test(name: string, message: string) {
 	const el = first(`li[data-test='${name}'`)!;
@@ -80,8 +84,6 @@ function run(tests: { [fnName: string]: any }, controller: RunController) {
 				}
 			}
 		}
-
-
 
 		testFns.forEach(function (fn) {
 			const name = fn.name;

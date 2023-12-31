@@ -1,3 +1,21 @@
+import { BaseHTMLElement, first } from '../../src';
+
+
+export function as_test_el<T extends HTMLElement>(el: T): T & { test_out: any[] } {
+	let any_el: any = el;
+	if (any_el.test_out == null) {
+		any_el.test_out = [];
+	};
+	return el as T & { test_out: any[] }
+}
+
+export function first_test_el(selector: string): HTMLElement & { test_out: any[] } {
+	let el = first(selector)! as HTMLElement & { test_out: any[] };
+	if (el.test_out == null) {
+		el.test_out = [];
+	};
+	return el;
+}
 
 export function contains(txt: string, value: string) {
 

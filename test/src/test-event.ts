@@ -4,10 +4,20 @@ import { fail_test } from './runner';
 import { equal } from './utils';
 
 let out: string[] = [];
+let container_el: HTMLElement;
 
+function bind_do_ns_1_and_2() {
+	on(container_el, "click", ".do-ns-1", function (evt) {
+		out.push(".do-ns-1");
+	}, { ns: "namespaceA" });
 
+	on(container_el, "click", ".do-ns-2", function (evt) {
+		out.push(".do-ns-2");
+	}, { ns: "namespaceA" });
+}
 export function _init() {
-	const el = first(".container");
+	container_el = first(".container")!;
+	let el = container_el;
 
 	const doClickListener = function (evt: Event) {
 		out.push("container click");
@@ -27,13 +37,7 @@ export function _init() {
 		off(el, "click", ".do-save");
 	});
 
-	on(el, "click", ".do-ns-1", function (evt) {
-		out.push(".do-ns-1");
-	}, { ns: "namespaceA" });
 
-	on(el, "click", ".do-ns-2", function (evt) {
-		out.push(".do-ns-2");
-	}, { ns: "namespaceA" });
 
 	on(el, "click", ".do-unbind-ns", function (evt) {
 		out.push(".do-unbind-ns");
@@ -113,7 +117,6 @@ export function onEventNextFrameOnDecorator() {
 	el.click();
 
 	requestAnimationFrame(() => {
-		console.log('->> onEventNextFrameOnDecorator', nx_frame_component_val);
 		if (nx_frame_component_val != null) {
 			fail_test('onEventNextFrameOnDecorator', 'value = 1, but should remain null, as nextFrame: true. ');
 		}
@@ -145,6 +148,8 @@ export function clickOnDoUnbindSave() {
 
 // check that the save button has been unbound
 export function clickOnDoSaveAfterUnbind() {
+	first(".do-unbind-save")!.click();
+	out = [];
 	first(".do-save")!.click();
 	// check size and last
 	equal(out, ["container click"]);
@@ -152,6 +157,7 @@ export function clickOnDoSaveAfterUnbind() {
 
 // check that binding with namespace worked, and then unbind (and check)
 export function clickOnDoUnbindNS() {
+	bind_do_ns_1_and_2();
 	first(".do-ns-1")!.click();
 	first(".do-ns-2")!.click();
 	first(".do-unbind-ns")!.click();
@@ -163,10 +169,21 @@ export function clickOnDoUnbindNS() {
 
 // check that the unbinding by namespace worked
 export function clickOnDoNs() {
+
+	first(".do-unbind-ns")!.click();
 	first(".do-ns-1")!.click();
 	first(".do-ns-2")!.click();
 	first(".do-other")!.click();
-	equal(out, ["container click", "container click", "container click", ".do-other"]);
+
+	equal(out, [
+		"container click",
+		".do-unbind-ns",
+		"container click",
+		"container click",
+		"container click",
+		".do-other"
+	]);
+
 }
 
 // test at event.selectTarget is set correctly when event is triggered on the selected element
