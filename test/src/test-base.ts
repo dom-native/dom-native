@@ -47,7 +47,7 @@ class MyBaseComponent extends BaseHTMLElement {
 
 	@onEvent('click')
 	whenClick() {
-		out.push('MyBaseComponent @onEvent whenClick=');
+		out.push('MyBaseComponent @onEvent whenClick');
 	}
 
 }
@@ -77,7 +77,7 @@ class MyComponent extends MyBaseComponent {
 
 	@onEvent('click')
 	whenClick() {
-		out.push('MyComponent onEvent whenClick');
+		out.push('MyComponent @onEvent whenClick');
 	}
 
 	@onHub('dataHub', 'topic2')
@@ -127,7 +127,8 @@ export function testComponentEventBindings() {
 	contentEl.append(html('<my-component></my-component>'));
 
 	first(contentEl, 'my-component')!.click();
-	equal(out, ['MyComponent this.events', 'MyComponent onEvent whenClick', 'MyBaseComponent @onEvent baseClick', 'MyComponent init on']);
+	const expected = ['MyComponent this.events', 'MyBaseComponent @onEvent baseClick', 'MyComponent @onEvent whenClick', 'MyComponent init on'];
+	equal(expected, out);
 	contentEl.innerHTML = '';
 }
 

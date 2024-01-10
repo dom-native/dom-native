@@ -31,7 +31,7 @@ export default [
 				tsconfig: './test/tsconfig.json'
 			})]
 	},
-	//// demo 
+	// demo 
 	{
 		input: './demo/src/index.ts',
 		output: {

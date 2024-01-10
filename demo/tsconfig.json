@@ -28,8 +28,6 @@
 		// This allow to have relative path in the import, rather than "import ... "../../ts/ajax" we can do "ts/ajax"
 		"baseUrl": "./src/",
 
-		"experimentalDecorators": true,
-		
 		// Needed to call import default (replaces allowSyntheticDefaultImports)
 		"esModuleInterop": true,
 

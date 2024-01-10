@@ -3,10 +3,14 @@ import { hub } from './hub.js';
 
 type OnHubEvent = { methodName: string, hubName: string, topic: string, label?: string };
 
-const _onHubEventByConstructor: Map<Function, OnHubEvent[]> = new Map();
+type OnHubEventByFnName = Map<string, OnHubEvent>;
+const _onHubEventsByConstructor: Map<Function, OnHubEventByFnName> = new Map();
 
 type ComputedOnHubEvents = OnHubEvent[] | null;
 const _computedOnHubEventByConstructor = new WeakMap<Function, ComputedOnHubEvents>();
+
+const _methodAlreadyProcessed = new Set<Function>();
+
 
 //#region    ---------- Public onEvent Decorator ---------- 
 /**
@@ -14,25 +18,54 @@ const _computedOnHubEventByConstructor = new WeakMap<Function, ComputedOnHubEven
  */
 export function onHub(hubName: string, topic: string, label?: string) {
 
-	// target references the element's class. It will be the constructor function for a static method or the prototype of the class for an instance member
-	return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-		const clazz = target.constructor;
+	return function (originalMethod: any, context: ClassMethodDecoratorContext) {
 
-		// get the onEvents array for this clazz
-		let onEvents = _onHubEventByConstructor.get(clazz);
-		if (onEvents == null) {
-			onEvents = [];
-			_onHubEventByConstructor.set(clazz, onEvents);
-		}
+		context.addInitializer(function () {
 
-		// create and push the event
-		const onEvent: OnHubEvent = {
-			methodName: propertyKey,
-			hubName,
-			topic,
-			label
-		};
-		onEvents.push(onEvent);
+			// Note:
+			//  We only get the class at this stage.
+			//  The instance class (clazz below) will always be the leaf class.
+			//  But the originalMethod will be the function at the right class hierarchy
+			//  So, we can just have a global _methodAlreadyProcess Set to check if already processed. 
+			if (_methodAlreadyProcessed.has(originalMethod)) {
+				return;
+			} else {
+				_methodAlreadyProcessed.add(originalMethod);
+			}
+
+			// This will also be the instance class.
+			const clazz: any = (this as any).constructor;
+
+			// Method name
+			let methodName = context.name as string;
+
+			// get the onEvents array for this clazz
+			let onEventByFnNameForClazz = _onHubEventsByConstructor.get(clazz);
+			if (onEventByFnNameForClazz == null) {
+				onEventByFnNameForClazz = new Map();
+				_onHubEventsByConstructor.set(clazz, onEventByFnNameForClazz);
+			}
+
+			// create and push the event
+			const onEvent: OnHubEvent = {
+				methodName,
+				hubName,
+				topic,
+				label
+			};
+
+			// Note: 
+			//  The order of decorator method initializers is from the base method first, then progressing to the leaf.
+			//  So, this will override the onEvent for the methodName and will be the leaf onEvent,
+			//  as expected.
+			onEventByFnNameForClazz.set(methodName, onEvent);
+
+			// Note:
+			//   We still employ the _onHubEventByConstructor trick to delay event registration,
+			//   So that we can NOT registered base methods. 
+		})
+
+
 	}
 }
 //#endregion ---------- /Public onEvent Decorator ---------- 
@@ -87,8 +120,9 @@ function getComputedOnHubEvents(clazz: Function): ComputedOnHubEvents {
 	const fnNameBoundSet = new Set<string>();
 
 	do {
-		const onEvents = _onHubEventByConstructor.get(clazz);
-		if (onEvents) {
+		const onHubEventByFnName = _onHubEventsByConstructor.get(clazz);
+		if (onHubEventByFnName) {
+			const onEvents = Array.from(onHubEventByFnName.values());
 			for (const onEvent of onEvents) {
 				const fnName = onEvent.methodName;
 				if (!fnNameBoundSet.has(fnName)) {

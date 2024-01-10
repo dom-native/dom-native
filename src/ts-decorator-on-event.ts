@@ -21,7 +21,8 @@ type OnDOMEvent = {
 	opts?: OnDOMEventOptions
 };
 
-const _onEventsByConstructor: Map<Function, OnDOMEvent[]> = new Map();
+type OnDOMEventByFnName = Map<string, OnDOMEvent>;
+const _onEventsByConstructor: Map<Function, OnDOMEventByFnName> = new Map();
 
 // Optimization - keep the list of activable OnDomEvent[] per constructor (for on element, win, and doc)
 // Note: null for "computed but nothing found"
@@ -32,10 +33,10 @@ type ComputedOnDOMEvents = {
 }
 const _computedOnDOMEventsByConstructor = new WeakMap<Function, ComputedOnDOMEvents>();
 
-
+const _methodAlreadyProcessed = new Set<Function>();
 
 //#region    ---------- Public onEvent Decorator ---------- 
-export function onEvent(type: string, selector_or_opts?: string | OnDOMEventOptions, opts?: OnDOMEventOptions) {
+export function onEvent(this: any, type: string, selector_or_opts?: string | OnDOMEventOptions, opts?: OnDOMEventOptions) {
 	return _onDOMEvent(null, type, selector_or_opts, opts);
 }
 export function onDoc(type: string, selector_or_opts?: string | OnDOMEventOptions, opts?: OnDOMEventOptions) {
@@ -51,29 +52,53 @@ function _onDOMEvent(evtTarget: Window | Document | null, type: string, selector
 	let selector = (typeof selector_or_opts == 'string') ? selector_or_opts : null;
 	opts = (selector === null) ? selector_or_opts as OnDOMEventOptions | undefined : opts;
 
-	// target references the element's class. It will be the constructor function for a static method or the prototype of the class for an instance member
-	return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-		const fn: OnEventListener = descriptor.value;
+	return function (originalMethod: any, context: ClassMethodDecoratorContext) {
+		context.addInitializer(function () {
 
-		const clazz = target.constructor;
+			// Note:
+			//  We only get the class at this stage.
+			//  The instance class (clazz below) will always be the leaf class.
+			//  But the originalMethod will be the function at the right class hierarchy
+			//  So, we can just have a global _methodAlreadyProcess Set to check if already processed. 
+			if (_methodAlreadyProcessed.has(originalMethod)) {
+				return;
+			} else {
+				_methodAlreadyProcessed.add(originalMethod);
+			}
 
-		// get the onEvents array for this clazz
-		let onEvents = _onEventsByConstructor.get(clazz);
-		if (onEvents == null) {
-			onEvents = [];
-			_onEventsByConstructor.set(clazz, onEvents);
-		}
+			// This will also be the instance class.
+			const clazz: any = (this as any).constructor;
 
-		// create and push the event
-		const onEvent: OnDOMEvent = {
-			target: evtTarget,
-			name: propertyKey,
-			type: type,
-			selector: selector,
-			opts
-		};
-		onEvents.push(onEvent);
+			// Method name
+			let methodName = context.name as string;
 
+			// get the onEvents array for this clazz
+			let onEventByFnNameForClazz = _onEventsByConstructor.get(clazz);
+			if (onEventByFnNameForClazz == null) {
+				onEventByFnNameForClazz = new Map();
+				_onEventsByConstructor.set(clazz, onEventByFnNameForClazz);
+			}
+
+			// create and push the event
+			const onEvent: OnDOMEvent = {
+				target: evtTarget,
+				name: methodName,
+				type: type,
+				selector: selector,
+				opts
+			};
+
+			// Note: 
+			//  The order of decorator method initializers is from the base method first, then progressing to the leaf.
+			//  So, this will override the onEvent for the methodName and will be the leaf onEvent,
+			//  as expected.
+			onEventByFnNameForClazz.set(methodName, onEvent);
+
+			// Note:
+			//   We still employ the _onEventsByConstructor trick to delay event registration,
+			//   allowing us to execute it in the connect callback. This approach helps manage cases involving 
+			//   shadowDom and similar scenarios.
+		});
 	}
 }
 
@@ -153,14 +178,20 @@ function getComputeOnDOMEvents(clazz: Function): ComputedOnDOMEvents {
 
 	// --- Compute the ComputedOnDOMEvents
 	do {
-		const onEvents = _onEventsByConstructor.get(clazz);
-		if (onEvents) {
+		const onEventsByFnName = _onEventsByConstructor.get(clazz);
+		if (onEventsByFnName) {
+			// Note: Might not be needed anymore because of new decorators and the new 
+			//       logic that override base functions onEvent.
 			const clazzBoundFnNames = new Set<string>();
+
+			const onEvents = Array.from(onEventsByFnName.values());
 
 			for (const onEvent of onEvents) {
 				const target = onEvent.target;
 				const fnName = onEvent.name;
 
+				// Note: Might not be needed anymore because of new decorators and the new 
+				//       logic that override base functions onEvent.
 				// bind only if this function name was not already bound by a children
 				if (!childrenBoundFnNames.has(fnName)) {
 					// get the appropriate onDOMEvents list to push this event given the target
@@ -181,7 +212,8 @@ function getComputeOnDOMEvents(clazz: Function): ComputedOnDOMEvents {
 
 			} // for onEvent of onEvents
 
-			// add this class bound fnNames to the childrenBoudFnNames for next parent class resolution
+			// Note: Might not be needed now (see above)
+			// add this class bound fnNames to the childrenBondFnNames for next parent class resolution
 			for (const fnName of clazzBoundFnNames) {
 				childrenBoundFnNames.add(fnName);
 			}

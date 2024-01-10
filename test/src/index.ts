@@ -1,4 +1,7 @@
 import './runner';
+import * as _decoratorsTest from './test-decorators';
+export const decoratorsTest = _decoratorsTest;
+
 import * as _attrTests from './test-attr';
 import * as _baseTests from './test-base';
 import * as _builderTests from './test-builder';

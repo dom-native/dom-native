@@ -105,6 +105,7 @@ export abstract class BaseHTMLElement extends HTMLElement {
 			if (this.events) bindOnEvents(this, this.events, opts);
 
 			// bind the @onEvent decorated methods
+			// JC-NOTE: With new decorator not needed/enabled now.
 			bindOnElementEventsDecorators(this);
 
 			this.init();
