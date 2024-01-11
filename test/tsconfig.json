@@ -38,7 +38,7 @@
 		"experimentalDecorators": true,
 		
 		// allow to import moment like: import moment from "moment"
-		"allowSyntheticDefaultImports": true
+		"esModuleInterop": true
 	},
 
 	// We want more control about which code we will compile and exclude

@@ -51,7 +51,7 @@ async function watch() {
 
 	// requires webdev server 
 	// cargo install webdev (to install it)
-	execa('webdev', ["-l", "-p", "8888", "-d", "test", "-w", "test/common", "-w", "test/dist/test-bundle.js"], { stdout, stderr });
+	execa('webdev', ["-l", "-p", "8888", "-d", "./", "-w", "test/common", "-w", "test/dist/test-bundle.js"], { stdout, stderr });
 
 	buildDemoCode(true);
 }
