@@ -26,8 +26,6 @@
 		"outDir": "./dist/", /* Redirect output structure to the directory. */
 
 		"esModuleInterop": true,
-
-		"experimentalDecorators": true
 	},
 
 	// We want more control about which code we will compile and exclude
