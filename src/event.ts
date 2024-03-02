@@ -28,7 +28,7 @@ export type OnEventListener = (evt: Event & OnEvent & any) => void;
  * A key/value object representing a list of binding with the ky becase a typeAndSelector string 
  * The `typeAndSelector` is of format `type;selector`, e.g., `click;button.do-ok`. Can just bue `click` for type only. 
  */
-export type OnListenerBySelector = { [typeAndselector: string]: OnEventListener };
+export type OnListenerByTypeSelector = { [typeAndselector: string]: OnEventListener };
 
 
 export interface OnEventOptions {
@@ -76,7 +76,7 @@ interface ListenerRef {
 	_listener: OnEventListener, // an eventual wrap of the listener, or just point listener.
 }
 
-export function addOnEvents(target: OnListenerBySelector | undefined, source: OnListenerBySelector): OnListenerBySelector {
+export function addOnEvents(target: OnListenerByTypeSelector | undefined, source: OnListenerByTypeSelector): OnListenerByTypeSelector {
 	return Object.assign(target || {}, source);
 }
 
@@ -389,7 +389,7 @@ export function trigger(els: EventTargetOrMore | null | undefined, type: string,
  *
  * @param typeAndSelector e.g., `click` or `click; button.add`
  */
-export function bindOnEvents(el: EventTarget, eventDics: OnListenerBySelector | OnListenerBySelector[], opts: OnEventOptions) {
+export function bindOnEvents(el: EventTarget, eventDics: OnListenerByTypeSelector | OnListenerByTypeSelector[], opts: OnEventOptions) {
 	eventDics = (eventDics instanceof Array) ? eventDics : [eventDics]; // make we have an array of eventDic
 	for (const eventDic of eventDics) {
 		for (const selector in eventDic) {

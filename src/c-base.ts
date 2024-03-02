@@ -1,6 +1,6 @@
 // (c) 2019 BriteSnow, inc - This code is licensed under MIT license (see LICENSE for details)
 
-import { bindOnEvents, off, OnListenerBySelector } from './event.js';
+import { bindOnEvents, off, OnListenerByTypeSelector } from './event.js';
 import { bindHubEvents, HubBindings, unbindHubEvents } from './hub.js';
 import { bindOnElementEventsDecorators, bindOnParentEventsDecorators, hasParentEventsDecorators, unbindParentEventsDecorators } from './ts-decorator-on-event.js';
 import { bindOnHubDecorators, hasHubEventDecorators, unbindOnHubDecorators } from './ts-decorator-on-hub.js';
@@ -26,11 +26,11 @@ export abstract class BaseHTMLElement extends HTMLElement {
 	readonly uid: string;
 	protected readonly _nsObj: { ns: string };
 
-	events?: OnListenerBySelector;
+	events?: OnListenerByTypeSelector;
 
-	docEvents?: OnListenerBySelector;
+	docEvents?: OnListenerByTypeSelector;
 
-	winEvents?: OnListenerBySelector;
+	winEvents?: OnListenerByTypeSelector;
 
 	hubEvents?: HubBindings;
 
@@ -167,7 +167,7 @@ export abstract class BaseHTMLElement extends HTMLElement {
 
 }
 
-export function addDOMEvents(target: OnListenerBySelector | undefined, source: OnListenerBySelector): OnListenerBySelector {
+export function addDOMEvents(target: OnListenerByTypeSelector | undefined, source: OnListenerByTypeSelector): OnListenerByTypeSelector {
 	return Object.assign(target || {}, source);
 }
 
