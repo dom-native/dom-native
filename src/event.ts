@@ -17,11 +17,12 @@ export interface OnEvent<T = any | undefined> extends Event {
 }
 
 //#region    ---------- Public Types ---------- 
-/** The current strategy is to merge the common HTML events for convenient binding, and add &object to allow further casting */
-//export type ExtendedEvent = Event & SelectTarget & DetailEvent & KeyboardEvent & MouseEvent & TouchEvent & object;
+// One Strategy is to merge the common HTML events for convenient binding, and add &object to allow further casting */
+// export type ExtendedEvent = Event & SelectTarget & DetailEvent & KeyboardEvent & MouseEvent & TouchEvent & object;
 // type ExtendedEvent = Event;
 
-export type OnEventListener = (evt: Event & OnEvent) => void;
+// Note: For now, we add any to allow have the type we want when using method. 
+export type OnEventListener = (evt: Event & OnEvent & any) => void;
 
 /** 
  * A key/value object representing a list of binding with the ky becase a typeAndSelector string 
