@@ -23,8 +23,11 @@ export interface OnEvent<T = any | undefined> extends Event {
 
 export type OnEventListener = (evt: Event & OnEvent) => void;
 
-/** A key/value object representing a list of binding with the ky becase a typeAndSelector string */
-export type OnListenerBySelector = { [selector: string]: OnEventListener };
+/** 
+ * A key/value object representing a list of binding with the ky becase a typeAndSelector string 
+ * The `typeAndSelector` is of format `type;selector`, e.g., `click;button.do-ok`. Can just bue `click` for type only. 
+ */
+export type OnListenerBySelector = { [typeAndselector: string]: OnEventListener };
 
 
 export interface OnEventOptions {
