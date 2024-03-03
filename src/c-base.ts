@@ -80,12 +80,13 @@ export abstract class BaseHTMLElement extends HTMLElement {
 		}
 
 		// --- Bind the eventual parent events (document, windows)
-		// Note: Parent events are silenced on when el is diconnected, and unbound when next frame still diconnected
+		// Note 1: Parent events are silenced when the element is disconnected and unbound if it remains disconnected in the next frame.
+		// Note 2: The bindings for the window and document are applied in the next frame to prevent the trigger event from mixing with the listened event.
 		if (this._has_parent_events && !this._parent_bindings_done) {
 			// bind the @docDoc event
-			if (this.docEvents) bindOnEvents(document, this.docEvents, { ...opts, silenceDisconnectedCtx: true });
+			if (this.docEvents) bindOnEvents(document, this.docEvents, { ...opts, silenceDisconnectedCtx: true, nextFrame: true });
 			// bind the @docWin event
-			if (this.winEvents) bindOnEvents(window, this.winEvents, { ...opts, silenceDisconnectedCtx: true });
+			if (this.winEvents) bindOnEvents(window, this.winEvents, { ...opts, silenceDisconnectedCtx: true, nextFrame: true });
 			bindOnParentEventsDecorators(this);
 			this._parent_bindings_done = true;
 		}

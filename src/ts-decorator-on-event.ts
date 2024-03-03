@@ -103,7 +103,8 @@ export function bindOnParentEventsDecorators(el: any) {
 
 	const { docOnDOMEvents, winOnDOMEvents } = computedOnDOMEvents;
 
-	const eventOpts: OnEventOptions = { ...el._nsObj, ctx: el, silenceDisconnectedCtx: true };
+	// See caller to understand why those flags.
+	const eventOpts: OnEventOptions = { ...el._nsObj, ctx: el, silenceDisconnectedCtx: true, nextFrame: true };
 	if (docOnDOMEvents !== null) {
 		for (const onEvent of docOnDOMEvents) {
 			const fn = (<any>el)[onEvent.name];
