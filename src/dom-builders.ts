@@ -83,19 +83,28 @@ export function html(strings: string | TemplateStringsArray, ...values: any[]) {
 
 
 /**
- * Returns a DocumentFragment for the html string. If html is null or undefined, returns an empty document fragment.
- * @param html the html string or null/undefined
+ * Returns a empty DocumentFragment . If html is null or undefined, returns an empty document fragment.
  */
 export function frag(): DocumentFragment;
-export function frag<T>(items: T[], acc: (item: T) => Element): DocumentFragment
 
-export function frag<T>(items?: T[], acc?: (item: T) => Element): DocumentFragment {
+/**
+ * Returns the fragment built by iterating over items and calling the accumulator `acc`. 
+ * If `acc` returns null, nothing is added and the iteration continues to the next item.
+ * @param items The collection of items to process.
+ * @param acc `(item: T) => Element | DocumentFragment | null` - if it returns null, nothing is added; instead, it proceeds to the next item.
+ */
+export function frag<T>(items: T[], acc: (item: T) => Element | DocumentFragment | null): DocumentFragment
+
+export function frag<T>(items?: T[], acc?: (item: T) => Element | DocumentFragment | null): DocumentFragment {
 	const frag = new DocumentFragment();
 	if (items == null) { return frag }
 
 	for (const item of items) {
 		const el = acc!(item);
-		frag.appendChild(el);
+		if (el != null) {
+			frag.appendChild(el);
+		}
+
 	}
 	return frag;
 }
