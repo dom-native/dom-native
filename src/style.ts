@@ -30,10 +30,11 @@ function _styleEl(el: HTMLElement, style: Partial<CSSStyleDeclaration>) {
 
 
 //#region    ---------- className ---------- 
+
 /**
  * Minimilist DOM css class name helper. Add or Remove class name based on object property value. 
  * 
- * e.g., `className(el, {prime: true, 'dark-mode': false} )`
+ * e.g., `setClass(el, {prime: true, 'dark-mode': false} )`
  * 
  * - false | null means remove class name
  * - true | any defined object add class name
@@ -42,27 +43,37 @@ function _styleEl(el: HTMLElement, style: Partial<CSSStyleDeclaration>) {
  * @returns pathrough return
  * 
  * Examples: 
- *   - `className(el, {prime: true, 'dark-mode': false} )` add css class 'prime' and remove 'dark-mode'
- *   - `className(el, {prime: someNonNullObject, 'dark-mode': false})` same as above.
- *   - `className(els, {prime: someNonNullObject, 'dark-mode': false})` Will add/remove class for all of the elements.
+ *   - `setClass(el, {prime: true, 'dark-mode': false} )` add css class 'prime' and remove 'dark-mode'
+ *   - `setClass(el.children, {prime: someNonNullObject, 'dark-mode': false})` same as above.
+ *   - `setClass(els, {prime: someNonNullObject, 'dark-mode': false})` Will add/remove class for all of the elements.
  * 
  * @param el 
  * @param keyValues e.g. `{prime: true, 'dark-mode': fase, 'compact-view': someObj}`
  */
-export function className<E extends HTMLElement | HTMLElement[] | null | undefined>(els: E, keyValues: { [name: string]: boolean | object | null | undefined }): E {
+export function setClass<E extends Element | Element[] | HTMLCollection | null | undefined>(els: E, keyValues: { [name: string]: boolean | object | null | undefined }): E {
+	if (els == null) return els;
 
-	if (els instanceof Array) {
-		for (const el of els) {
-			_setClassName(el, keyValues);
+	let els_: Element[] | Element;
+
+	if (els instanceof HTMLCollection) {
+		els_ = Array.from(els);
+	} else {
+		els_ = els;
+	}
+
+	if (els_ instanceof Array) {
+		for (const el of els_) {
+			_setClass(el, keyValues);
 		}
 	}
 	else {
-		_setClassName(els as HTMLElement, keyValues);
+		_setClass(els_ as Element, keyValues);
 	}
+
 	return els;
 }
 
-function _setClassName(el: HTMLElement, keyValues: { [name: string]: boolean | object | null | undefined }) {
+function _setClass(el: Element, keyValues: { [name: string]: boolean | object | null | undefined }) {
 	for (const name of Object.keys(keyValues)) {
 		const val = keyValues[name];
 		if (val === null || val === false) {
@@ -72,4 +83,12 @@ function _setClassName(el: HTMLElement, keyValues: { [name: string]: boolean | o
 		}
 	}
 }
+
+/**
+ *  * @deprecated use `setClass`
+ */
+export function className<E extends Element | Element[] | HTMLCollection | null | undefined>(els: E, keyValues: { [name: string]: boolean | object | null | undefined }): E {
+	return setClass(els, keyValues);
+}
+
 //#endregion ---------- /className ----------

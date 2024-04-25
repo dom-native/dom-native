@@ -11,7 +11,7 @@ export { escapeAttr, escapeHtml, xa, xh } from './escapes';
 export { OnEvent, OnEventListener, OnListenerByTypeSelector as OnListenerBySelector, addOnEvents, bindOnEvent, bindOnEvents, off, on, trigger } from './event';
 export { Hub, HubBindings, HubEventInfo, addHubEvents, bindHubEvents, hub, unbindHubEvents } from './hub';
 export { Pos, PositionOptions, position } from './position';
-export { className, style } from './style';
+export { className, setClass, style } from './style';
 export { customElement } from './ts-decorator-custom-element';
 export { onDoc, onEvent, onWin } from './ts-decorator-on-event';
 export { onHub } from './ts-decorator-on-hub';
