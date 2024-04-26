@@ -50,21 +50,19 @@ export interface PositionOptions {
    * Constrain HTMLElement.
    * By default window (if not set to null)
    */
-  constrain?: Window | HTMLElement | null
-}
+  constrain?: Window | HTMLElement | null,
 
-type Rect = { x: number, y: number, bottom: number, right: number };
-
-export interface RefPositionOptions extends PositionOptions {
   /** The refEl reference point position. */
   refPos?: Pos,
 }
 
-export function position(el: HTMLElement, refEl: HTMLElement, opts?: RefPositionOptions): void;
+type Rect = { x: number, y: number, bottom: number, right: number };
+
+export function position(el: HTMLElement, refEl: HTMLElement, opts?: PositionOptions): void;
 export function position(el: HTMLElement, point: { x: number, y: number }, opts?: PositionOptions): void;
 
-export function position(el: HTMLElement, refElOrPoint: HTMLElement | { x: number, y: number }, opts?: PositionOptions | RefPositionOptions): void {
-  const _opts = { ...DEFAULT, ...opts } as RefPositionOptions & typeof DEFAULT; // helping TS
+export function position(el: HTMLElement, refElOrPoint: HTMLElement | { x: number, y: number }, opts?: PositionOptions): void {
+  const _opts = { ...DEFAULT, ...opts } as PositionOptions & typeof DEFAULT; // helping TS
   const { refPos: ref_pos, pos: el_pos, gap, vGap: _vGap, hGap: _hGap, x: axis_x, y: axis_y, constrain } = _opts;
 
   // Note: When no vGap or hGap given, 
