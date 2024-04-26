@@ -50,12 +50,25 @@ export abstract class BaseHTMLElement extends HTMLElement {
 	private _preDisplay_attached = false;
 	private _postDisplay_attached = false;
 
+	// if set to true, it will force the win/doc event clean with the this._nsObj ns
+	private _force_clean_root_events: boolean | undefined;
+
 	protected get initialized() { return this._init }
 
 	constructor() {
 		super();
 		this.uid = 'c_uid_' + c_seq++;
 		this._nsObj = { ns: this.uid };
+	}
+
+	/**
+	 * Guarantee that this component will call unbind with this component's nsObj on 
+	 * Window and Document. 
+	 * Note: This is useful when doing manual `on(...)` binding in the component but still want 
+	 *       to benefit from the component's unbinding logic. 
+	 */
+	forceCleanRootEvents() {
+		this._force_clean_root_events = true;
 	}
 
 	/** 
@@ -140,13 +153,13 @@ export abstract class BaseHTMLElement extends HTMLElement {
 	disconnectedCallback() {
 
 		// NOTE: Here we detached
-		if (this._has_parent_events === true) {
+		if (this._has_parent_events === true || this._force_clean_root_events === true) {
 			requestAnimationFrame(() => {
 				if (!this.isConnected) {
-					if (this.docEvents) {
+					if (this.docEvents || this._force_clean_root_events === true) {
 						off(document, this._nsObj);
 					}
-					if (this.winEvents) {
+					if (this.winEvents || this._force_clean_root_events === true) {
 						off(window, this._nsObj);
 					}
 					unbindParentEventsDecorators(this);
