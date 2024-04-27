@@ -129,21 +129,24 @@ export abstract class BaseHTMLElement extends HTMLElement {
 		// Note - Will pass the "firstCall" flag to both method. 
 		if (this.preDisplay) {
 			let firstCall = !(this._preDisplay_attached === true);
-			requestAnimationFrame(() => {
-				this.preDisplay!(firstCall);
-				this._preDisplay_attached = false;
-			});
+			// NOTE: 0.11.3 and below preDisplay was on requestAnimationFrame, however, 
+			//       if we do this, there is no way to have a function that get called 
+			//       in the same frame as the init. 
+			//       So changing this behavior. 
+			this.preDisplay!(firstCall);
+			this._preDisplay_attached = false;
 		}
 
 		if (this.postDisplay) {
 			let firstCall = !(this._postDisplay_attached === true)
 			this._postDisplay_attached = true;
+			// NOTE: 0.11.3 and below since preDisplay was on requestAnimationFrame
+			//       we had a double requestAnimationFrame.
+			//       However, since this has been changed, now, only one requestAnimationFrame
 			requestAnimationFrame(() => {
-				requestAnimationFrame(() => {
-					this.postDisplay!(firstCall);
-					this._postDisplay_attached = false;
-				})
-			})
+				this.postDisplay!(firstCall);
+				this._postDisplay_attached = false;
+			});
 		}
 	}
 
