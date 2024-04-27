@@ -4,7 +4,7 @@ export { AnimCallback, anim } from './anim';
 export { getAttr, setAttr } from './attr';
 export { BaseHTMLElement } from './c-base';
 export { adoptStyleSheets, css } from './css';
-export { AppendPosition, all, append, closest, first, getFirst, next, prev, scanChild } from './dom';
+export { AppendPosition, all, append, cherryChild, closest, first, getFirst, next, prev } from './dom';
 export { elem, frag, html } from './dom-builders';
 export { pull, puller, push, pusher } from './dx';
 export { escapeAttr, escapeHtml, xa, xh } from './escapes';
@@ -16,5 +16,8 @@ export { customElement } from './ts-decorator-custom-element';
 export { onDoc, onEvent, onWin } from './ts-decorator-on-event';
 export { onHub } from './ts-decorator-on-hub';
 export { val } from './utils';
+
+// Deprecated
+export { scanChild } from './dom';
 
 

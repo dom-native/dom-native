@@ -146,9 +146,10 @@ export function all(el: Document | HTMLElement | DocumentFragment | null | undef
 }
 // #endregion --- all
 
-// #region    --- scanChild
+// #region    --- cherryChild
+
 /**
- * Fast and narrow way to get the first direct child (or children) matching a tagName. 
+ * Fast and narrow way to cherry pick the first direct child (or children) matching a tagName(s). 
  * 
  * For performance purpose, this is a very strict api, with the following rules: 
  * 
@@ -164,14 +165,12 @@ export function all(el: Document | HTMLElement | DocumentFragment | null | undef
  * 
  * Note: For a more flexible function that give full querySelector capability, use `first, getFirst, all`
  */
-// export function scanChild<K extends keyof HTMLElementTagNameMap>(el: Document | HTMLElement | DocumentFragment, tagName: K): HTMLElementTagNameMap[K];
-// export function scanChild(el: Document | HTMLElement | DocumentFragment, tagName: string): HTMLElement;
-export function scanChild<A extends TagName | String>(el: El, tagName: A): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
-export function scanChild<A extends (TagName | String)[]>(el: El, ...tagNames: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
+export function cherryChild<A extends TagName | String>(el: El, tagName: A): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
+export function cherryChild<A extends (TagName | String)[]>(el: El, ...tagNames: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
 
-// export function scanChild<A extends (TagName | String)[]>(el: Document | HTMLElement | DocumentFragment, ...tagNames: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
+// export function cherryChild<A extends (TagName | String)[]>(el: Document | HTMLElement | DocumentFragment, ...tagNames: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
 
-export function scanChild(el: Document | HTMLElement | DocumentFragment, ...tagNames: string[]): HTMLElement | HTMLElement[] {
+export function cherryChild(el: Document | HTMLElement | DocumentFragment, ...tagNames: string[]): HTMLElement | HTMLElement[] {
 	if (el == null) { throw new Error(`dom-native - scanChild - requires el to not be null`) };
 	const tagNamesLength = tagNames.length;
 	const single = tagNamesLength == 1;
@@ -205,6 +204,21 @@ export function scanChild(el: Document | HTMLElement | DocumentFragment, ...tagN
 
 	return result!;
 }
+// #endregion --- scanChild
+
+// #region    --- scanChild
+
+// DEPRECATED use cherryChild(...)
+
+/** @deprecated use cherryChild */
+export function scanChild<A extends TagName | String>(el: El, tagName: A): A extends TagName ? HTMLElementTagNameMap[A] : HTMLElement;
+/** @deprecated use cherryChild */
+export function scanChild<A extends (TagName | String)[]>(el: El, ...tagNames: A): { [K in keyof A]: A[K] extends TagName ? HTMLElementTagNameMap[A[K]] : HTMLElement };
+/** @deprecated use cherryChild */
+export function scanChild(el: Document | HTMLElement | DocumentFragment, ...tagNames: string[]): HTMLElement | HTMLElement[] {
+	return cherryChild(el, ...tagNames);
+}
+
 // #endregion --- scanChild
 
 
