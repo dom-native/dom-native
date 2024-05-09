@@ -1,4 +1,4 @@
-//// this is for the test/source
+// this is for the test/source
 {
 	"compilerOptions": {
 		// For browser client, we target edge and above (use es2016 for [].includes for example)

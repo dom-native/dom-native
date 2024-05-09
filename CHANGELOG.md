@@ -2,6 +2,27 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement; `*` refactor; `-` fix; `!` change; 
 
+### v0.11.4 - May 8, 2024
+
+- `!` `preDisplay` in now on **same frame** as init
+- `!` deprecate `scanChild` for `cherryChild`
+- `^` c-base - added `forceCleanRootEvents`
+- `^` position - added `refPos` to `PositionOptions`
+- `^` frag - add support for `DocumentFragment | null` as acc return type
+- `^` css - setClass - now accepts HTMLCollection
+- `!` css - deprecate `className(..)`, new name is `setClass(..)` 
+- `-` event - made the `onDoc` and `onWin` `nextFrame: true` to avoid potential event mixing
+- `!` event -rename `OnListenerBySelector` to `OnListenerByTypeSelector`
+- `.` event - add 'any' on `OnEventListener`
+
+### v0.11.3 - Jan 9, 2024
+
+- `.` update dependencies
+
+### v0.11.2 - Oct 16, 2024
+
+- `.` build - build update (pcss-cli, tsconfig to ES2018)
+
 ### v0.11.1 - Sep 15, 2022
 
 - `!` scanChild - rename and collapse getChild and getChrildren to scanChild
