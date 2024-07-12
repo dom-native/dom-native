@@ -127,12 +127,6 @@ function _ensure(obj: any, propName: any, type?: any): any {
 
 
 // --------- asType --------- //
-type AnyButArray = object | number | string | boolean;
-/**
- * @param a 
- * @deprecated To not use as is for now. Just kept it for 0.7.x backward compatibility but types are probably wrong. 
- */
-export function asArray<T extends AnyButArray>(a: T | Array<T>): Array<T>;
 // Return an array from a value object. If value is null/undefined, return empty array. 
 // If value is null or undefined, return empty array
 // If the value is an array it is returned as is
