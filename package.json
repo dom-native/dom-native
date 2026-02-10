@@ -19,18 +19,18 @@
   },
   "devDependencies": {
     "@dom-native/demo-infra": "=0.0.0-internal-4",
-    "@rollup/plugin-commonjs": "^25.0.7",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-typescript": "^11.1.6",
+    "@rollup/plugin-commonjs": "^29",
+    "@rollup/plugin-node-resolve": "^16",
+    "@rollup/plugin-typescript": "^12",
     "@types/d3-ease": "^3.0.2",
     "@types/js-yaml": "^4.0.9",
     "@types/lodash.debounce": "^4.0.9",
     "autoprefixer": "^10.4.19",
-    "chokidar": "^3.6.0",
+    "chokidar": "^5",
     "cmdrouter": "^0.3.1",
     "d3-ease": "^3.0.1",
     "execa": "^9.0.0",
-    "fs-aux": "^0.1.1",
+    "fs-aux": "^0.2",
     "lodash.debounce": "^4.0.8",
     "postcss": "^8.4.38",
     "postcss-cli": "^11.0.0",
@@ -40,7 +40,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.4.5",
     "utils-min": "^0.2.4",
-    "pcss-cli": "^0.2.9"
+    "pcss-cli": "^0.3"
   },
   "files": [
     "src/",
