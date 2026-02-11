@@ -1,20 +1,21 @@
 {
 	"compilerOptions": {
-		// For browser client, we target edge and above (use es2016 for [].includes for example)
-		"target": "es2018",
+  	// For browser client, we target edge and above.
+  	"target": "ES2022",
 
-		// For browser client, since we are using rollup to package, we target the es6/es2015 module
-		"module": "es2015",
+  	// Resolve to es module for rollup
+  	"module": "ES2022",
+
 
 		// This is important to support 3rd party modules that are still in a node.js/commonjs way
-		"moduleResolution": "node", 
-		
-		// 99% of the code will be .ts, and .js files will just be 3rd party libs and will be in 
+		"moduleResolution": "node",
+
+		// 99% of the code will be .ts, and .js files will just be 3rd party libs and will be in
 		"allowJs": false,
 		"checkJs": false,
 
 		// To extract the maximum value from TypeScript, we use strict = true (no implicit, null check, ...)
-		"strict": true, 
+		"strict": true,
 
 		"removeComments": false,
 
@@ -29,7 +30,7 @@
 		"baseUrl": "./src/",
 
 		"experimentalDecorators": true,
-		
+
 		// Needed to call import default (replaces allowSyntheticDefaultImports)
 		"esModuleInterop": true,
 
@@ -45,6 +46,7 @@
 	// We want more control about which code we will compile and exclude
 	"include": [
 		"./src/**/*.ts",
+		"../src/**/*.ts",
 	],
 
 	"exclude": [

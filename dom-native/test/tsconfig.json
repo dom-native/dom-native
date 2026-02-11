@@ -8,14 +8,14 @@
 		"module": "es2015",
 
 		// This is important to support 3rd party modules that are still in a node.js/commonjs way
-		"moduleResolution": "node", 
-		
-		// 99% of the code will be .ts, and .js files will just be 3rd party libs and will be in 
+		"moduleResolution": "node",
+
+		// 99% of the code will be .ts, and .js files will just be 3rd party libs and will be in
 		"allowJs": false,
 		"checkJs": false,
 
 		// To extract the maximum value from TypeScript, we use strict = true (no implicit, null check, ...)
-		"strict": true, 
+		"strict": true,
 
 		"removeComments": true,
 
@@ -28,7 +28,7 @@
 			"#dom-native": [
 				"../../src/index.js"
 			]
-		},		
+		},
 
 		"outDir": "./.out/", /* Redirect output structure to the directory. */
 
@@ -36,14 +36,15 @@
 		"baseUrl": "./src/",
 
 		"experimentalDecorators": true,
-		
+
 		// allow to import moment like: import moment from "moment"
 		"esModuleInterop": true
 	},
 
 	// We want more control about which code we will compile and exclude
 	"include": [
-		"./src/**/*.ts"
+		"./src/**/*.ts",
+		"../src/**/*.ts",
 	],
 
 	"exclude": [

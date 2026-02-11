@@ -19,7 +19,6 @@ export default [
 		},
 		plugins: [
 			// rollup_multi(),
-			rollup_cjs(),
 			rollup_re(),
 			rollup_tsc({
 				tsconfig: "./tsconfig.json",
@@ -29,6 +28,7 @@ export default [
 					declarationDir: null,
 				},
 			}),
+			rollup_cjs(),
 		],
 	},
 ];

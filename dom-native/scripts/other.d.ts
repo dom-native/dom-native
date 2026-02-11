@@ -11,7 +11,7 @@ declare module '@rollup/plugin-node-resolve' {
 	export default fn;
 }
 
-declare module 'rollup-plugin-typescript2' {
+declare module '@rollup/plugin-typescript' {
 	function fn(data?: any): any
 	export default fn;
 }

@@ -1,7 +1,6 @@
 {
 	"compilerOptions": {
 		// For browser client, we target edge and above.
-		// ES2018 for now, to support older safari on Catalina which does not support nullish ??, ??=
 		"target": "ES2022",
 
 		// Resolve to es module for rollup
