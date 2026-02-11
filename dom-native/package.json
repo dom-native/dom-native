@@ -8,11 +8,11 @@
   "type": "module",
   "scripts": {
     "prepack": "npm run build",
-    "build": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm ./scripts/cmds.ts build",
+    "build": "tsx --tsconfig scripts/tsconfig.json ./scripts/cmds.ts build",
     "build-dev-js": "./node_modules/.bin/rollup -c dev.rollup.config.js",
     "build-dev-css": "pcss",
-    "build-lib": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm scripts/cmds.ts build_lib",
-    "watch": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm ./scripts/cmds.ts watch"
+    "build-lib": "tsx --tsconfig scripts/tsconfig.json scripts/cmds.ts build_lib",
+    "watch": "tsx --tsconfig scripts/tsconfig.json ./scripts/cmds.ts watch"
   },
   "imports": {
     "#dom-native": "./src/index.js"
@@ -37,7 +37,7 @@
     "rollup": "^4.17.2",
     "rollup-plugin-typescript2": "^0.36.0",
     "terser": "^5.31.0",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.4.5",
     "utils-min": "^0.2.4",
     "pcss-cli": "^0.3"
