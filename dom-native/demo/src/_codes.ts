@@ -1,6 +1,4 @@
-
-
-export const code_animPie	= `
+export const code_animPie = `
 
 const PAD = 8;
 
@@ -141,9 +139,7 @@ function drawPie(ctx: CanvasRenderingContext2D, pieItem: PieItem) {
 
 `;
 
-		
-
-export const code_simpleElement	= `
+export const code_simpleElement = `
 // BaseHTMLElement is a simple class extending DOM HTMLElement
 //                 with minimum but expressive lifecycle with
 //                 init, preDisplay, postDisplay, and event bindings
@@ -156,9 +152,7 @@ class SimpleElement extends BaseHTMLElement {
 customElements.define("simple-element", SimpleElement);
 `;
 
-		
-
-export const code_simpleElement2	= `
+export const code_simpleElement2 = `
 @customElement("simple-element-2") // dom-native provide this ts decorator
 class SimpleElement2 extends BaseHTMLElement {
 	private _mode?: "warning" | "info";
@@ -173,15 +167,12 @@ class SimpleElement2 extends BaseHTMLElement {
 
 	// before the first paint (allows to further intialize the element with eventual data added after the parentEl.append )
 	preDisplay() {
-		console.log("... HELO");
 		this.innerHTML += " - mode: " + this._mode;
 	}
 }
 `;
 
-		
-
-export const code_eventSimple	= `
+export const code_eventSimple = `
 @customElement('event-simple')
 class EventSimple extends BaseHTMLElement {
 
@@ -215,9 +206,7 @@ Some <span class="clickable-1">clickable-1</span> <span class="clickable-2">clic
 }
 `;
 
-		
-
-export const code_eventShadow	= `
+export const code_eventShadow = `
 @customElement('event-shadow')
 class EventShadow extends BaseHTMLElement {
 	constructor() {
@@ -256,9 +245,7 @@ Some <span class="clickable-1">clickable-1</span> <span class="clickable-2">clic
 }
 `;
 
-		
-
-export const code_perfSimplest	= `
+export const code_perfSimplest = `
 class PerfRawElement extends HTMLElement {
 }
 customElements.define('perf-raw', PerfRawElement);
@@ -451,13 +438,11 @@ function processPerf(start: number, containerEl: HTMLElement): Promise<PerfResul
 
 `;
 
-		
-
-export const code_shadowSimple	= `
+export const code_shadowSimple = `
 const _shadow_simple_css = css\`
-h3{ 
-	display: inline; 
-	color: red; 
+h3{
+	display: inline;
+	color: red;
 	font-size: 1rem;
 }
 \`;
@@ -473,9 +458,7 @@ class ShadowSimple extends BaseHTMLElement {
 }
 `;
 
-		
-
-export const code_shadowPart	= `
+export const code_shadowPart = `
 @customElement('shadow-part')
 class ShadowPart extends BaseHTMLElement {
 	constructor() {
@@ -484,9 +467,9 @@ class ShadowPart extends BaseHTMLElement {
 		s.innerHTML = \`
 <style>
 /* basic style for h3, which can be overriden with css-part */
-h3 { 
-	display: inline; 
-	color: red; 
+h3 {
+	display: inline;
+	color: red;
 	font-size: 1rem;
 }
 </style>
@@ -498,14 +481,12 @@ Hello from <h3 part="label">ShadowPart</h3> constructor
 }
 `;
 
-		
-
-export const code_shadowSlot	= `
+export const code_shadowSlot = `
 // This will create Template and return its .content, which could be cloned (shadow.innerHTML alternative)
 const shadowSlotTmpl = html(\`
 <style>
 ::slotted(h3){
-	display: inline; 
+	display: inline;
 	font-size: 1rem;
 	padding: 0 1rem;
 	color: blue;
@@ -527,5 +508,3 @@ class ShadowSlot extends BaseHTMLElement {
 	}
 }
 `;
-
-		
