@@ -3,7 +3,7 @@ export const version = "0.11.1";
 export { AnimCallback, anim } from "./anim";
 export { getAttr, setAttr } from "./attr";
 export { BaseHTMLElement } from "./c-base";
-export { adoptStyleSheets, css } from "./css";
+export { adoptStyleSheets, css } from "./css-object";
 export { AppendPosition, all, append, cherryChild, closest, first, getFirst, next, prev } from "./dom";
 export { elem, frag, html } from "./dom-builders";
 export { pull, puller, push, pusher } from "./dx";
