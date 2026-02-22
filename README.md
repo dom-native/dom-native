@@ -8,9 +8,15 @@ dom-native libary family
 
 ## Dev
 
-For dom-native dev
+For [dom-native](dom-native/) 
 
 ```sh
 cd dom-native
 npm install
-npm 
+
+#
+npm run build 
+
+
+npm run watch
+```
