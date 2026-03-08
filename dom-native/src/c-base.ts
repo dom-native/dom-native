@@ -1,28 +1,33 @@
 // (c) 2019 BriteSnow, inc - This code is licensed under MIT license (see LICENSE for details)
 
-import { bindOnEvents, off, OnListenerByTypeSelector } from './event.js';
-import { bindHubEvents, HubBindings, unbindHubEvents } from './hub.js';
-import { bindOnElementEventsDecorators, bindOnParentEventsDecorators, hasParentEventsDecorators, unbindParentEventsDecorators } from './ts-decorator-on-event.js';
-import { bindOnHubDecorators, hasHubEventDecorators, unbindOnHubDecorators } from './ts-decorator-on-hub.js';
+import { bindOnEvents, off, OnListenerByTypeSelector } from "./event.js";
+import { bindHubEvents, HubBindings, unbindHubEvents } from "./hub.js";
+import {
+	bindOnElementEventsDecorators,
+	bindOnParentEventsDecorators,
+	hasParentEventsDecorators,
+	unbindParentEventsDecorators,
+} from "./ts-decorator-on-event.js";
+import { bindOnHubDecorators, hasHubEventDecorators, unbindOnHubDecorators } from "./ts-decorator-on-hub.js";
 
 // component unique sequence number to allow to have cheap UID for each component
 let c_seq = 0;
 
 /**
- * BaseHTMLElement that all custom elements from this application should inherit from. 
- * 
+ * BaseHTMLElement that all custom elements from this application should inherit from.
+ *
  * SubClass Usage:
  *   - `init()` to create/modify the innerHTML/children, bind events. Must call `super.init()`
  *   - `this.uid` is the unique id for this component instance, so, can use to bind parent element events for later cleanup.
  *   - `disconnectedCallback()` to unbind any events bound to the parent of the component (document event binding). Must call `super.disconnectedCallback()`
- * 
- * Important: 
+ *
+ * Important:
  *   - SubClass should/must override `init()` but never call `init()` from anywhere. Only `BaseHTMLElement.connectedCallback()` implementation should call `init()`
  *   - All calls to custom element interface `disconnectedCallback()` `connectedCallback()` `attributeChangedCallback()` MUST call their `super...` method.
- * 
+ *
  */
 export abstract class BaseHTMLElement extends HTMLElement {
-	// unique sequenceId number for each instance. 
+	// unique sequenceId number for each instance.
 	readonly uid: string;
 	protected readonly _nsObj: { ns: string };
 
@@ -53,37 +58,39 @@ export abstract class BaseHTMLElement extends HTMLElement {
 	// if set to true, it will force the win/doc event clean with the this._nsObj ns
 	private _force_clean_root_events: boolean | undefined;
 
-	protected get initialized() { return this._init }
+	protected get initialized() {
+		return this._init;
+	}
 
 	constructor() {
 		super();
-		this.uid = 'c_uid_' + c_seq++;
+		this.uid = "c_uid_" + c_seq++;
 		this._nsObj = { ns: this.uid };
 	}
 
 	/**
-	 * Guarantee that this component will call unbind with this component's nsObj on 
-	 * Window and Document. 
-	 * Note: This is useful when doing manual `on(...)` binding in the component but still want 
-	 *       to benefit from the component's unbinding logic. 
+	 * Guarantee that this component will call unbind with this component's nsObj on
+	 * Window and Document.
+	 * Note: This is useful when doing manual `on(...)` binding in the component but still want
+	 *       to benefit from the component's unbinding logic.
 	 */
 	forceCleanRootEvents() {
 		this._force_clean_root_events = true;
 	}
 
-	/** 
+	/**
 	 * Method to override to create child elements. Will be called only once by the BaseHTMLElement `connectedCallback()` implementation.
-	 * 
-	 * - Best Pratice: call `super.init()` when overriden. 
-	 * - DO NOT call this method, this is called by BaseHTMLElement internal. 
-	 * 
+	 *
+	 * - Best Pratice: call `super.init()` when overriden.
+	 * - DO NOT call this method, this is called by BaseHTMLElement internal.
+	 *
 	 */
-	init(): void { }
+	init(): void {}
 
 	/**
-	 * Base implementation of `connectedCallback` that will call `this.init()` once. 
-	 * 
-	 * - MUST call `super.connectedCallback()` when overriden. 
+	 * Base implementation of `connectedCallback` that will call `this.init()` once.
+	 *
+	 * - MUST call `super.connectedCallback()` when overriden.
 	 */
 	connectedCallback() {
 		const opts = { ns: this._nsObj.ns, ctx: this };
@@ -97,25 +104,26 @@ export abstract class BaseHTMLElement extends HTMLElement {
 		// Note 2: The bindings for the window and document are applied in the next frame to prevent the trigger event from mixing with the listened event.
 		if (this._has_parent_events && !this._parent_bindings_done) {
 			// bind the @docDoc event
-			if (this.docEvents) bindOnEvents(document, this.docEvents, { ...opts, silenceDisconnectedCtx: true, nextFrame: true });
+			if (this.docEvents)
+				bindOnEvents(document, this.docEvents, { ...opts, silenceDisconnectedCtx: true, nextFrame: true });
 			// bind the @docWin event
-			if (this.winEvents) bindOnEvents(window, this.winEvents, { ...opts, silenceDisconnectedCtx: true, nextFrame: true });
+			if (this.winEvents)
+				bindOnEvents(window, this.winEvents, { ...opts, silenceDisconnectedCtx: true, nextFrame: true });
 			bindOnParentEventsDecorators(this);
 			this._parent_bindings_done = true;
 		}
 
 		// --- Bind the hub if not already done
-		// Note: Hub events are bound and unbound on each connect and disconnect. 
+		// Note: Hub events are bound and unbound on each connect and disconnect.
 		//       (could use the parent event optimation later)
 		if (!this._hub_bindings_done) {
-			if (this.hubEvents) bindHubEvents(this.hubEvents, opts)
+			if (this.hubEvents) bindHubEvents(this.hubEvents, opts);
 			bindOnHubDecorators.call(this);
 			this._hub_bindings_done = true;
 		}
 
 		// --- Peform the init
 		if (!this._init) {
-
 			if (this.events) bindOnEvents(this, this.events, opts);
 
 			// bind the @onEvent decorated methods
@@ -126,19 +134,19 @@ export abstract class BaseHTMLElement extends HTMLElement {
 		}
 
 		// --- Register the eventual preDisplay / postDisplay
-		// Note - Will pass the "firstCall" flag to both method. 
+		// Note - Will pass the "firstCall" flag to both method.
 		if (this.preDisplay) {
 			let firstCall = !(this._preDisplay_attached === true);
-			// NOTE: 0.11.3 and below preDisplay was on requestAnimationFrame, however, 
-			//       if we do this, there is no way to have a function that get called 
-			//       in the same frame as the init. 
-			//       So changing this behavior. 
+			// NOTE: 0.11.3 and below preDisplay was on requestAnimationFrame, however,
+			//       if we do this, there is no way to have a function that get called
+			//       in the same frame as the init.
+			//       So changing this behavior.
 			this.preDisplay!(firstCall);
 			this._preDisplay_attached = false;
 		}
 
 		if (this.postDisplay) {
-			let firstCall = !(this._postDisplay_attached === true)
+			let firstCall = !(this._postDisplay_attached === true);
 			this._postDisplay_attached = true;
 			// NOTE: 0.11.3 and below since preDisplay was on requestAnimationFrame
 			//       we had a double requestAnimationFrame.
@@ -154,7 +162,6 @@ export abstract class BaseHTMLElement extends HTMLElement {
 	 * Empty implementation to allow `super.disconnectedCallback()` best practices on sub classes
 	 */
 	disconnectedCallback() {
-
 		// NOTE: Here we detached
 		if (this._has_parent_events === true || this._force_clean_root_events === true) {
 			requestAnimationFrame(() => {
@@ -179,20 +186,18 @@ export abstract class BaseHTMLElement extends HTMLElement {
 			unbindOnHubDecorators.call(this);
 			this._hub_bindings_done = false;
 		}
-
 	}
-
 }
 
-export function addDOMEvents(target: OnListenerByTypeSelector | undefined, source: OnListenerByTypeSelector): OnListenerByTypeSelector {
+export function addDOMEvents(
+	target: OnListenerByTypeSelector | undefined,
+	source: OnListenerByTypeSelector,
+): OnListenerByTypeSelector {
 	return Object.assign(target || {}, source);
 }
 
 export function addHubEvents(target: HubBindings | undefined, source: HubBindings) {
-	const t: HubBindings = (target == null) ? [] : (target instanceof Array) ? target : [target];
-	(source instanceof Array) ? t.push(...source) : t.push(source);
+	const t: HubBindings = target == null ? [] : target instanceof Array ? target : [target];
+	source instanceof Array ? t.push(...source) : t.push(source);
 	return t;
 }
-
-
-

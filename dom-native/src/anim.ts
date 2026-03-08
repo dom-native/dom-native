@@ -22,46 +22,45 @@ export type AnimCallback = (ntime: number, raftime: number) => void | boolean;
  * @returns Promise<void>, which resolve with the raftime of the last frame.
  */
 export function anim(callback: AnimCallback, duration: number, ease?: (linearTime: number) => number): Promise<void> {
+	return new Promise<void>((res, rej) => {
+		requestAnimationFrame((rstart) => {
+			// capture the start raf time
+			const rafStart = rstart;
 
-  return new Promise<void>((res, rej) => {
-    requestAnimationFrame((rstart) => {
-      // capture the start raf time
-      const rafStart = rstart;
+			// start the callbacks
+			callNext(rafStart);
 
-      // start the callbacks
-      callNext(rafStart);
+			function callNext(rtime: number) {
+				const rafTime = rtime; // current raf time
 
-      function callNext(rtime: number) {
-        const rafTime = rtime; // current raf time
+				//// Compute the ntime
+				// absolute time from the start of the animation
+				const deltaTime = rafTime - rafStart;
+				// Note: the last deltaTime will likely be a little higher than the target duration
+				const last = deltaTime >= duration;
+				const linearTime = last ? 1 : deltaTime / duration;
+				const ntime = ease ? ease(linearTime) : linearTime;
 
-        //// Compute the ntime
-        // absolute time from the start of the animation
-        const deltaTime = rafTime - rafStart;
-        // Note: the last deltaTime will likely be a little higher than the target duration
-        const last = deltaTime >= duration;
-        const linearTime = last ? 1 : deltaTime / duration;
-        const ntime = ease ? ease(linearTime) : linearTime;
+				//// Call the callback
+				try {
+					// perform the callback
+					const r = callback(ntime, rafTime);
 
-        //// Call the callback
-        try {
-          // perform the callback
-          const r = callback(ntime, rafTime);
+					// determine if the callback wants the animation to stop
+					const stopped = r === false;
 
-          // determine if the callback wants the animation to stop
-          const stopped = r === false;
-
-          // if it is last frame or been stopped, resolve the promise
-          if (last || stopped) {
-            res();
-          }
-          // otherwise, we schedule a callNext for the next request animation frame
-          else {
-            requestAnimationFrame(callNext);
-          }
-        } catch (ex) {
-          rej(ex);
-        }
-      }
-    });
-  });
+					// if it is last frame or been stopped, resolve the promise
+					if (last || stopped) {
+						res();
+					}
+					// otherwise, we schedule a callNext for the next request animation frame
+					else {
+						requestAnimationFrame(callNext);
+					}
+				} catch (ex) {
+					rej(ex);
+				}
+			}
+		});
+	});
 }

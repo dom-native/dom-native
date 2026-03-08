@@ -1,7 +1,4 @@
-
-
 // --------- Object Utils --------- //
-
 
 // return true if the value is null, undefined, empty array, empty string, or empty object
 export function isEmpty(v: any) {
@@ -10,13 +7,15 @@ export function isEmpty(v: any) {
 		return true;
 	}
 
-	if (v instanceof Array || tof === 'string') {
-		return (v.length === 0) ? true : false;
+	if (v instanceof Array || tof === "string") {
+		return v.length === 0 ? true : false;
 	}
 
-	if (tof === 'object') {
+	if (tof === "object") {
 		// apparently 10x faster than Object.keys
-		for (const x in v) { return false; }
+		for (const x in v) {
+			return false;
+		}
 		return true;
 	}
 
@@ -25,7 +24,7 @@ export function isEmpty(v: any) {
 
 // TODO: need to document
 export function val(rootObj: any, pathToValue: null | undefined | string | string[], value?: any): any {
-	const setMode = (typeof value !== "undefined");
+	const setMode = typeof value !== "undefined";
 
 	if (!rootObj) {
 		return rootObj;
@@ -35,15 +34,20 @@ export function val(rootObj: any, pathToValue: null | undefined | string | strin
 		return rootObj;
 	}
 	// if the pathToValue is already an array, do not parse it (this allow to support '.' in prop names)
-	const names = (pathToValue instanceof Array) ? pathToValue : pathToValue.split(".");
+	const names = pathToValue instanceof Array ? pathToValue : pathToValue.split(".");
 
-	let name, currentNode = rootObj, currentIsMap, nextNode;
+	let name,
+		currentNode = rootObj,
+		currentIsMap,
+		nextNode;
 
-	let i = 0, l = names.length, lIdx = l - 1;
+	let i = 0,
+		l = names.length,
+		lIdx = l - 1;
 	for (i; i < l; i++) {
 		name = names[i];
 
-		currentIsMap = (currentNode instanceof Map);
+		currentIsMap = currentNode instanceof Map;
 		nextNode = currentIsMap ? currentNode.get(name) : currentNode[name];
 
 		if (setMode) {
@@ -92,13 +96,13 @@ export function listAsArray(list: any) {
 export function ensureObject(obj: any, propName: any): { [key: string]: any } {
 	return _ensure(obj, propName);
 }
-// Make sure that this obj[propName] is a js Map and returns it. 
+// Make sure that this obj[propName] is a js Map and returns it.
 // Otherwise, create a new one, set it, and return it.
 export function ensureMap(obj: any, propName: any): Map<any, any> {
 	return _ensure(obj, propName, Map);
 }
 
-// Make sure that this obj[propName] is a js Set and returns it. 
+// Make sure that this obj[propName] is a js Set and returns it.
 // Otherwise, create a new one, set it, and return it.
 export function ensureSet(obj: any, propName: any): Set<any> {
 	return _ensure(obj, propName, Set);
@@ -110,10 +114,10 @@ export function ensureArray(obj: any, propName: any): any[] {
 }
 
 function _ensure(obj: any, propName: any, type?: any): any {
-	const isMap = (obj instanceof Map);
-	let v = (isMap) ? obj.get(propName) : obj[propName];
+	const isMap = obj instanceof Map;
+	let v = isMap ? obj.get(propName) : obj[propName];
 	if (v == null) {
-		v = (type == null) ? {} : (type === Array) ? [] : (new type);
+		v = type == null ? {} : type === Array ? [] : new type();
 		if (isMap) {
 			obj.set(propName, v);
 		} else {
@@ -125,9 +129,8 @@ function _ensure(obj: any, propName: any, type?: any): any {
 
 // --------- /ensureType --------- //
 
-
 // --------- asType --------- //
-// Return an array from a value object. If value is null/undefined, return empty array. 
+// Return an array from a value object. If value is null/undefined, return empty array.
 // If value is null or undefined, return empty array
 // If the value is an array it is returned as is
 // If the value is a object with forEach/length will return a new array for these values
@@ -157,7 +160,7 @@ export function asArray(value: any) {
 const emptyArray = Object.freeze([]);
 
 /**
- * Returns a readonly Node array from EventTarget, NodeList, Node[], or empty readonly array for null and undefined. 
+ * Returns a readonly Node array from EventTarget, NodeList, Node[], or empty readonly array for null and undefined.
  */
 export function asNodeArray(value: EventTarget | NodeList | Node[] | null | undefined): readonly Node[] {
 	if (value != null) {
@@ -168,7 +171,7 @@ export function asNodeArray(value: EventTarget | NodeList | Node[] | null | unde
 		else if (value.constructor && value.constructor.name === "NodeList") {
 			return Array.prototype.slice.call(value);
 		}
-		// FIXME: Needs to handle the document fragment case. 
+		// FIXME: Needs to handle the document fragment case.
 		// otherwise we add value
 		else {
 			return [value as Node]; // Note: here we assume it the evenTarget is a node

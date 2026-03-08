@@ -9,8 +9,6 @@
   "scripts": {
     "prepack": "npm run build",
     "build": "tsx --tsconfig scripts/tsconfig.json ./scripts/cmds.ts build",
-    "build-dev-js": "./node_modules/.bin/rollup -c dev.rollup.config.js",
-    "build-dev-css": "pcss",
     "build-lib": "tsx --tsconfig scripts/tsconfig.json scripts/cmds.ts build_lib",
     "watch": "tsx --tsconfig scripts/tsconfig.json ./scripts/cmds.ts watch"
   },

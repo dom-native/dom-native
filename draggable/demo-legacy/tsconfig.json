@@ -2,10 +2,10 @@
 {
 	"compilerOptions": {
 		// For browser client, we target edge and above (use es2016 for [].includes for example)
-		"target": "es2018",
+		"target": "ES2022",
 
 		// For browser client, since we are using rollup to package, we target the es6/es2015 module
-		"module": "es2015",
+		"module": "ES2022",
 
 		// This is important to support 3rd party modules that are still in a node.js/commonjs way
 		"moduleResolution": "node", 

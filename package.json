@@ -1,0 +1,17 @@
+{
+  "name": "dom-native-monorepo-root",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build-demo": "node scripts/build-demo.js",
+    "watch-demo": "node scripts/watch-demo.js"
+  },
+  "devDependencies": {
+    "d3-ease": "^3.0.1",
+    "rolldown": "^1.0.0-rc.8",
+    "tslib": "^2.8.1",
+    "typescript": "^5.6.3",
+    "lightningcss": "^1.32.0",
+    "utils-min": "^0.2.4"
+  }
+}

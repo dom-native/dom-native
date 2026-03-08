@@ -52,13 +52,11 @@
   "scripts": {
     "prepack": "npm run build",
     "build": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm ./scripts/cmds.ts build",
-    "build-demo-js": "./node_modules/.bin/rollup -c",
-    "build-demo-css": "./node_modules/.bin/postcss -o demo/dist/demo-bundle.css  demo/pcss/main.pcss",
     "watch": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts watch",
     "site": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts site"
   },
   "engines": {
-    "node": ">=8.2.0"
+    "node": ">=18"
   },
   "author": "Jeremy Chone <jeremy.chone@gmail.com> (http://jeremychone.com)",
   "license": "MIT"

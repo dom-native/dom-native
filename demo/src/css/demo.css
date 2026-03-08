@@ -1,0 +1,165 @@
+@import "./colors.css";
+
+html {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	display: flex;
+	flex-direction: row;
+	font-family: Roboto;
+}
+
+.test-output {
+	border-right: solid 1px #ddd;
+	width: 300px;
+	margin-right: 8px;
+
+	h1 {
+		font-size: 24px;
+	}
+
+	li {
+		font-family: courier;
+		font-size: 13px;
+		margin-bottom: 0.5rem;
+	}
+
+	&.fail {
+		color: red;
+	}
+}
+
+/* #region    spec-main-view */
+spec-main-view {
+	flex: 1;
+	display: grid;
+	grid-template-rows: 4rem 1fr;
+	grid-template-columns: 10rem 1fr;
+
+	header {
+		grid-column: span 2;
+		background: #777;
+		color: #fff;
+		display: grid;
+		grid-template-columns: 12rem 2rem 15rem 15rem 15rem 1fr;
+		align-items: stretch;
+		grid-gap: 1rem;
+		& > * {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		H1 {
+			font-size: 1.5rem;
+			font-weight: 200;
+			margin: 0;
+			padding: 0;
+		}
+
+		a.item {
+			text-decoration: none;
+			color: #ddd;
+			font-size: 1.25rem;
+			font-weight: 200;
+			letter-spacing: 0.01em;
+			&.sel {
+				color: #333;
+				background: rgba(255, 255, 255, 1);
+				font-weight: 500;
+				color: var(--clr-prime);
+			}
+		}
+	}
+	nav {
+		padding-top: 2rem;
+		background: #f0f0f0;
+		display: grid;
+		grid-auto-rows: min-content;
+		grid-row-gap: 0.5rem;
+		& > * {
+			padding: 1rem;
+			border-left: solid 4px rgba(255, 255, 255, 0);
+
+			&.sel {
+				background: #fff;
+				border-left: solid 4px var(--clr-prime);
+			}
+		}
+	}
+	main {
+		display: flex;
+		padding: 1rem;
+		pre {
+			font-size: 14px;
+			font-weight: 500;
+			letter-spacing: 0.01em;
+			background: #f0f0f0;
+			padding: 1rem;
+			overflow: auto;
+			code {
+				color: #777;
+				span.tag {
+					color: #336699;
+				}
+				span.attr {
+					color: #22863a;
+				}
+			}
+		}
+		.spec-view {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			h1 {
+				font-size: 1.5rem;
+			}
+
+			& > section {
+				flex: 1;
+				display: grid;
+				grid-auto-flow: column;
+				grid-gap: 1rem;
+				& > div.panel {
+					max-width: 50rem;
+					&.w-med {
+						width: 30rem;
+					}
+					.item {
+						&.tall {
+							.result {
+								height: 10rem;
+								display: grid;
+								grid-template-rows: 1fr;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	aside#console {
+		display: none; /* DEBUG: for now, hide it, useful for quick mobile debugging */
+		white-space: pre;
+		overflow: scroll;
+		position: absolute;
+		right: 8px;
+		top: 8px;
+		width: 20rem;
+		height: 15rem;
+		border: solid 1px #ddd;
+		background: #fefefe;
+		font-family: "Courier New", Courier, monospace;
+		font-size: 11px;
+	}
+}
+
+/* #endregion spec-main-view */

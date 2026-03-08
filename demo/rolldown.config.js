@@ -1,0 +1,18 @@
+import { defineConfig } from "rolldown";
+
+export default defineConfig({
+	input: new URL("./src/main.ts", import.meta.url).pathname,
+	resolve: {
+		alias: {
+			"dom-native": new URL("../dom-native/src/index.ts", import.meta.url).pathname,
+			"#dom-native": new URL("../dom-native/src/index.ts", import.meta.url).pathname,
+			"@dom-native/draggable": new URL("../draggable/src/index.ts", import.meta.url).pathname,
+		},
+	},
+	output: {
+		file: new URL("./web-content/js/demo-bundle.js", import.meta.url).pathname,
+		format: "iife",
+		sourcemap: true,
+	},
+});
+

@@ -1,9 +1,8 @@
-import { asNodeArray, ensureMap, ensureSet, splitAndTrim } from './utils.js';
+import { asNodeArray, ensureMap, ensureSet, splitAndTrim } from "./utils.js";
 
 type EventTargetOrMore = EventTarget | NodeList | [Node];
 
-
-/** 
+/**
  * Extension type for events bound with dom-native on(...) or onEvent/onDoc/onWin decorator.
  * - Add the selectTarget
  * - Parameterized detail
@@ -16,45 +15,44 @@ export interface OnEvent<T = any | undefined> extends Event {
 	currentTarget: HTMLElement;
 }
 
-//#region    ---------- Public Types ---------- 
+//#region    ---------- Public Types ----------
 // One Strategy is to merge the common HTML events for convenient binding, and add &object to allow further casting */
 // export type ExtendedEvent = Event & SelectTarget & DetailEvent & KeyboardEvent & MouseEvent & TouchEvent & object;
 // type ExtendedEvent = Event;
 
-// Note: For now, we add any to allow have the type we want when using method. 
+// Note: For now, we add any to allow have the type we want when using method.
 export type OnEventListener = (evt: Event & OnEvent & any) => void;
 
-/** 
- * A key/value object representing a list of binding with the ky becase a typeAndSelector string 
- * The `typeAndSelector` is of format `type;selector`, e.g., `click;button.do-ok`. Can just bue `click` for type only. 
+/**
+ * A key/value object representing a list of binding with the ky becase a typeAndSelector string
+ * The `typeAndSelector` is of format `type;selector`, e.g., `click;button.do-ok`. Can just bue `click` for type only.
  */
 export type OnListenerByTypeSelector = { [typeAndselector: string]: OnEventListener };
 
-
 export interface OnEventOptions {
 	/** The context with which the call back will be called (i.e. 'this' context) */
-	ctx?: object,
+	ctx?: object;
 
 	/** The namespace used to bind this event, which will allow to remove all of the binding done with this namespace with .off */
-	ns?: string,
+	ns?: string;
 	/** AddEventListenerOptions.capture */
-	capture?: boolean,
+	capture?: boolean;
 	/** AddEventListenerOptions.passive */
-	passive?: boolean,
+	passive?: boolean;
 
 	/**
-	 * If true, event will be bound at next frame 
-	 * (i.e., requestAnimationFrame) 
+	 * If true, event will be bound at next frame
+	 * (i.e., requestAnimationFrame)
 	 * Default false
 	 **/
-	nextFrame?: boolean,
+	nextFrame?: boolean;
 
-	/** 
+	/**
 	 * If true, will be quiet if ctx instannceof HTMLElement && ctx.isConnected === false
 	 */
-	silenceDisconnectedCtx?: boolean,
+	silenceDisconnectedCtx?: boolean;
 }
-//#endregion ---------- /Public Types ---------- 
+//#endregion ---------- /Public Types ----------
 
 type ListenerDic = Map<string, Map<Function, ListenerRef>>;
 
@@ -63,26 +61,33 @@ interface NodeExtension {
 	listenerRefsByNs?: Map<string, any>;
 }
 
-
 interface OffOptions {
 	ns?: string;
 }
 
 interface ListenerRef {
-	type: string,
-	listener: OnEventListener, // the listener as passed by the user
+	type: string;
+	listener: OnEventListener; // the listener as passed by the user
 	selector?: string;
-	ns?: string,
-	_listener: OnEventListener, // an eventual wrap of the listener, or just point listener.
+	ns?: string;
+	_listener: OnEventListener; // an eventual wrap of the listener, or just point listener.
 }
 
-export function addOnEvents(target: OnListenerByTypeSelector | undefined, source: OnListenerByTypeSelector): OnListenerByTypeSelector {
+export function addOnEvents(
+	target: OnListenerByTypeSelector | undefined,
+	source: OnListenerByTypeSelector,
+): OnListenerByTypeSelector {
 	return Object.assign(target || {}, source);
 }
 
-//#region    ---------- Public on API ---------- 
+//#region    ---------- Public on API ----------
 
-export function on<K extends keyof HTMLElementEventMap>(els: EventTargetOrMore | null, type: K, listener: (this: HTMLElement, ev: { selectTarget: HTMLElement } & HTMLElementEventMap[K]) => void, opts?: OnEventOptions): void;
+export function on<K extends keyof HTMLElementEventMap>(
+	els: EventTargetOrMore | null,
+	type: K,
+	listener: (this: HTMLElement, ev: { selectTarget: HTMLElement } & HTMLElementEventMap[K]) => void,
+	opts?: OnEventOptions,
+): void;
 /**
  * Bind one or more evevent type to one or more HTMLElements
  * @param els single or array of the base dom elements to bind the event listener upon.
@@ -90,9 +95,20 @@ export function on<K extends keyof HTMLElementEventMap>(els: EventTargetOrMore |
  * @param listener function which will get the "event" as first parameter
  * @param opts (optional) {capture, passive, ctx, ns} optional namespace (ns) and ctx (i.e. this)
  */
-export function on(els: EventTargetOrMore | null, types: string, listener: OnEventListener, opts?: OnEventOptions): void;
+export function on(
+	els: EventTargetOrMore | null,
+	types: string,
+	listener: OnEventListener,
+	opts?: OnEventOptions,
+): void;
 
-export function on<K extends keyof HTMLElementEventMap>(els: EventTargetOrMore | null, type: K, selector: string | null, listener: (this: HTMLElement, ev: { selectTarget: HTMLElement } & HTMLElementEventMap[K]) => void, opts?: OnEventOptions): void;
+export function on<K extends keyof HTMLElementEventMap>(
+	els: EventTargetOrMore | null,
+	type: K,
+	selector: string | null,
+	listener: (this: HTMLElement, ev: { selectTarget: HTMLElement } & HTMLElementEventMap[K]) => void,
+	opts?: OnEventOptions,
+): void;
 /**
  * Bind one or more evevent type to one or more HTMLElements matching a css selector
  * @param els single or array of the base dom elements to bind the event listener upon.
@@ -101,9 +117,21 @@ export function on<K extends keyof HTMLElementEventMap>(els: EventTargetOrMore |
  * @param listener function which will get the "event" as first parameter
  * @param opts (optional) {capture, passive, ctx, ns} optional namespace (ns) and ctx (i.e. this)
  */
-export function on(els: EventTargetOrMore | null, types: string, selector: string | null, listener: OnEventListener, opts?: OnEventOptions): void;
+export function on(
+	els: EventTargetOrMore | null,
+	types: string,
+	selector: string | null,
+	listener: OnEventListener,
+	opts?: OnEventOptions,
+): void;
 
-export function on(els: EventTargetOrMore | null, types: string, arg1: string | null | OnEventListener, arg2?: OnEventListener | OnEventOptions, arg3?: OnEventOptions): void {
+export function on(
+	els: EventTargetOrMore | null,
+	types: string,
+	arg1: string | null | OnEventListener,
+	arg2?: OnEventListener | OnEventOptions,
+	arg3?: OnEventOptions,
+): void {
 	let opts: OnEventOptions | undefined;
 	let listener: OnEventListener;
 	let selector: string | undefined | null;
@@ -118,7 +146,7 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 		opts = arg3 as OnEventOptions | undefined;
 	}
 
-	// AddEventListenerOptions	
+	// AddEventListenerOptions
 	let eventOptions: OnEventOptions;
 	if (opts && (opts.passive != null || opts.capture != null)) {
 		eventOptions = {};
@@ -136,8 +164,7 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 
 	const silenceDisconnectedCtx = opts?.silenceDisconnectedCtx;
 	const ctx = opts?.ctx;
-	const ctxEl = (ctx instanceof HTMLElement) ? ctx : undefined;
-
+	const ctxEl = ctx instanceof HTMLElement ? ctx : undefined;
 
 	const typeArray = splitAndTrim(types, ",");
 
@@ -145,7 +172,6 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 		const typeSelectorKey = buildTypeSelectorKey(type, selector);
 
 		asNodeArray(els).forEach(function (el: Node) {
-
 			// This will the listener use for the even listener, which might differ
 			// from the listener function passed in case of a selector
 			let _listener = listener;
@@ -156,9 +182,9 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 					let tgt: HTMLElement | Document | null = null;
 					const target = evt.target;
 					const currentTarget = evt.currentTarget;
-					const ctx = (opts) ? opts.ctx : null;
+					const ctx = opts ? opts.ctx : null;
 
-					// if the 
+					// if the
 					if (silenceDisconnectedCtx === true && ctxEl != null) {
 						if (!ctxEl.isConnected) {
 							return;
@@ -178,9 +204,10 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 					else {
 						// TODO: type narrowing needed.
 						tgt = (evt.target as HTMLElement).parentNode as HTMLElement | Document | null;
-						// TODO: might need to check that tgt is not undefined as well. 
+						// TODO: might need to check that tgt is not undefined as well.
 						while (tgt !== null && tgt !== currentTarget && tgt !== document) {
-							if ((<HTMLElement>tgt).matches(selector!)) { // selector is present here (see if above)
+							if ((<HTMLElement>tgt).matches(selector!)) {
+								// selector is present here (see if above)
 								// Note: While mouseEvent are readonly for its properties, it does allow to add custom properties
 								evt.selectTarget = tgt as HTMLElement;
 								listener.call(ctx, evt);
@@ -217,7 +244,6 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 			// If we have a namespace, they add it to the Ref, and to the listenerRefsByNs
 			// TODO: need to add listenerRef in a nsDic if if there a opts.ns
 			if (opts && opts.ns) {
-
 				listenerRef.ns = opts.ns;
 				let listenerRefSetByNs = ensureMap(el, "listenerRefsByNs");
 				let listenerRefSet = ensureSet(listenerRefSetByNs, opts.ns);
@@ -238,17 +264,12 @@ export function on(els: EventTargetOrMore | null, types: string, arg1: string | 
 			} else {
 				el.addEventListener(type, _listener as EventListener, eventOptions);
 			}
-
-
 		}); // /utils.asArray(els).forEach(function(el){
-
 	}); // /types.forEach(function(type){
-
 }
-//#endregion ---------- /Public on API ---------- 
+//#endregion ---------- /Public on API ----------
 
-
-//#region    ---------- Public off API ---------- 
+//#region    ---------- Public off API ----------
 // remove the event binding
 // .off(els); remove all events added via .on
 // .off(els, type); remove all events of type added via .on
@@ -261,25 +282,29 @@ export function off(els: EventTargetOrMore | null, type: string, selector: strin
 export function off(els: EventTargetOrMore | null, type: string, listener?: OnEventListener): void;
 export function off(els: EventTargetOrMore | null, type: string, selector: string, listener?: OnEventListener): void;
 export function off(els: EventTargetOrMore | null, opts?: OffOptions): void;
-export function off(els: EventTargetOrMore | null, type_or_opts?: string | OffOptions, selector_or_listener?: string | OnEventListener, maybe_listener?: OnEventListener) {
+export function off(
+	els: EventTargetOrMore | null,
+	type_or_opts?: string | OffOptions,
+	selector_or_listener?: string | OnEventListener,
+	maybe_listener?: OnEventListener,
+) {
 	if (els == null) {
 		return;
 	}
 
 	// for now, opts is only the first position
-	const opts: OffOptions | null = (type_or_opts && (<OffOptions>type_or_opts).ns) ? type_or_opts as OffOptions : null;
-	const type = (opts === null) ? type_or_opts as string : null;
+	const opts: OffOptions | null = type_or_opts && (<OffOptions>type_or_opts).ns ? (type_or_opts as OffOptions) : null;
+	const type = opts === null ? (type_or_opts as string) : null;
 
 	let selector: string | null = null;
 	let listener: OnEventListener | undefined;
 
 	const tof = typeof selector_or_listener;
 
-	if (tof === 'function') {
+	if (tof === "function") {
 		selector = null;
 		listener = selector_or_listener as OnEventListener;
-	}
-	else if (tof === 'string') {
+	} else if (tof === "string") {
 		selector = selector_or_listener as string;
 		listener = maybe_listener;
 	}
@@ -321,14 +346,16 @@ export function off(els: EventTargetOrMore | null, type_or_opts?: string | OffOp
 	const typeSelectorKey = buildTypeSelectorKey(type!, selector);
 
 	asNodeArray(els).forEach(function (el: Node & NodeExtension) {
-
 		// First, get the listenerRefByListener for this type/selectory
-		const listenerRefMapByListener = (el.listenerDic) ? el.listenerDic.get(typeSelectorKey) : null; //val(el, ["listenerDic", typeSelectorKey]);
+		const listenerRefMapByListener = el.listenerDic ? el.listenerDic.get(typeSelectorKey) : null; //val(el, ["listenerDic", typeSelectorKey]);
 
 		// for now, if we do not have a listenerRef for this type/[selector], we throw an error
 		if (!listenerRefMapByListener) {
-			console.log("WARNING - Cannot do .off() since this type-selector '" + typeSelectorKey +
-				"' event was not bound with .on(). We will add support for this later.");
+			console.log(
+				"WARNING - Cannot do .off() since this type-selector '" +
+					typeSelectorKey +
+					"' event was not bound with .on(). We will add support for this later.",
+			);
 			return;
 		}
 
@@ -344,11 +371,16 @@ export function off(els: EventTargetOrMore | null, type_or_opts?: string | OffOp
 		}
 		// if we have a listener, then, just remove this one.
 		else {
-			// check that we have the map. 
-			const listenerRef = (listener) ? listenerRefMapByListener.get(listener) : null;
+			// check that we have the map.
+			const listenerRef = listener ? listenerRefMapByListener.get(listener) : null;
 			if (!listenerRef) {
-				console.log("WARNING - Cannot do .off() since no listenerRef for " + typeSelectorKey +
-					" and function \n" + listener + "\n were found. Probably was not registered via on()");
+				console.log(
+					"WARNING - Cannot do .off() since no listenerRef for " +
+						typeSelectorKey +
+						" and function \n" +
+						listener +
+						"\n were found. Probably was not registered via on()",
+				);
 				return;
 			}
 
@@ -360,37 +392,40 @@ export function off(els: EventTargetOrMore | null, type_or_opts?: string | OffOp
 			// TODO: check typing ! assumption
 			listenerRefMapByListener.delete(listener!);
 		}
-
 	});
 }
-//#endregion ---------- /Public off API ---------- 
+//#endregion ---------- /Public off API ----------
 
-
-//#region    ---------- Public trigger API ---------- 
+//#region    ---------- Public trigger API ----------
 const customDefaultProps = {
 	bubbles: true,
-	cancelable: true
+	cancelable: true,
 };
 
 export function trigger(els: EventTargetOrMore | null | undefined, type: string, evtInit?: CustomEventInit): void {
-	if (els == null) { return; } // for now make it null/undefined proof
+	if (els == null) {
+		return;
+	} // for now make it null/undefined proof
 
 	asNodeArray(els).forEach(function (el) {
 		const evt = new CustomEvent(type, Object.assign({}, customDefaultProps, { selectTarget: el }, evtInit));
 		el.dispatchEvent(evt);
 	});
 }
-//#endregion ---------- /Public trigger API ---------- 
+//#endregion ---------- /Public trigger API ----------
 
-
-//#region    ---------- Public bindDOMEvents API ---------- 
+//#region    ---------- Public bindDOMEvents API ----------
 /**
  * Bind a list of bindings
  *
  * @param typeAndSelector e.g., `click` or `click; button.add`
  */
-export function bindOnEvents(el: EventTarget, eventDics: OnListenerByTypeSelector | OnListenerByTypeSelector[], opts: OnEventOptions) {
-	eventDics = (eventDics instanceof Array) ? eventDics : [eventDics]; // make we have an array of eventDic
+export function bindOnEvents(
+	el: EventTarget,
+	eventDics: OnListenerByTypeSelector | OnListenerByTypeSelector[],
+	opts: OnEventOptions,
+) {
+	eventDics = eventDics instanceof Array ? eventDics : [eventDics]; // make we have an array of eventDic
 	for (const eventDic of eventDics) {
 		for (const selector in eventDic) {
 			bindOnEvent(el, selector, eventDic[selector], opts);
@@ -400,7 +435,7 @@ export function bindOnEvents(el: EventTarget, eventDics: OnListenerByTypeSelecto
 
 /**
  * Bind one event to a el by appropriately parsing the `typeAndSelector` might contains a selector;
- * 
+ *
  * @param typeAndSelector e.g., `click` or `click; button.add`
  */
 export function bindOnEvent(el: EventTarget, typeAndSelector: string, fn: OnEventListener, opts: OnEventOptions) {
@@ -414,9 +449,8 @@ export function bindOnEvent(el: EventTarget, typeAndSelector: string, fn: OnEven
 	on(el, type, selector, fn, opts);
 }
 
-//#endregion ---------- /Public bindDOMEvents API ---------- 
-
+//#endregion ---------- /Public bindDOMEvents API ----------
 
 function buildTypeSelectorKey(type: string, selector?: string | null): string {
-	return (selector) ? (type + "--" + selector) : type;
+	return selector ? type + "--" + selector : type;
 }

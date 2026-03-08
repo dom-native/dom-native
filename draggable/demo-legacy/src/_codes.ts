@@ -1,6 +1,4 @@
-
-
-export const code_flip	= `
+export const code_flip = `
 @customElement('c-panel')
 export class PanelElement extends BaseHTMLElement {
 	get col() { return this.parentElement as ColElement }
@@ -38,8 +36,8 @@ function enableDrag(rootEl: HTMLElement) {
 		activateDrag(panel, pointerDownEvt, {
 			// NOTE 1 - the pointerCapture cannot be source (the default) since it will be re-attached causing a cancel
 			//          @dom-native/draggable allows to set a custom pointerCapture
-			// NOTE 2 - binding pointerCapture roolEl might have some significant performance impact on mobile devices (e.g.,, mobile safari). 
-			//          document.body shortest event path, and provides sensible performance gain on ipad. 
+			// NOTE 2 - binding pointerCapture roolEl might have some significant performance impact on mobile devices (e.g.,, mobile safari).
+			//          document.body shortest event path, and provides sensible performance gain on ipad.
 			pointerCapture: document.body,
 
 			// we will still drag the ghost (here could be 'none' as well)
@@ -110,21 +108,19 @@ function enableDrag(rootEl: HTMLElement) {
 
 `;
 
-		
-
-export const code_positionSimple	= `
+export const code_positionSimple = `
 function positionSimple(rootEl: HTMLElement) {
 
 
 	on(rootEl, 'pointerup', '.clickable', async (evt) => {
 
-		// NOTE: here we do some cleanup, but the problem with SpecView not fully resolved becase of dom-native aliased 
+		// NOTE: here we do some cleanup, but the problem with SpecView not fully resolved becase of dom-native aliased
 		//       prevents to do the disconnectedCallback on SpecPositionView
 		first("#popup-pos")?.remove();
 
 		// Note: Position assume the element to be positioned is absolute
 		const [popupEl] = append(document.body, \`
-			<div id="popup-pos" 
+			<div id="popup-pos"
 						style="position: absolute; top: 0; left: 0; width: 8rem; height: 8rem; background: blue; opacity: .9">
 			</div>\`);//
 
@@ -155,5 +151,3 @@ function positionSimple(rootEl: HTMLElement) {
 	});
 }
 `;
-
-		

@@ -1,19 +1,18 @@
-import type { BaseHTMLElement } from './c-base.js';
-import { hub } from './hub.js';
+import type { BaseHTMLElement } from "./c-base.js";
+import { hub } from "./hub.js";
 
-type OnHubEvent = { methodName: string, hubName: string, topic: string, label?: string };
+type OnHubEvent = { methodName: string; hubName: string; topic: string; label?: string };
 
 const _onHubEventByConstructor: Map<Function, OnHubEvent[]> = new Map();
 
 type ComputedOnHubEvents = OnHubEvent[] | null;
 const _computedOnHubEventByConstructor = new WeakMap<Function, ComputedOnHubEvents>();
 
-//#region    ---------- Public onEvent Decorator ---------- 
+//#region    ---------- Public onEvent Decorator ----------
 /**
  * `onHub` decorator to bind a hub event to this instance.
  */
 export function onHub(hubName: string, topic: string, label?: string) {
-
 	// target references the element's class. It will be the constructor function for a static method or the prototype of the class for an instance member
 	return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
 		const clazz = target.constructor;
@@ -30,17 +29,16 @@ export function onHub(hubName: string, topic: string, label?: string) {
 			methodName: propertyKey,
 			hubName,
 			topic,
-			label
+			label,
 		};
 		onEvents.push(onEvent);
-	}
+	};
 }
-//#endregion ---------- /Public onEvent Decorator ---------- 
+//#endregion ---------- /Public onEvent Decorator ----------
 
 export function hasHubEventDecorators(el: HTMLElement) {
 	return getComputedOnHubEvents(el.constructor) != null;
 }
-
 
 // For BaseHTMLElement
 export function bindOnHubDecorators(this: BaseHTMLElement) {
@@ -74,9 +72,7 @@ export function unbindOnHubDecorators(this: any) {
 			h.unsub(nsObj);
 		}
 	}
-
 }
-
 
 function getComputedOnHubEvents(clazz: Function): ComputedOnHubEvents {
 	const topClazz = clazz;
@@ -99,8 +95,7 @@ function getComputedOnHubEvents(clazz: Function): ComputedOnHubEvents {
 		}
 		// clazz = (<any>clazz).__proto__;
 		clazz = Object.getPrototypeOf(clazz);
-	} while (clazz != HTMLElement)
-
+	} while (clazz != HTMLElement);
 
 	const computed: ComputedOnHubEvents = topClazzHubEvents.length > 0 ? topClazzHubEvents : null;
 	_computedOnHubEventByConstructor.set(topClazz, computed);
