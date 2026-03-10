@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build-demo": "node scripts/build-demo.js",
+    "build-demo": "node --trace-deprecation scripts/build-demo.js  ",
     "watch-demo": "node scripts/watch-demo.js"
   },
   "devDependencies": {
