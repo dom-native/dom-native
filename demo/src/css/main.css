@@ -1,5 +1,6 @@
 @import "demo.css";
 @import "colors.css";
+@import "./test.css";
 
 .card {
 	box-shadow:
