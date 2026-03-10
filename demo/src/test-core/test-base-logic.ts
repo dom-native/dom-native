@@ -3,7 +3,7 @@ import { equal } from './test-utils.js';
 
 let out: string[] = [];
 
-//#region    ---------- Test Components ---------- 
+//#region    ---------- Test Components ----------
 class SimplestComponent extends BaseHTMLElement {
 	@onEvent('click')
 	onClickEvent() {
@@ -105,7 +105,7 @@ class AtHubComponent extends BaseHTMLElement {
 	}
 }
 
-//#endregion ---------- /Test Components ---------- 
+//#endregion ---------- /Test Components ----------
 
 
 
@@ -132,10 +132,13 @@ export function testComponentEventBindings() {
 }
 
 
-
-export function testComponentDocEvent() {
+// NOTE: Important to be async, becuse of the wait animation frame
+export async function testComponentDocEvent() {
 	const contentEl = getRequiredTestElement('.test-content');
-	const [docComp] = append(contentEl, `<doc-component></doc-component>`);
+	const [docComp] = append(contentEl, `<doc-component>DOC_COMPONENT</doc-component>`);
+
+	// IMPORTANT: need to do make sure it docComp get fully added to get the doc event.
+	await new Promise(requestAnimationFrame);
 
 	// click on the parent of doc-component
 	contentEl.click();
@@ -148,11 +151,15 @@ export function testComponentDocEvent() {
 	equal(out, []);
 }
 
-export function testReattachedComponentDocEvent() {
+// NOTE: Important to be async, becuse of the wait animation frame
+export async function testReattachedComponentDocEvent() {
 	const contentEl = getRequiredTestElement('.test-content');
 	const [docComp] = append(contentEl, `<doc-component></doc-component>`);
 	docComp.remove();
 	contentEl.append(docComp);
+
+	// IMPORTANT: need to do make sure it docComp get fully added to get the doc event.
+	await new Promise(requestAnimationFrame);
 
 	// click on the parent of doc-component
 	contentEl.click();
@@ -206,7 +213,7 @@ export async function testLifecycle() {
 	equal(el.constructor.name, 'HTMLElement'); // here the fliecycle is only a HTMLElement
 	equal((el as any).info, undefined); // here, the property does not exist
 
-	// Note: DocumentFragment or createElement do NOT instantiate the custom element class, just create a raw HTML element for the tag. 
+	// Note: DocumentFragment or createElement do NOT instantiate the custom element class, just create a raw HTML element for the tag.
 	equal(contentEl.test_out, []);
 
 	// We append it to the DOM
@@ -227,7 +234,8 @@ export async function testLifecycle() {
 
 type TestHTMLElement = HTMLElement & { test_out: string[] };
 
-function as_test_el(el: HTMLElement): TestHTMLElement {
+function as_test_el(el: HTMLElement & any): TestHTMLElement {
+	el.test_out = []
 	return el as TestHTMLElement;
 }
 
