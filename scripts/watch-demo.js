@@ -1,46 +1,117 @@
-import { spawn, spawnSync } from "node:child_process";
+import chokidar from "chokidar";
+import { spawn } from "node:child_process";
 
-const cssBuild = spawnSync("node", ["demo/lightningcss.config.js"], { stdio: "inherit", shell: true });
-if (cssBuild.status !== 0) {
-	process.exit(cssBuild.status ?? 1);
+const WATCH_ROOTS = ["demo/src", "dom-native/src", "draggable/src"];
+const DEBOUNCE_MS = 300;
+
+let debounceTimer = null;
+let isBuilding = false;
+let hasPendingBuild = false;
+let isShuttingDown = false;
+let activeBuild = null;
+
+function runBuild() {
+	return new Promise((resolve) => {
+		const child = spawn("node", ["scripts/build-demo.js"], {
+			stdio: "inherit",
+			shell: true,
+		});
+
+		activeBuild = child;
+
+		child.on("exit", (code, signal) => {
+			activeBuild = null;
+
+			if (signal) {
+				resolve(1);
+				return;
+			}
+
+			resolve(code ?? 1);
+		});
+	});
 }
 
-const cssWatcher = spawn("npx", ["lightningcss", "demo/src/css/main.css", "-o", "demo/web-content/css/demo-bundle.css", "--watch"], {
-	stdio: "inherit",
-	shell: true,
-});
+async function startBuild() {
+	if (isShuttingDown) {
+		return;
+	}
 
-const jsWatcher = spawn("rolldown", ["-c", "demo/rolldown.config.js", "--watch"], {
-	stdio: "inherit",
-	shell: true,
-});
+	if (isBuilding) {
+		hasPendingBuild = true;
+		return;
+	}
 
-const children = [cssWatcher, jsWatcher];
+	isBuilding = true;
 
-function shutdown(signal) {
-	for (const child of children) {
-		if (!child.killed) {
-			child.kill(signal);
+	try {
+		const exitCode = await runBuild();
+		if (exitCode !== 0) {
+			await shutdown(exitCode);
+			return;
 		}
+	} finally {
+		isBuilding = false;
+	}
+
+	if (hasPendingBuild && !isShuttingDown) {
+		hasPendingBuild = false;
+		await startBuild();
 	}
 }
 
+function scheduleBuild() {
+	if (isShuttingDown) {
+		return;
+	}
+
+	clearTimeout(debounceTimer);
+	debounceTimer = setTimeout(() => {
+		debounceTimer = null;
+		void startBuild();
+	}, DEBOUNCE_MS);
+}
+
+const watcher = chokidar.watch(WATCH_ROOTS, {
+	ignoreInitial: true,
+	persistent: true,
+});
+
+watcher.on("all", () => {
+	scheduleBuild();
+});
+
+watcher.on("error", async () => {
+	await shutdown(1);
+});
+
+async function shutdown(exitCode) {
+	if (isShuttingDown) {
+		return;
+	}
+
+	isShuttingDown = true;
+
+	if (debounceTimer) {
+		clearTimeout(debounceTimer);
+		debounceTimer = null;
+	}
+
+	if (activeBuild && !activeBuild.killed) {
+		activeBuild.kill("SIGTERM");
+	}
+
+	await watcher.close();
+	process.exit(exitCode);
+}
+
 process.on("SIGINT", () => {
-	shutdown("SIGINT");
-	process.exit(130);
+	void shutdown(130);
 });
 
 process.on("SIGTERM", () => {
-	shutdown("SIGTERM");
-	process.exit(143);
+	void shutdown(143);
 });
 
-for (const child of children) {
-	child.on("exit", (code) => {
-		if (code && code !== 0) {
-			shutdown("SIGTERM");
-			process.exit(code);
-		}
-	});
-}
+void startBuild();
 
