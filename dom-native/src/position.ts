@@ -93,13 +93,13 @@ export function position(
 
 	// --- Compute the el position
 	const el_rec = el.getBoundingClientRect();
-	let pos_x =
-		typeof axis_x == "number"
-			? axis_x
-			: axis_x === true
-				? compute_pos_x(ref_point, el_pos, el_rec, hGap)
-				: el_rec.x;
-	if (con_rec) {
+	let pos_x: number | undefined;
+	if (typeof axis_x == "number") {
+		pos_x = axis_x;
+	} else if (axis_x === true) {
+		pos_x = compute_pos_x(ref_point, el_pos, el_rec, hGap);
+	}
+	if (con_rec && pos_x !== undefined) {
 		if (pos_x < con_rec.x) {
 			pos_x = con_rec.x;
 		} else if (pos_x + el_rec.width > con_rec.right) {
@@ -107,13 +107,13 @@ export function position(
 		}
 	}
 
-	let pos_y =
-		typeof axis_y == "number"
-			? axis_y
-			: axis_y === true
-				? compute_pos_y(ref_point, el_pos, el_rec, vGap)
-				: el_rec.y;
-	if (con_rec) {
+	let pos_y: number | undefined;
+	if (typeof axis_y == "number") {
+		pos_y = axis_y;
+	} else if (axis_y === true) {
+		pos_y = compute_pos_y(ref_point, el_pos, el_rec, vGap);
+	}
+	if (con_rec && pos_y !== undefined) {
 		if (pos_y < con_rec.y) {
 			pos_y = con_rec.y;
 		} else if (pos_y + el_rec.height > con_rec.bottom) {
@@ -131,8 +131,12 @@ export function position(
 		offset_x = op_rec.left;
 		offset_y = op_rec.top;
 	}
-	el.style.top = `${pos_y - offset_y}px`;
-	el.style.left = `${pos_x - offset_x}px`;
+	if (pos_y !== undefined) {
+		el.style.top = `${pos_y - offset_y}px`;
+	}
+	if (pos_x !== undefined) {
+		el.style.left = `${pos_x - offset_x}px`;
+	}
 }
 
 function compute_ref_point(rec: DOMRect, pos: Pos): { x: number; y: number } {
