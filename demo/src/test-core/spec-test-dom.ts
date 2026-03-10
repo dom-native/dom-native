@@ -88,3 +88,4 @@ export class SpecTestDom extends SpecView {
 		],
 	};
 }
+

@@ -1,4 +1,5 @@
 import "./demo-core";
+import "./test-core";
 import "./demo-draggable";
 import { hub } from "dom-native";
 import { type DemoFamily, DOM_NATIVE_FAMILY, DRAGGABLE_FAMILY, DEFAULT_SPEC_BY_FAMILY, VALID_SPECS_BY_FAMILY, DOM_NATIVE_TEST_FAMILY, DEFAULT_DOM_NATIVE_TEST_SPEC, VALID_DOM_NATIVE_TEST_SPECS } from "./infra/spec-config.js";

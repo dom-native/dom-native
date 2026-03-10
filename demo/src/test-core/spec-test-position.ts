@@ -50,3 +50,4 @@ export class SpecTestPosition extends SpecView {
 		],
 	};
 }
+
