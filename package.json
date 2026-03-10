@@ -3,8 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build-demo": "node --trace-deprecation scripts/build-demo.js  ",
-    "watch-demo": "node scripts/watch-demo.js"
+    "demo-build": "node --trace-deprecation scripts/build-demo.js  ",
+    "demo-watch": "node scripts/watch-demo.js"
   },
   "devDependencies": {
     "chokidar": "^5.0.0",

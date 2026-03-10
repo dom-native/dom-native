@@ -14,7 +14,6 @@ function runBuild() {
 	return new Promise((resolve) => {
 		const child = spawn("node", ["scripts/build-demo.js"], {
 			stdio: "inherit",
-			shell: true,
 		});
 
 		activeBuild = child;
