@@ -97,7 +97,7 @@ export function position(
 		typeof axis_x == "number"
 			? axis_x
 			: axis_x === true
-				? compute_pos_x(ref_pos, ref_point, el_pos, el_rec, hGap)
+				? compute_pos_x(ref_point, el_pos, el_rec, hGap)
 				: el_rec.x;
 	if (con_rec) {
 		if (pos_x < con_rec.x) {
@@ -111,7 +111,7 @@ export function position(
 		typeof axis_y == "number"
 			? axis_y
 			: axis_y === true
-				? compute_pos_y(ref_pos, ref_point, el_pos, el_rec, vGap)
+				? compute_pos_y(ref_point, el_pos, el_rec, vGap)
 				: el_rec.y;
 	if (con_rec) {
 		if (pos_y < con_rec.y) {
@@ -124,8 +124,15 @@ export function position(
 	// Future - Will if overlap and execute overlap strategy
 
 	// Note - We always on top left, because otherwise create uncessary dislodge on window resize.
-	el.style.top = `${pos_y}px`;
-	el.style.left = `${pos_x}px`;
+	let offset_x = 0;
+	let offset_y = 0;
+	if (el.offsetParent) {
+		const op_rec = el.offsetParent.getBoundingClientRect();
+		offset_x = op_rec.left;
+		offset_y = op_rec.top;
+	}
+	el.style.top = `${pos_y - offset_y}px`;
+	el.style.left = `${pos_x - offset_x}px`;
 }
 
 function compute_ref_point(rec: DOMRect, pos: Pos): { x: number; y: number } {
@@ -154,7 +161,7 @@ function compute_ref_point(rec: DOMRect, pos: Pos): { x: number; y: number } {
 	return { x, y };
 }
 
-function compute_pos_x(ref: Pos, ref_point: Point, pos: Pos, el_rec: DOMRect, gap: number): number {
+function compute_pos_x(ref_point: Point, pos: Pos, el_rec: DOMRect, gap: number): number {
 	const ref_x = ref_point.x;
 
 	let pos_x = 0;
@@ -172,9 +179,8 @@ function compute_pos_x(ref: Pos, ref_point: Point, pos: Pos, el_rec: DOMRect, ga
 	return pos_x;
 }
 
-function compute_pos_y(ref: Pos, ref_point: Point, pos: Pos, el_rec: DOMRect, gap: number): number {
+function compute_pos_y(ref_point: Point, pos: Pos, el_rec: DOMRect, gap: number): number {
 	const ref_y = ref_point.y;
-	let ref_v = ref[0];
 
 	let pos_y = 0;
 	let pos_v = pos[0];

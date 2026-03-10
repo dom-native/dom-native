@@ -7,14 +7,15 @@ const POS_NAMES = ['TL', 'TC', 'TR', 'CL', 'CC', 'CR', 'BL', 'BC', 'BR'] as cons
 export function testShowMouseFollow() {
   const testCtn = getFirst(".test-content-position")!;
 
-  const poses = ["TC", "BC", "CR", "CL"] as const;
+  // To be outside the mouse, we align the opposite side of the element
+  const poses = ["BC", "TC", "CL", "CR"] as const;
   const items: { el: HTMLElement, pos: Pos }[] = poses.map(pos => { return { el: append_pos_el(pos, testCtn), pos } });
 
   const h_el = append_pos_el("H", testCtn);
-  position(h_el, testCtn, { pos: "TC", refPos: "BL" });
+  position(h_el, testCtn, { pos: "BC", refPos: "BL" });
 
   const v_el = append_pos_el("V", testCtn);
-  position(v_el, testCtn, { pos: "TR", refPos: "BL" });
+  position(v_el, testCtn, { pos: "BR", refPos: "BL" });
 
   const f_el = append_pos_el("F", testCtn);
   position(f_el, testCtn, { pos: "CC", refPos: "CC" });
@@ -49,14 +50,14 @@ export function testShowRefPositions() {
     // display the corresponding label
     const labelEl = append_pos_label(refPos, testCtn);
     const [ref_v, ref_h] = refPos;
-    // for top rev_v T and CC, TC
-    let pos: Pos = "TC";
-    if (ref_v == "B") {
-      pos = "BC";
-    } else if (ref_v == "C" && ref_h != "C") {
-      pos = ("C" + ref_h) as Pos;
-    } else if (refPos == "CC") {
-      pos = "TC";
+
+    // To keep labels outside, we align the opposite side of the label
+    const pos_v = (ref_v == "T") ? "B" : (ref_v == "B") ? "T" : "C";
+    const pos_h = (ref_h == "L") ? "R" : (ref_h == "R") ? "L" : "C";
+    let pos = (pos_v + pos_h) as Pos;
+
+    if (refPos == "CC") {
+      pos = "BC"; // Put label above the center dot
       labelEl.style.color = "black";
     }
 
@@ -75,10 +76,14 @@ export function testShowElsPositions() {
   append_dots(refEl, testCtn);
 
   // Top Right - Ls&Rs
-  for (const [idx, el_pos] of POS_NAMES.entries()) {
+  for (const el_pos of POS_NAMES) {
     if (!el_pos.includes("C")) {
-      const el = append_pos_el(el_pos, testCtn);
-      position(el, refEl, { refPos: 'TR', pos: el_pos, gap: GAP });
+      // Mapping to show how to use alignment to get directional behavior
+      // (e.g., to be Top-Right of a point, align element's Bottom-Left)
+      const map: Record<Pos, Pos> = { "TL": "BR", "TR": "BL", "BL": "TR", "BR": "TL" } as any;
+      const pos = map[el_pos];
+      const el = append_pos_el(pos, testCtn);
+      position(el, refEl, { refPos: 'TR', pos, gap: GAP });
     }
   }
 
@@ -91,7 +96,7 @@ export function testShowElsPositions() {
 
   // Top Left - TC & BC
   {
-    const poses = ["TC", "BC"] as Pos[];
+    const poses = ["BC", "TC"] as Pos[]; // BC is above, TC is below
     for (const pos of poses) {
       const el = append_pos_el(pos, testCtn);
       position(el, refEl, { refPos: 'TL', pos, gap: GAP });
@@ -100,7 +105,7 @@ export function testShowElsPositions() {
 
   // Bottom Left 
   {
-    const poses = ["CL", "CR"] as Pos[];
+    const poses = ["CR", "CL"] as Pos[]; // CR is left, CL is right
     for (const pos of poses) {
       const el = append_pos_el(pos, testCtn);
       position(el, refEl, { refPos: 'BL', pos, gap: GAP });
