@@ -86,11 +86,13 @@ spec-test-position {
 
 /* Position test visual helpers */
 .test-content-position {
-  margin: 2rem;
-  padding: 2rem;
+  margin: 4rem;
+  padding: 5rem;
   display: grid;
-  height: 25rem;
+  height: auto;
+  min-height: 25rem;
   grid-template-columns: repeat(auto-fill, 25rem);
+  gap: 5rem;
   background: #1E1E1E;
   position: relative;
   border: solid 1px #000;

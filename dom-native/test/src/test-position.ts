@@ -8,15 +8,15 @@ export function testShowMouseFollow() {
   const testCtn = getFirst(".test-content-position")!;
 
   const poses = ["TC", "BC", "CR", "CL"] as const;
-  const items: { el: HTMLElement, pos: Pos }[] = poses.map(pos => { return { el: append_pos_el(pos), pos } });
+  const items: { el: HTMLElement, pos: Pos }[] = poses.map(pos => { return { el: append_pos_el(pos, testCtn), pos } });
 
-  const h_el = append_pos_el("H");
+  const h_el = append_pos_el("H", testCtn);
   position(h_el, testCtn, { pos: "TC", refPos: "BL" });
 
-  const v_el = append_pos_el("V");
+  const v_el = append_pos_el("V", testCtn);
   position(v_el, testCtn, { pos: "TR", refPos: "BL" });
 
-  const f_el = append_pos_el("F");
+  const f_el = append_pos_el("F", testCtn);
   position(f_el, testCtn, { pos: "CC", refPos: "CC" });
 
   // The 4 els following the mouse
@@ -42,12 +42,12 @@ export function testShowRefPositions() {
   // create the reference box
   const refEl = testCtn.appendChild(elem("div", { "class": "pos-ctn" }));
 
-  append_dots(refEl);
+  append_dots(refEl, testCtn);
 
   // display the dots and labes
   for (const refPos of POS_NAMES) {
     // display the corresponding label
-    const labelEl = append_pos_label(refPos);
+    const labelEl = append_pos_label(refPos, testCtn);
     const [ref_v, ref_h] = refPos;
     // for top rev_v T and CC, TC
     let pos: Pos = "TC";
@@ -72,12 +72,12 @@ export function testShowElsPositions() {
   // create the reference box
   const refEl = testCtn.appendChild(elem("div", { "class": "pos-ctn" }));
 
-  append_dots(refEl);
+  append_dots(refEl, testCtn);
 
   // Top Right - Ls&Rs
   for (const [idx, el_pos] of POS_NAMES.entries()) {
     if (!el_pos.includes("C")) {
-      const el = append_pos_el(el_pos);
+      const el = append_pos_el(el_pos, testCtn);
       position(el, refEl, { refPos: 'TR', pos: el_pos, gap: GAP });
     }
   }
@@ -85,7 +85,7 @@ export function testShowElsPositions() {
   // Bottom Right - CC
   {
     const pos = "CC";
-    const el = append_pos_el(pos);
+    const el = append_pos_el(pos, testCtn);
     position(el, refEl, { refPos: 'BR', pos, gap: 100 });
   }
 
@@ -93,7 +93,7 @@ export function testShowElsPositions() {
   {
     const poses = ["TC", "BC"] as Pos[];
     for (const pos of poses) {
-      const el = append_pos_el(pos);
+      const el = append_pos_el(pos, testCtn);
       position(el, refEl, { refPos: 'TL', pos, gap: GAP });
     }
   }
@@ -102,7 +102,7 @@ export function testShowElsPositions() {
   {
     const poses = ["CL", "CR"] as Pos[];
     for (const pos of poses) {
-      const el = append_pos_el(pos);
+      const el = append_pos_el(pos, testCtn);
       position(el, refEl, { refPos: 'BL', pos, gap: GAP });
     }
   }
@@ -110,30 +110,30 @@ export function testShowElsPositions() {
 
 
 // #region    --- Utils
-function append_dots(refEl: HTMLElement) {
+function append_dots(refEl: HTMLElement, parent: HTMLElement) {
   // display the dots and labes
   for (const ref_pos of POS_NAMES) {
     // display the dot
-    const dotEl = append_pos_dot();
+    const dotEl = append_pos_dot(parent);
     position(dotEl, refEl, { refPos: ref_pos, pos: "CC" });
   }
 }
 
-function append_pos_el(textContent: string) {
+function append_pos_el(textContent: string, parent: HTMLElement) {
   const el = elem('div', { class: "pos-el", $: { textContent } });
-  document.body.appendChild(el);
+  parent.appendChild(el);
   return el;
 }
 
-function append_pos_dot() {
+function append_pos_dot(parent: HTMLElement) {
   const el = elem('div', { class: "pos-dot" });
-  document.body.appendChild(el);
+  parent.appendChild(el);
   return el;
 }
 
-function append_pos_label(textContent: string) {
+function append_pos_label(textContent: string, parent: HTMLElement) {
   const el = elem('div', { class: "pos-label", $: { textContent } });
-  document.body.appendChild(el);
+  parent.appendChild(el);
   return el;
 }
 // #endregion --- Utils

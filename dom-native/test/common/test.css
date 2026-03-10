@@ -76,11 +76,13 @@ button,
 }
 
 .test-content-position {
-  margin: 8rem;
+  margin: 4rem;
   padding: 5rem;
   display: grid;
-  height: 25rem;
+  height: auto;
+  min-height: 25rem;
   grid-template-columns: repeat(auto-fill, 25rem);
+  gap: 5rem;
   background: #1E1E1E;
 
 }
