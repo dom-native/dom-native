@@ -1,7 +1,7 @@
 import { all, append, BaseHTMLElement, customElement, elem, first, onWin } from "dom-native";
 import { split } from "utils-min";
 import "./init-tslib.js";
-import { type DemoFamily, DOM_NATIVE_FAMILY, DRAGGABLE_FAMILY, DEFAULT_SPEC_BY_FAMILY, SPEC_NAMES_BY_FAMILY } from "./spec-config.js";
+import { type DemoFamily, DOM_NATIVE_FAMILY, DRAGGABLE_FAMILY, DEFAULT_SPEC_BY_FAMILY, SPEC_NAMES_BY_FAMILY, DOM_NATIVE_TEST_FAMILY, DOM_NATIVE_TEST_SPEC_NAMES, DEFAULT_DOM_NATIVE_TEST_SPEC, VALID_DOM_NATIVE_TEST_SPECS } from "./spec-config.js";
 
 @customElement("spec-main-view")
 class SpecMainView extends BaseHTMLElement {
@@ -23,7 +23,7 @@ class SpecMainView extends BaseHTMLElement {
 			return;
 		}
 		const { family, spec } = route;
-		const specNames = SPEC_NAMES_BY_FAMILY[family];
+		const specNames = family === DOM_NATIVE_TEST_FAMILY ? [...DOM_NATIVE_TEST_SPEC_NAMES] : SPEC_NAMES_BY_FAMILY[family];
 
 		all(this, "nav a.sel").forEach((a) => a.classList.remove("sel"));
 		all(this, "header > a.item.sel").forEach((a) => a.classList.remove("sel"));
@@ -60,6 +60,7 @@ function _render() {
 		<span></span>
 		<a class="item dom-native" href="#dom-native/${DEFAULT_SPEC_BY_FAMILY[DOM_NATIVE_FAMILY]}">dom-native</a>
 		<a class="item draggable" href="#draggable/${DEFAULT_SPEC_BY_FAMILY[DRAGGABLE_FAMILY]}">draggable</a>
+		<a class="item dom-native-test" href="#dom-native-test/${DEFAULT_DOM_NATIVE_TEST_SPEC}">dom-native-test</a>
 		<a class="item ui" href="https://demo.dom-native.org/ui/index.html">@dom-native/ui</a>
 	</header>
 	<nav>
@@ -70,30 +71,42 @@ function _render() {
 	`;
 }
 
-function _normalizeRoute(hash: string): { family: DemoFamily; spec: string } {
+function _normalizeRoute(hash: string): { family: DemoFamily | typeof DOM_NATIVE_TEST_FAMILY; spec: string } {
 	const parsed = _parseRoute(hash);
 	if (!parsed) {
 		return _defaultRoute(DOM_NATIVE_FAMILY);
 	}
 	const { family, spec } = parsed;
+	if (family === DOM_NATIVE_TEST_FAMILY) {
+		if (!VALID_DOM_NATIVE_TEST_SPECS.has(spec)) {
+			return _defaultRoute(DOM_NATIVE_TEST_FAMILY);
+		}
+		return parsed;
+	}
 	if (!SPEC_NAMES_BY_FAMILY[family].includes(spec)) {
 		return _defaultRoute(DOM_NATIVE_FAMILY);
 	}
 	return parsed;
 }
 
-function _defaultRoute(family: DemoFamily): { family: DemoFamily; spec: string } {
+function _defaultRoute(family: DemoFamily | typeof DOM_NATIVE_TEST_FAMILY): { family: DemoFamily | typeof DOM_NATIVE_TEST_FAMILY; spec: string } {
+	if (family === DOM_NATIVE_TEST_FAMILY) {
+		return {
+			family,
+			spec: DEFAULT_DOM_NATIVE_TEST_SPEC,
+		};
+	}
 	return {
 		family,
 		spec: DEFAULT_SPEC_BY_FAMILY[family],
 	};
 }
 
-function _toHash(route: { family: DemoFamily; spec: string }): string {
+function _toHash(route: { family: DemoFamily | typeof DOM_NATIVE_TEST_FAMILY; spec: string }): string {
 	return `#${route.family}/${route.spec}`;
 }
 
-function _parseRoute(hash: string): { family: DemoFamily; spec: string } | null {
+function _parseRoute(hash: string): { family: DemoFamily | typeof DOM_NATIVE_TEST_FAMILY; spec: string } | null {
 	if (!hash) {
 		return null;
 	}
@@ -102,7 +115,7 @@ function _parseRoute(hash: string): { family: DemoFamily; spec: string } | null 
 	if (!familyRaw || !specRaw) {
 		return null;
 	}
-	if (familyRaw !== DOM_NATIVE_FAMILY && familyRaw !== DRAGGABLE_FAMILY) {
+	if (familyRaw !== DOM_NATIVE_FAMILY && familyRaw !== DRAGGABLE_FAMILY && familyRaw !== DOM_NATIVE_TEST_FAMILY) {
 		return null;
 	}
 	return { family: familyRaw, spec: specRaw };

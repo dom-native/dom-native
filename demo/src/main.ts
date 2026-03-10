@@ -1,7 +1,7 @@
 import "./demo-core";
 import "./demo-draggable";
 import { hub } from "dom-native";
-import { type DemoFamily, DOM_NATIVE_FAMILY, DRAGGABLE_FAMILY, DEFAULT_SPEC_BY_FAMILY, VALID_SPECS_BY_FAMILY } from "./infra/spec-config.js";
+import { type DemoFamily, DOM_NATIVE_FAMILY, DRAGGABLE_FAMILY, DEFAULT_SPEC_BY_FAMILY, VALID_SPECS_BY_FAMILY, DOM_NATIVE_TEST_FAMILY, DEFAULT_DOM_NATIVE_TEST_SPEC, VALID_DOM_NATIVE_TEST_SPECS } from "./infra/spec-config.js";
 
 const routerHub = hub("router-hub");
 routerHub.sub("navigate", (route: string) => {
@@ -34,6 +34,12 @@ function _normalizeToCanonicalHash(hash: string) {
 		return _defaultHashForFamily(DOM_NATIVE_FAMILY);
 	}
 	const { family, spec } = parsed;
+	if (family === DOM_NATIVE_TEST_FAMILY) {
+		if (!VALID_DOM_NATIVE_TEST_SPECS.has(spec)) {
+			return _defaultHashForFamily(DOM_NATIVE_TEST_FAMILY);
+		}
+		return `#${family}/${spec}`;
+	}
 	const validSpecs = VALID_SPECS_BY_FAMILY[family];
 	if (!validSpecs.has(spec)) {
 		return _defaultHashForFamily(DOM_NATIVE_FAMILY);
@@ -41,7 +47,10 @@ function _normalizeToCanonicalHash(hash: string) {
 	return `#${family}/${spec}`;
 }
 
-function _defaultHashForFamily(family: DemoFamily) {
+function _defaultHashForFamily(family: DemoFamily | typeof DOM_NATIVE_TEST_FAMILY) {
+	if (family === DOM_NATIVE_TEST_FAMILY) {
+		return `#${family}/${DEFAULT_DOM_NATIVE_TEST_SPEC}`;
+	}
 	return `#${family}/${DEFAULT_SPEC_BY_FAMILY[family]}`;
 }
 
@@ -51,7 +60,7 @@ function _parseCanonicalHash(hash: string) {
 	return { family, spec };
 }
 
-function _parseRawHash(hash: string): { family: DemoFamily; spec: string } | null {
+function _parseRawHash(hash: string): { family: DemoFamily | typeof DOM_NATIVE_TEST_FAMILY; spec: string } | null {
 	if (!hash) {
 		return null;
 	}
@@ -60,7 +69,7 @@ function _parseRawHash(hash: string): { family: DemoFamily; spec: string } | nul
 	if (!familyRaw || !specRaw) {
 		return null;
 	}
-	if (familyRaw !== DOM_NATIVE_FAMILY && familyRaw !== DRAGGABLE_FAMILY) {
+	if (familyRaw !== DOM_NATIVE_FAMILY && familyRaw !== DRAGGABLE_FAMILY && familyRaw !== DOM_NATIVE_TEST_FAMILY) {
 		return null;
 	}
 	return { family: familyRaw, spec: specRaw };
