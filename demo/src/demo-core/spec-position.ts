@@ -21,33 +21,33 @@ function positionSimple(rootEl: HTMLElement) {
 			document.body,
 			`
 			<div id="popup-pos"
-						style="position: absolute; top: 0; left: 0; width: 8rem; height: 8rem; background: blue; opacity: .9">
+						style="position: absolute; top: 0; left: 0; width: 4rem; height: 4rem; background: blue; opacity: .9">
 			</div>`,
 		); //
 
 		const clickableEl = evt.selectTarget;
 		popupEl.style.visibility = "visible";
 		if (clickableEl.matches(".right")) {
-			position(popupEl, evt.selectTarget, { refPos: "TR", pos: "TL", gap: 8 });
+			position(popupEl, clickableEl, { refPos: "TR", pos: "TL"});
 		} else if (clickableEl.matches(".top")) {
-			position(popupEl, evt.selectTarget, { refPos: "TC", pos: "BC", gap: 8 });
+			position(popupEl, clickableEl, { refPos: "TC", pos: "TC"});
 		} else if (clickableEl.matches(".left")) {
-			position(popupEl, evt.selectTarget, { refPos: "TL", pos: "TR", gap: 8 });
+			position(popupEl, clickableEl, { refPos: "TL", pos: "TL"});
 		} else if (clickableEl.matches(".bottom")) {
-			position(popupEl, evt.selectTarget, { refPos: "BC", pos: "TC", gap: 8 });
+			position(popupEl, clickableEl, { refPos: "BC", pos: "BC"});
 		} else if (clickableEl.matches(".bottom-center")) {
-			position(popupEl, evt.selectTarget, { refPos: "BC", pos: "TC", gap: 8 });
+			position(popupEl, clickableEl, { refPos: "BC", pos: "TC"});
 		} else if (clickableEl.matches(".right-bottom")) {
-			position(popupEl, evt.selectTarget, { refPos: "BR", pos: "BL", gap: 8 });
+			position(popupEl, clickableEl, { refPos: "BR", pos: "BL"});
 		} else if (clickableEl.matches(".right-center")) {
-			position(popupEl, evt.selectTarget, { refPos: "CR", pos: "CL", gap: 8 });
+			position(popupEl, clickableEl, { refPos: "CR", pos: "CL"});
 		} else if (clickableEl.matches(".left-center")) {
-			position(popupEl, evt.selectTarget, { refPos: "CL", pos: "CR", gap: 8 });
+			position(popupEl, clickableEl, { refPos: "CL", pos: "CR"});
 		}
 
 		// Cleanup
-		await wait(1000);
-		popupEl.remove();
+		// await wait(1000);
+		// popupEl.remove();
 	});
 }
 //#endregion ---------- /code: positionSimple ----------
@@ -62,7 +62,7 @@ const spec_doc: CodeDoc = {
 					title: "Simple Position",
 					html: `
 <div class="root-el">
-	<span class="clickable left">show left</span>
+	<span class="clickable left">show top left</span>
 	<span class="clickable top">show top</span>
 	<span class="clickable bottom">show bottom</span>
 	<span class="clickable right">show right</span>

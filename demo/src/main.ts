@@ -6,7 +6,6 @@ import { type DemoFamily, DOM_NATIVE_FAMILY, DRAGGABLE_FAMILY, DEFAULT_SPEC_BY_F
 
 const routerHub = hub("router-hub");
 routerHub.sub("navigate", (route: string) => {
-	console.log("->> on navigate", route);
 	// const canonicalHash = _normalizeToCanonicalHash(route);
 	// NOTE: disable for now
 	// if (window.location.hash !== canonicalHash) {

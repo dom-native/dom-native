@@ -4,40 +4,45 @@ const GAP = 8;
 
 const POS_NAMES = ['TL', 'TC', 'TR', 'CL', 'CC', 'CR', 'BL', 'BC', 'BR'] as const;
 
-export function testShowMouseFollow() {
+export function showMouseFollow() {
   const testCtn = getFirst(".test-content-position")!;
 
   // To be outside the mouse, we align the opposite side of the element
   const poses = ["BC", "TC", "CL", "CR"] as const;
-  const items: { el: HTMLElement, pos: Pos }[] = poses.map(pos => { return { el: append_pos_el(pos, testCtn), pos } });
+	const items: { el: HTMLElement, pos: Pos }[] = poses.map(pos => { return { el: append_pos_el(pos, testCtn), pos } });
 
-  const h_el = append_pos_el("H", testCtn);
-  position(h_el, testCtn, { pos: "BC", refPos: "BL" });
+	// NOTE: needs to be in next frame, because, otherwise testCtn have the wrong height
+	requestAnimationFrame(() => {
+	  const h_el = append_pos_el("H", testCtn);
+		position(h_el, testCtn, { pos: "CC", refPos: "BC"});
 
-  const v_el = append_pos_el("V", testCtn);
-  position(v_el, testCtn, { pos: "BR", refPos: "BL" });
+	  const v_el = append_pos_el("V", testCtn);
+	  position(v_el, testCtn, { pos: "CC", refPos: "CL" });
 
-  const f_el = append_pos_el("F", testCtn);
-  position(f_el, testCtn, { pos: "CC", refPos: "CC" });
+	  const f_el = append_pos_el("F", testCtn);
+	  position(f_el, testCtn, { pos: "CC", refPos: "CC" });
 
-  // The 4 els following the mouse
-  document.addEventListener("pointermove", function (evt) {
-    const point = { x: evt.clientX, y: evt.clientY };
-    for (const { el, pos } of items) {
-      position(el, point, { pos, gap: 24, constrain: testCtn });
-    }
+	  // The 4 els following the mouse
+	  document.addEventListener("pointermove", function (evt) {
+	    const point = { x: evt.clientX, y: evt.clientY };
+	    for (const { el, pos } of items) {
+	      position(el, point, { pos, gap: 24, constrain: testCtn });
+	    }
 
-    position(h_el, point, { pos: "CC", y: false, constrain: testCtn });
-    position(v_el, point, { pos: "CC", x: false, constrain: testCtn });
+	    position(h_el, point, { pos: "CC", y: false, constrain: testCtn });
+	    position(v_el, point, { pos: "CL", x: false, constrain: testCtn });
 
-    position(f_el, point, { pos: "CC", x: 300 });
-  });
+	    position(f_el, point, { pos: "CC", hGap: -100 });
+	  });
+	})
+
+
 
 
 
 }
 
-export function testShowRefPositions() {
+export function showRefPositions() {
   const testCtn = getFirst(".test-content-position")!;
 
   // create the reference box
@@ -66,7 +71,7 @@ export function testShowRefPositions() {
 
 }
 
-export function testShowElsPositions() {
+export function showElsPositions() {
 
   const testCtn = getFirst(".test-content-position")!;
 
@@ -103,7 +108,7 @@ export function testShowElsPositions() {
     }
   }
 
-  // Bottom Left 
+  // Bottom Left
   {
     const poses = ["CR", "CL"] as Pos[]; // CR is left, CL is right
     for (const pos of poses) {
