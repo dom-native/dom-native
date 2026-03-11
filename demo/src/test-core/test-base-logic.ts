@@ -55,17 +55,22 @@ class MyBaseComponent extends BaseHTMLElement {
 @customElement('my-component')
 class MyComponent extends MyBaseComponent {
 
-	events = addOnEvents(this.events, {
-		'click': (evt) => {
-			out.push('MyComponent this.events');
-		}
-	});
+	constructor() {
+		super();
 
-	hubEvents = addHubEvents(this.hubEvents, {
-		'dataHub; topic1': (data: any, info: any) => {
-			out.push('MyComponent dataHub; topic1');
-		}
-	});
+		this.events = addOnEvents(this.events, {
+			'click': (evt) => {
+				out.push('MyComponent this.events');
+			}
+		});
+
+		this.hubEvents = addHubEvents(this.hubEvents, {
+			'dataHub; topic1': (data: any, info: any) => {
+				out.push('MyComponent dataHub; topic1');
+			}
+		});
+	}
+
 
 	init() {
 		super.init();
