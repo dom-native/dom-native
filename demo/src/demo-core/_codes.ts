@@ -552,6 +552,101 @@ function positionSimple(rootEl: HTMLElement) {
 	});
 }
 `;
+export const code_positionDemo = `
+function positionDemo(rootEl: HTMLElement) {
+	const testCtn = first(rootEl, ".test-content-position")!;
+
+	// create the reference box
+	const refEl = testCtn.appendChild(elem("div", { "class": "pos-ctn" }));
+
+	append_dots(refEl, testCtn);
+
+	// display the dots and labes
+	for (const refPos of POS_NAMES) {
+		// display the corresponding label
+		const labelEl = append_pos_label(refPos, testCtn);
+		const [ref_v, ref_h] = refPos;
+
+		// To keep labels outside, we align the opposite side of the label
+		const pos_v = (ref_v == "T") ? "B" : (ref_v == "B") ? "T" : "C";
+		const pos_h = (ref_h == "L") ? "R" : (ref_h == "R") ? "L" : "C";
+		let pos = (pos_v + pos_h) as Pos;
+
+		if (refPos == "CC") {
+			pos = "BC"; // Put label above the center dot
+			labelEl.style.color = "black";
+		}
+
+		position(labelEl, refEl, { refPos, pos, gap: 8 });
+	}
+
+	// Top Right - Ls&Rs
+	for (const el_pos of POS_NAMES) {
+		if (!el_pos.includes("C")) {
+			// Mapping to show how to use alignment to get directional behavior
+			// (e.g., to be Top-Right of a point, align element's Bottom-Left)
+			const map: Record<Pos, Pos> = { "TL": "BR", "TR": "BL", "BL": "TR", "BR": "TL" } as any;
+			const pos = map[el_pos];
+			const el = append_pos_el(pos, testCtn);
+			position(el, refEl, { refPos: "TR", pos, gap: 8 });
+		}
+	}
+
+	// Bottom Right - CC
+	{
+		const pos = "CC";
+		const el = append_pos_el(pos, testCtn);
+		position(el, refEl, { refPos: "BR", pos, gap: 100 });
+	}
+
+	// Top Left - TC & BC
+	{
+		const poses = ["BC", "TC"] as Pos[]; // BC is above, TC is below
+		for (const pos of poses) {
+			const el = append_pos_el(pos, testCtn);
+			position(el, refEl, { refPos: "TL", pos, gap: 8 });
+		}
+	}
+
+	// Bottom Left
+	{
+		const poses = ["CR", "CL"] as Pos[]; // CR is left, CL is right
+		for (const pos of poses) {
+			const el = append_pos_el(pos, testCtn);
+			position(el, refEl, { refPos: "BL", pos, gap: 8 });
+		}
+	}
+}
+
+const POS_NAMES = ["TL", "TC", "TR", "CL", "CC", "CR", "BL", "BC", "BR"] as const;
+
+function append_dots(refEl: HTMLElement, parent: HTMLElement) {
+	// display the dots and labes
+	for (const ref_pos of POS_NAMES) {
+		// display the dot
+		const dotEl = append_pos_dot(parent);
+		position(dotEl, refEl, { refPos: ref_pos, pos: "CC" });
+	}
+}
+
+function append_pos_el(textContent: string, parent: HTMLElement) {
+	const el = elem("div", { class: "pos-el", $: { textContent } });
+	parent.appendChild(el);
+	return el;
+}
+
+function append_pos_dot(parent: HTMLElement) {
+	const el = elem("div", { class: "pos-dot" });
+	parent.appendChild(el);
+	return el;
+}
+
+function append_pos_label(textContent: string, parent: HTMLElement) {
+	const el = elem("div", { class: "pos-label", $: { textContent } });
+	parent.appendChild(el);
+	return el;
+}
+`;
 // This will create Template and return its .content, which could be cloned (shadow.innerHTML alternative)
 const shadowSlotTmpl = `html(\`
 <style>
