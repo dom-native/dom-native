@@ -5,6 +5,9 @@ import { all, BaseHTMLElement, first, on, pull } from 'dom-native';
 interface CodeItem {
 	title: string,
 	html: string,
+	hideHtmlCode?: boolean,
+	hideTsCode?: boolean,
+	hideJsCode?: boolean,
 	tsPrefix?: string,
 	ts?: string,
 	jsPrefix?: string,
@@ -92,9 +95,9 @@ function _render(doc: CodeDoc) {
 			<div id="${itemId}" class="item ${item.css || ''}">
 				<h3>${item.title}</h3>
 				<div class="html">${item.html}</div>
-				<pre><code class="html">${escapeHtml(formatCode(item.html, 'html'))}</code></pre>
-				${tsBody ? `<pre><code class="typescript">${formatCode(tsBody, 'ts')}</code></pre>` : ''}
-				${fnBody ? `<pre><code class="javascript">${formatCode(fnBody, 'jsBody')}</code></pre>` : ''}
+				${item.hideHtmlCode ? '' : `<pre><code class="html">${escapeHtml(formatCode(item.html, 'html'))}</code></pre>`}
+				${tsBody && !item.hideTsCode ? `<pre><code class="typescript">${formatCode(tsBody, 'ts')}</code></pre>` : ''}
+				${fnBody && !item.hideJsCode ? `<pre><code class="javascript">${formatCode(fnBody, 'jsBody')}</code></pre>` : ''}
 			</div>`;
 		}).join('\n');
 

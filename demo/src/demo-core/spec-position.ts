@@ -1,7 +1,7 @@
 import { CodeDoc, SpecView } from "../infra/index.js";
 import { append, customElement, elem, first, on, position, Pos } from "dom-native";
 import { wait } from "utils-min";
-import { code_positionDemo, code_positionSimple } from "./_codes.js";
+import { code_positionSimple } from "./_codes.js";
 
 @customElement("spec-position")
 export class SpecPositionView extends SpecView {
@@ -14,9 +14,9 @@ function positionDemo(rootEl: HTMLElement) {
 	const testCtn = first(rootEl, ".test-content-position")!;
 
 	// create the reference box
-	const refEl = testCtn.appendChild(elem("div", { "class": "pos-ctn" }));
+	const refElTop = testCtn.appendChild(elem("div", { "class": "pos-ctn pos-ctn-top pos-ctn-sm" }));
 
-	append_dots(refEl, testCtn);
+	append_dots(refElTop, testCtn);
 
 	// display the dots and labes
 	for (const refPos of POS_NAMES) {
@@ -34,8 +34,13 @@ function positionDemo(rootEl: HTMLElement) {
 			labelEl.style.color = "black";
 		}
 
-		position(labelEl, refEl, { refPos, pos, gap: 8 });
+		position(labelEl, refElTop, { refPos, pos, gap: 8 });
 	}
+
+	// create the reference box
+	const refEl = testCtn.appendChild(elem("div", { "class": "pos-ctn pos-ctn-main" }));
+
+	append_dots(refEl, testCtn);
 
 	// Top Right - Ls&Rs
 	for (const el_pos of POS_NAMES) {
@@ -73,6 +78,37 @@ function positionDemo(rootEl: HTMLElement) {
 			position(el, refEl, { refPos: "BL", pos, gap: 8 });
 		}
 	}
+
+	// To be outside the mouse, we align the opposite side of the element
+	const poses = ["BC", "TC", "CL", "CR"] as const;
+	const items: { el: HTMLElement; pos: Pos }[] = poses.map((pos) => {
+		return { el: append_pos_el(pos, testCtn), pos };
+	});
+
+	// NOTE: needs to be in next frame, because, otherwise testCtn have the wrong height
+	requestAnimationFrame(() => {
+		const h_el = append_pos_el("H", testCtn);
+		position(h_el, testCtn, { pos: "CC", refPos: "BC" });
+
+		const v_el = append_pos_el("V", testCtn);
+		position(v_el, testCtn, { pos: "CC", refPos: "CL" });
+
+		const f_el = append_pos_el("F", testCtn);
+		position(f_el, testCtn, { pos: "CC", refPos: "CC" });
+
+		// The 4 els following the mouse
+		document.addEventListener("pointermove", function (evt) {
+			const point = { x: evt.clientX, y: evt.clientY };
+			for (const { el, pos } of items) {
+				position(el, point, { pos, gap: 24, constrain: testCtn });
+			}
+
+			position(h_el, point, { pos: "CC", y: false, constrain: testCtn });
+			position(v_el, point, { pos: "CL", x: false, constrain: testCtn });
+
+			position(f_el, point, { pos: "CC", hGap: -100 });
+		});
+	});
 }
 
 const POS_NAMES = ["TL", "TC", "TR", "CL", "CC", "CR", "BL", "BC", "BR"] as const;
@@ -160,7 +196,8 @@ const spec_doc: CodeDoc = {
 <div class="test-content container">
   <div class="test-content-position"></div>
 </div>`,
-					ts: code_positionDemo,
+					hideHtmlCode: true,
+					hideJsCode: true,
 					run: positionDemo,
 				},
 				{

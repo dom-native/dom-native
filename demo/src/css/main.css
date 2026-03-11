@@ -147,6 +147,77 @@ slide-me {
 	grid-auto-rows: max-content;
 }
 
+.test-content-position {
+	margin: 4rem;
+	padding: 5rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: auto;
+	min-height: 25rem;
+	gap: 5rem;
+	background: #1e1e1e;
+	position: relative;
+	border: solid 1px #000;
+}
+
+.pos-ctn {
+	display: block;
+	border: solid 1px red;
+	background: rgb(255, 208, 208);
+	width: 15rem;
+	height: 15rem;
+	position: relative;
+}
+
+.pos-ctn-main {
+	align-self: center;
+}
+
+.pos-ctn-top {
+	margin-bottom: 2rem;
+}
+
+.pos-ctn-sm {
+	width: 9rem;
+	height: 9rem;
+}
+
+.pos-el {
+	position: absolute;
+	width: 3rem;
+	height: 3rem;
+	z-index: 100;
+	background: rgb(180, 235, 252);
+	display: grid;
+	align-items: center;
+	justify-content: center;
+	color: #333;
+	pointer-events: none;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.pos-dot {
+	position: absolute;
+	width: 0.5rem;
+	height: 0.5rem;
+	display: block;
+	background: rgba(255, 208, 208, 0.8);
+	border: solid 1px red;
+	border-radius: 1rem;
+}
+
+.pos-label {
+	width: 2rem;
+	height: 2rem;
+	position: absolute;
+	display: grid;
+	align-items: center;
+	justify-content: center;
+	font-size: 1rem;
+	color: #000;
+}
+
 /*#region    flip */
 c-col {
 	border: solid 1px #aaa;

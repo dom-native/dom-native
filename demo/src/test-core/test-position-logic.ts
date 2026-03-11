@@ -46,7 +46,7 @@ export function showRefPositions() {
   const testCtn = getFirst(".test-content-position")!;
 
   // create the reference box
-  const refEl = testCtn.appendChild(elem("div", { "class": "pos-ctn" }));
+  const refEl = testCtn.appendChild(elem("div", { "class": "pos-ctn pos-ctn-top pos-ctn-sm" }));
 
   append_dots(refEl, testCtn);
 
@@ -76,7 +76,7 @@ export function showElsPositions() {
   const testCtn = getFirst(".test-content-position")!;
 
   // create the reference box
-  const refEl = testCtn.appendChild(elem("div", { "class": "pos-ctn" }));
+  const refEl = testCtn.appendChild(elem("div", { "class": "pos-ctn pos-ctn-main" }));
 
   append_dots(refEl, testCtn);
 
