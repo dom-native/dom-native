@@ -1,47 +1,41 @@
 {
-	"compilerOptions": {
-		// For browser client, we target edge and above (use es2016 for [].includes for example)
-		"target": "ES2022",
+  "compilerOptions": {
+    // For browser client, we target edge and above.
+    "target": "ES2022",
 
-		// For browser client, since we are using rollup to package, we target the es6/es2015 module
-		"module": "ES2022",
+    // Resolve to es module for rollup
+    "module": "ES2022",
 
-		// This is important to support 3rd party modules that are still in a node.js/commonjs way
-		"moduleResolution": "node", 
-		
-		// 99% of the code will be .ts, and .js files will just be 3rd party libs and will be in 
-		"allowJs": false,
-		"checkJs": false,
+    // This is important to support 3rd party modules that are still in a node.js/commonjs way
+    "moduleResolution": "node",
 
-		// To extract the maximum value from TypeScript, we use strict = true (no implicit, null check, ...)
-		"strict": true, 
+    "outDir": "./dist/" /* Redirect output structure to the directory. */,
+    "sourceMap": true /* Generates corresponding '.map' file. */,
 
-		"removeComments": false,
+    // 99% of the code will be .ts, and .js files will just be 3rd party libs and will be in
+    "allowJs": false,
+    "checkJs": false,
 
-		"declaration": true,
+    // To extract the maximum value from TypeScript, we use strict = true (no implicit, null check, ...)
+    "strict": true,
 
-		"noImplicitAny": true,
+    "removeComments": false,
 
-		"noEmitHelpers": false, // emit the helper (otherwise, need tslib)
+    "declaration": true,
 
-		// Definitely wants sourcemapp
-		"sourceMap": true, /* Generates corresponding '.map' file. */
+    "esModuleInterop": true,
 
-		"outDir": "./dist/", /* Redirect output structure to the directory. */
+    "experimentalDecorators": true, // for now, until rolldown support stage 3
+  },
 
-		"experimentalDecorators": true,
+  // We want more control about which code we will compile and exclude
+  "include": ["./src/**/*.ts"],
 
-		// Needed to call import default (replaces allowSyntheticDefaultImports)
-		"esModuleInterop": true
-	},
+  "exclude": [
+    "node_modules",
+  ],
 
-	// We want more control about which code we will compile and exclude
-	"include": [
-		"./src/**/*.ts"
-	],
-
-	"exclude": [
-		"node_modules",
-		".rpt2_cache" // this folder will be created by the rollup-typescript2, so, need to exlude it, can become confusing.
-	]
+  "rolldownOptions": {
+    "platform": "browser",
+  },
 }

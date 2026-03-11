@@ -4,60 +4,37 @@
   "version": "0.2.1",
   "description": "Minimalist and expressive API for dragging, positioning, and 'FLIP - capture/invert/play'",
   "main": "dist/index.js",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/dom-native/draggable.git"
-  },
-  "keywords": [
-    "native",
-    "Draggable",
-    "web-component",
-    "ui components",
-    "html5",
-    "DOM",
-    "Drag and Drop"
-  ],
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.2",
-    "@rollup/plugin-multi-entry": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^14.0.1",
-    "@types/js-yaml": "^4.0.5",
-    "@types/lodash.debounce": "^4.0.7",
-    "autoprefixer": "^10.4.9",
-    "chokidar": "^3.5.3",
-    "cloud-bucket": "^0.4.2",
-    "cmdrouter": "^0.3.1",
-    "dom-native": "^0.11.0",
-    "fs-extra-plus": "^0.6.0",
-    "js-yaml": "^4.1.0",
-    "lodash.debounce": "^4.0.8",
-    "p-spawn": "^0.5.5",
-    "postcss": "^8.4.16",
-    "postcss-cli": "^10.0.0",
-    "postcss-import": "^15.0.0",
-    "postcss-nested": "^5.0.6",
-    "rollup": "^2.79.0",
-    "rollup-plugin-typescript2": "^0.33.0",
-    "ts-node": "^10.9.1",
-    "tslib": "^2.4.0",
-    "typescript": "^4.8.3"
+  "scripts": {
+    "prepack": "npm run build",
+    "build": "rolldown -c",
+    "watch": "rolldown -c -w"
   },
   "peerDependencies": {
     "dom-native": "^0.11.0"
+  },
+  "devDependencies": {
+    "rolldown": "^1.0.0-rc.8",
+    "typescript": "^5.6.3"
   },
   "files": [
     "src/",
     "dist/"
   ],
-  "scripts": {
-    "prepack": "npm run build",
-    "build": "TS_NODE_PROJECT='scripts/tsconfig.json' node --loader ts-node/esm ./scripts/cmds.ts build",
-    "watch": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts watch",
-    "site": "TS_NODE_FILES=true ./node_modules/.bin/ts-node --project scripts/tsconfig.json  scripts/cmds.ts site"
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dom-native/dom-native.git"
   },
-  "engines": {
-    "node": ">=18"
-  },
-  "author": "Jeremy Chone <jeremy.chone@gmail.com> (http://jeremychone.com)",
-  "license": "MIT"
+  "keywords": [
+    "domnative",
+    "dom native",
+    "frameworkless",
+    "framework",
+    "Web Components",
+    "Native Web Components",
+    "customElements",
+    "cssGrid",
+    "DOM",
+    "mvc",
+    "html5"
+  ]
 }
