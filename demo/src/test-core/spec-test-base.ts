@@ -1,4 +1,5 @@
 import { customElement, html } from "dom-native";
+import { run_tests } from "../infra/runner.js";
 import { SpecView } from "../infra/spec-view.js";
 import { _beforeEach, testAtHubEventsComponent, testComponentDocEvent, testComponentEventBindings, testComponentHubEvents, testLifecycle, testReattachedComponentDocEvent, testSimplestComponent } from "./test-base-logic.js";
 
@@ -34,21 +35,23 @@ export class SpecTestBase extends SpecView {
 							const lifecycleEl = itemEl.querySelector(".test-content-lifecycle") as HTMLElement & { test_out: string[] };
 							lifecycleEl.test_out = [];
 							(testContentEl as HTMLElement & { test_out?: string[] }).test_out = [];
-							for (const [name, fn] of Object.entries(tests)) {
-								_beforeEach();
-								testContentEl.innerHTML = "";
-								lifecycleEl.innerHTML = "";
-								lifecycleEl.test_out = [];
-								const li = html(`<li><strong>${name}</strong> running</li>`).firstElementChild as HTMLLIElement;
-								outputEl.appendChild(li);
-								try {
-									await fn();
-									li.innerHTML = `<strong>${name}</strong> OK`;
-								} catch (ex) {
-									li.innerHTML = `<strong>${name}</strong> FAILED ${ex}`;
-									li.classList.add("fail");
-								}
-							}
+							await run_tests(outputEl, tests, {
+								beforeEach: async () => {
+									await _beforeEach();
+									testContentEl.innerHTML = "";
+									lifecycleEl.innerHTML = "";
+									lifecycleEl.test_out = [];
+								},
+								createItemEl: (name: string) => {
+									return html(`<li><strong>${name}</strong> running</li>`).firstElementChild as HTMLLIElement;
+								},
+								failInnerHTML: (name: string, ex: any) => {
+									return `<strong>${name}</strong> FAILED ${ex}`;
+								},
+								successInnerHTML: (name: string) => {
+									return `<strong>${name}</strong> OK`;
+								},
+							});
 						},
 					},
 				],

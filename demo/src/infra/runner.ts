@@ -1,7 +1,7 @@
 import { first, frag, html } from 'dom-native';
 
 
-//#region    ---------- Test Runner ---------- 
+//#region    ---------- Test Runner ----------
 document.addEventListener("DOMContentLoaded", function (event) {
 	const tests = (<any>window).tests;
 
@@ -47,6 +47,10 @@ interface RunController {
 	createItemEl: (name: string) => HTMLElement;
 	failInnerHTML: (name: string, ex: any) => string;
 	successInnerHTML: (name: string, val?: any) => string;
+}
+
+interface RunTestsController extends RunController {
+	beforeEach?: () => void | Promise<void>;
 }
 
 function run(fnByNames: { [fnName: string]: Function }, controller: RunController) {
@@ -108,4 +112,36 @@ function run(fnByNames: { [fnName: string]: Function }, controller: RunControlle
 
 		return result;
 	});
+}
+
+export async function run_tests(
+	outputEl: HTMLElement,
+	tests: { [fnName: string]: Function },
+	controller?: RunTestsController
+) {
+	const effectiveController: RunTestsController = controller ?? {
+		createItemEl: (name: string) => {
+			return html(`<li> ${label(name)} running</li>`).firstElementChild as HTMLElement;
+		},
+		failInnerHTML: (name: string, ex: any) => {
+			return label(name) + ' FAILED ' + ex;
+		},
+		successInnerHTML: (name: string, val?: any) => {
+			return label(name) + ' OK ';
+		}
+	};
+
+	for (const [name, fn] of Object.entries(tests)) {
+		await effectiveController.beforeEach?.();
+		const itemEl = effectiveController.createItemEl(name);
+		outputEl.appendChild(itemEl);
+		try {
+			const val = await fn();
+			itemEl.innerHTML = effectiveController.successInnerHTML(name, val);
+		} catch (ex) {
+			itemEl.innerHTML = effectiveController.failInnerHTML(name, ex);
+			itemEl.classList.add("fail");
+			console.log(ex);
+		}
+	}
 }
