@@ -21,7 +21,7 @@ export const VALID_SPECS_BY_FAMILY: Record<DemoFamily, Set<string>> = {
 export const ALL_FAMILIES: DemoFamily[] = [DOM_NATIVE_FAMILY, DRAGGABLE_FAMILY];
 
 export const DOM_NATIVE_TEST_FAMILY = "dom-native-test" as const;
-export const DOM_NATIVE_TEST_SPEC_NAMES = ["test-dom", "test-position", "test-attr", "test-builder", "test-base"] as const;
+export const DOM_NATIVE_TEST_SPEC_NAMES = ["test-dom", "test-position", "test-attr", "test-builder", "test-base", "test-decorators", "test-dx", "test-event", "test-hub", "test-utils"] as const;
 export type DomNativeTestSpecName = (typeof DOM_NATIVE_TEST_SPEC_NAMES)[number];
 export const DEFAULT_DOM_NATIVE_TEST_SPEC: DomNativeTestSpecName = "test-dom";
 export const VALID_DOM_NATIVE_TEST_SPECS = new Set<string>(DOM_NATIVE_TEST_SPEC_NAMES as readonly string[]);
