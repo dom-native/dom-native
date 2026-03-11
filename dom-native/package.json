@@ -9,7 +9,8 @@
   "scripts": {
     "prepack": "npm run build",
     "build": "rolldown -c",
-    "watch": "rolldown -c -w"
+    "watch": "rolldown -c -w",
+    "build-min": "rolldown -c rolldown.min.config.js"
   },
   "imports": {
     "#dom-native": "./src/index.js"

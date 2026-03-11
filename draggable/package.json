@@ -6,7 +6,8 @@
   "main": "dist/index.js",
   "scripts": {
     "prepack": "npm run build",
-    "build": "rolldown -c",
+    "build": "rolldown -c rolldown.config.js",
+    "build-min": "rolldown -c rolldown.min.config.js",
     "watch": "rolldown -c -w"
   },
   "peerDependencies": {
