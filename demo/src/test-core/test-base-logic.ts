@@ -233,7 +233,9 @@ export async function testLifecycle() {
 type TestHTMLElement = HTMLElement & { test_out: string[] };
 
 function as_test_el(el: HTMLElement & any): TestHTMLElement {
-	el.test_out = []
+	if (!Array.isArray(el.test_out)) {
+		el.test_out = []
+	}
 	return el as TestHTMLElement;
 }
 
