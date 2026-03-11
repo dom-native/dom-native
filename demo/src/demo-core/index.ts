@@ -4,3 +4,4 @@ export * from "./spec-event.js";
 export * from "./spec-position.js";
 export * from "./spec-perf.js";
 export * from "./spec-shadow-dom.js";
+export * from "./nav.js";

@@ -1,3 +1,7 @@
+import { NAV as DEMO_CORE_NAV } from "../demo-core/nav.js";
+import { NAV as DEMO_DRAGGABLE_NAV } from "../demo-draggable/nav.js";
+import { NAV as TEST_CORE_NAV } from "../test-core/nav.js";
+
 export type DemoFamily = "dom-native" | "draggable";
 
 export const DOM_NATIVE_FAMILY: DemoFamily = "dom-native";
@@ -9,8 +13,8 @@ export const DEFAULT_SPEC_BY_FAMILY: Record<DemoFamily, string> = {
 };
 
 export const SPEC_NAMES_BY_FAMILY: Record<DemoFamily, string[]> = {
-	[DOM_NATIVE_FAMILY]: ["basic", "shadow-dom", "event", "position", "anim", "perf"],
-	[DRAGGABLE_FAMILY]: ["dnd-simple", "dnd-basic", "dnd-nested", "flip", "sample-slider"],
+	[DOM_NATIVE_FAMILY]: [...DEMO_CORE_NAV],
+	[DRAGGABLE_FAMILY]: [...DEMO_DRAGGABLE_NAV],
 };
 
 export const VALID_SPECS_BY_FAMILY: Record<DemoFamily, Set<string>> = {
@@ -21,7 +25,7 @@ export const VALID_SPECS_BY_FAMILY: Record<DemoFamily, Set<string>> = {
 export const ALL_FAMILIES: DemoFamily[] = [DOM_NATIVE_FAMILY, DRAGGABLE_FAMILY];
 
 export const DOM_NATIVE_TEST_FAMILY = "dom-native-test" as const;
-export const DOM_NATIVE_TEST_SPEC_NAMES = ["test-dom", "test-position", "test-attr", "test-builder", "test-base", "test-decorators", "test-dx", "test-event", "test-hub", "test-utils"] as const;
+export const DOM_NATIVE_TEST_SPEC_NAMES = TEST_CORE_NAV;
 export type DomNativeTestSpecName = (typeof DOM_NATIVE_TEST_SPEC_NAMES)[number];
 export const DEFAULT_DOM_NATIVE_TEST_SPEC: DomNativeTestSpecName = "test-dom";
 export const VALID_DOM_NATIVE_TEST_SPECS = new Set<string>(DOM_NATIVE_TEST_SPEC_NAMES as readonly string[]);
