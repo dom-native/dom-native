@@ -215,7 +215,6 @@ export async function testLifecycle() {
 
 	// Note: DocumentFragment or createElement do NOT instantiate the custom element class, just create a raw HTML element for the tag.
 	equal(contentEl.test_out, []);
-
 	// We append it to the DOM
 	contentEl.append(fragment);
 
@@ -224,7 +223,6 @@ export async function testLifecycle() {
 	equal((el as any).info, 'some info'); // Correct property
 	// Here, should NOT have the pre or post display, but contstrutor and init has been created, because animationFrames are not called yet
 	equal(as_test_el(el).test_out, ["LifecycleComponent constructor", "LifecycleComponent init"]);
-
 	await nextFrame();
 	equal(as_test_el(el).test_out, ["LifecycleComponent constructor", "LifecycleComponent init", "LifecycleComponent preDisplay true"]);
 

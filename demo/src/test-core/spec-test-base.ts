@@ -27,14 +27,14 @@ export class SpecTestBase extends SpecView {
 								testAtHubEventsComponent,
 								testComponentDocEvent,
 								testReattachedComponentDocEvent,
-								// testLifecycle, //TODO: need to fix that.
+								testLifecycle, //TODO: need to fix that.
 							};
 							const outputEl = itemEl.querySelector("#output") as HTMLUListElement;
 							const testContentEl = itemEl.querySelector(".test-content") as HTMLElement;
 							const lifecycleEl = itemEl.querySelector(".test-content-lifecycle") as HTMLElement & { test_out: string[] };
 							lifecycleEl.test_out = [];
 							(testContentEl as HTMLElement & { test_out?: string[] }).test_out = [];
-							Object.entries(tests).forEach(async ([name, fn]) => {
+							for (const [name, fn] of Object.entries(tests)) {
 								_beforeEach();
 								testContentEl.innerHTML = "";
 								lifecycleEl.innerHTML = "";
@@ -42,13 +42,13 @@ export class SpecTestBase extends SpecView {
 								const li = html(`<li><strong>${name}</strong> running</li>`).firstElementChild as HTMLLIElement;
 								outputEl.appendChild(li);
 								try {
-									const ret = await fn();
+									await fn();
 									li.innerHTML = `<strong>${name}</strong> OK`;
 								} catch (ex) {
 									li.innerHTML = `<strong>${name}</strong> FAILED ${ex}`;
 									li.classList.add("fail");
 								}
-							});
+							}
 						},
 					},
 				],
