@@ -8,34 +8,14 @@
   "type": "module",
   "scripts": {
     "prepack": "npm run build",
-    "build": "tsx --tsconfig scripts/tsconfig.json ./scripts/cmds.ts build",
-    "build-lib": "tsx --tsconfig scripts/tsconfig.json scripts/cmds.ts build_lib",
-    "watch": "tsx --tsconfig scripts/tsconfig.json ./scripts/cmds.ts watch"
+    "build": "rolldown -c",
+    "watch": "rolldown -c -w"
   },
   "imports": {
     "#dom-native": "./src/index.js"
   },
   "devDependencies": {
-    "@dom-native/demo-infra": "=0.0.0-internal-4",
-    "@rollup/plugin-commonjs": "^29",
-    "@rollup/plugin-node-resolve": "^16",
-    "@rollup/plugin-typescript": "^12",
-    "@types/d3-ease": "^3.0.2",
-    "@types/lodash.debounce": "^4.0.9",
-    "autoprefixer": "^10.4.19",
-    "chokidar": "^5",
-    "cmdrouter": "^0.3.1",
-    "d3-ease": "^3.0.1",
-    "execa": "^9.0.0",
-    "fs-aux": "^0.2",
-    "lodash.debounce": "^4.0.8",
-    "postcss": "^8.4.38",
-    "rollup": "^4.17.2",
-    "terser": "^5.31.0",
-    "tsx": "^4.19.2",
-    "typescript": "^5.4.5",
-    "utils-min": "^0.2.4",
-    "pcss-cli": "^0.3"
+    "rolldown": "^1.0.0-rc.8"
   },
   "files": [
     "src/",

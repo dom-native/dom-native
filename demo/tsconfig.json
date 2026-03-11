@@ -21,7 +21,8 @@
 		"removeComments": false,
 		"sourceMap": true,
 		"esModuleInterop": true,
-		"experimentalDecorators": true
+
+		"experimentalDecorators": true // for now, until rolldown support stage 3
 	},
 	"include": [
 		"./src/**/*.ts",

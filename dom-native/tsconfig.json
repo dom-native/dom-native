@@ -26,7 +26,7 @@
 
 		"esModuleInterop": true,
 
-		"experimentalDecorators": true
+		"experimentalDecorators": true // for now, until rolldown support stage 3
 	},
 
 	// We want more control about which code we will compile and exclude
@@ -37,5 +37,9 @@
 	"exclude": [
 		"node_modules",
 		".rpt2_cache" // this folder will be created by the rollup-typescript2, so, need to exlude it, can become confusing.
-	]
+	],
+
+	"rolldownOptions": {
+		"platform": "browser"
+	}
 }
