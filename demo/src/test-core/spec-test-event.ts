@@ -1,4 +1,5 @@
 import { customElement, html } from "dom-native";
+import { run_tests } from "../infra/runner.js";
 import { SpecView } from "../infra/spec-view.js";
 import { _beforeEach, _init, clickOnDoNs, clickOnDoSave, clickOnDoSaveAfterUnbind, clickOnDoSelect, clickOnDoSelectSub, clickOnDoUnbindNS, clickOnDoUnbindSave, docNs, onEventNextFrameOnDecorator, onEventNextFrameOnFunction, testCapture, testMultiBinding } from "./test-event-logic.js";
 
@@ -28,7 +29,7 @@ export class SpecTestEvent extends SpecView {
   <button class="but do-select"><span class="but do-select-sub">Select Sub</span></button>
   <button class="but do-capture">Capture</button>
 </div>`,
-						run: (itemEl: HTMLElement) => {
+						run: async (itemEl: HTMLElement) => {
 							_init();
 							const tests = {
 								docNs,
@@ -45,22 +46,19 @@ export class SpecTestEvent extends SpecView {
 								onEventNextFrameOnDecorator,
 							};
 							const outputEl = itemEl.querySelector(".output") as HTMLUListElement;
-							Object.entries(tests).forEach(([name, fn]) => {
-								const li = html(`<li><strong>${name}</strong> running</li>`).firstElementChild as HTMLLIElement;
-								outputEl.appendChild(li);
-								try {
+							await run_tests(outputEl, tests, {
+								beforeEach: () => {
 									_beforeEach();
-									const ret = fn();
-									Promise.resolve(ret).then(() => {
-										li.innerHTML = `<strong>${name}</strong> OK`;
-									}).catch((ex) => {
-										li.innerHTML = `<strong>${name}</strong> FAILED ${ex}`;
-										li.classList.add("fail");
-									});
-								} catch (ex) {
-									li.innerHTML = `<strong>${name}</strong> FAILED ${ex}`;
-									li.classList.add("fail");
-								}
+								},
+								createItemEl: (name: string) => {
+									return html(`<li><strong>${name}</strong> running</li>`).firstElementChild as HTMLLIElement;
+								},
+								failInnerHTML: (name: string, ex: any) => {
+									return `<strong>${name}</strong> FAILED ${ex}`;
+								},
+								successInnerHTML: (name: string) => {
+									return `<strong>${name}</strong> OK`;
+								},
 							});
 						},
 					},

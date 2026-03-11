@@ -1,4 +1,5 @@
 import { customElement, html } from "dom-native";
+import { run_tests } from "../infra/runner.js";
 import { SpecView } from "../infra/spec-view.js";
 import { testAll, testAppendAndHtml, testAppendElReturnValue, testAppendEmpty, testAppendHtmlReturnValue, testClosest, testFirst, testFirstElement, testFirstFromHtml, testFirstMultiple, testFirstWithType, testGetFirstException, testGetFirstSuccess, testNext, testPrev, testScanChild, testScanChildMany, thisAppendToHtml } from "./test-dom-logic.js";
 
@@ -65,21 +66,16 @@ export class SpecTestDom extends SpecView {
 								testScanChildMany,
 							};
 							const outputEl = itemEl.querySelector("#output") as HTMLUListElement;
-							Object.entries(tests).forEach(([name, fn]) => {
-								const li = html(`<li><strong>${name}</strong> running</li>`).firstElementChild as HTMLLIElement;
-								outputEl.appendChild(li);
-								try {
-									const ret = fn();
-									Promise.resolve(ret).then(() => {
-										li.innerHTML = `<strong>${name}</strong> OK`;
-									}).catch((ex) => {
-										li.innerHTML = `<strong>${name}</strong> FAILED ${ex}`;
-										li.classList.add("fail");
-									});
-								} catch (ex) {
-									li.innerHTML = `<strong>${name}</strong> FAILED ${ex}`;
-									li.classList.add("fail");
-								}
+							void run_tests(outputEl, tests, {
+								createItemEl: (name: string) => {
+									return html(`<li><strong>${name}</strong> running</li>`).firstElementChild as HTMLLIElement;
+								},
+								failInnerHTML: (name: string, ex: any) => {
+									return `<strong>${name}</strong> FAILED ${ex}`;
+								},
+								successInnerHTML: (name: string) => {
+									return `<strong>${name}</strong> OK`;
+								},
 							});
 						},
 					},
