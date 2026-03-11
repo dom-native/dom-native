@@ -221,9 +221,7 @@ export async function testLifecycle() {
 	// now, the same el as above, has been upgraded to LifecycleComponent
 	equal(el.constructor.name, 'LifecyleComponent'); // Now, correct class
 	equal((el as any).info, 'some info'); // Correct property
-	// Here, should NOT have the pre or post display, but contstrutor and init has been created, because animationFrames are not called yet
-	equal(as_test_el(el).test_out, ["LifecycleComponent constructor", "LifecycleComponent init"]);
-	await nextFrame();
+	// Here, should have init and pre
 	equal(as_test_el(el).test_out, ["LifecycleComponent constructor", "LifecycleComponent init", "LifecycleComponent preDisplay true"]);
 
 	await nextFrame();
