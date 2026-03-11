@@ -1,45 +1,41 @@
 {
-	"compilerOptions": {
-		// For browser client, we target edge and above.
-		"target": "ES2022",
+  "compilerOptions": {
+    // For browser client, we target edge and above.
+    "target": "ES2022",
 
-		// Resolve to es module for rollup
-		"module": "ES2022",
+    // Resolve to es module for rollup
+    "module": "ES2022",
 
-		// This is important to support 3rd party modules that are still in a node.js/commonjs way
-		"moduleResolution": "node",
+    // This is important to support 3rd party modules that are still in a node.js/commonjs way
+    "moduleResolution": "node",
 
-		// 99% of the code will be .ts, and .js files will just be 3rd party libs and will be in
-		"allowJs": false,
-		"checkJs": false,
+    "outDir": "./dist/" /* Redirect output structure to the directory. */,
+    "sourceMap": true /* Generates corresponding '.map' file. */,
 
-		// To extract the maximum value from TypeScript, we use strict = true (no implicit, null check, ...)
-		"strict": true,
+    // 99% of the code will be .ts, and .js files will just be 3rd party libs and will be in
+    "allowJs": false,
+    "checkJs": false,
 
-		"removeComments": false,
+    // To extract the maximum value from TypeScript, we use strict = true (no implicit, null check, ...)
+    "strict": true,
 
-		"declaration": true,
+    "removeComments": false,
 
-		"sourceMap": true, /* Generates corresponding '.map' file. */
+    "declaration": true,
 
-		"outDir": "./dist/", /* Redirect output structure to the directory. */
+    "esModuleInterop": true,
 
-		"esModuleInterop": true,
+    "experimentalDecorators": true, // for now, until rolldown support stage 3
+  },
 
-		"experimentalDecorators": true // for now, until rolldown support stage 3
-	},
+  // We want more control about which code we will compile and exclude
+  "include": ["./src/**/*.ts"],
 
-	// We want more control about which code we will compile and exclude
-	"include": [
-		"./src/**/*.ts"
-	],
+  "exclude": [
+    "node_modules",
+  ],
 
-	"exclude": [
-		"node_modules",
-		".rpt2_cache" // this folder will be created by the rollup-typescript2, so, need to exlude it, can become confusing.
-	],
-
-	"rolldownOptions": {
-		"platform": "browser"
-	}
+  "rolldownOptions": {
+    "platform": "browser",
+  },
 }

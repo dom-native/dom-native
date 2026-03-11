@@ -4,6 +4,7 @@
 		"module": "ES2022",
 		"moduleResolution": "node",
 		"baseUrl": "..",
+		"outDir": "./dist/", /* Redirect output structure to the directory. */
 		"paths": {
 			"dom-native": [
 				"./dom-native/src/index.ts"
