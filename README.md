@@ -13,13 +13,13 @@ This is the canonical way to develop and validate demo changes as file changes i
 - Watch demo bundle during development:
 
 ```sh
-npm run watch-demo
+npm run demo-watch
 ```
 
 - Build demo bundle once:
 
 ```sh
-npm run build-demo
+npm run demo-build
 ```
 
 
@@ -45,20 +45,6 @@ For this monorepo, install and run demo workflows from repository root.
 
 ```sh
 npm install
-```
-
-### Root demo workflow
-
-- Build full demo pipeline (code + js + css):
-
-```sh
-npm run build-demo
-```
-
-- Watch demo pipeline:
-
-```sh
-npm run watch-demo
 ```
 
 ### Folder ownership model
