@@ -114,12 +114,12 @@ class AtHubComponent extends BaseHTMLElement {
 
 
 
-export function _beforeEach() {
+export async function _beforeEach() {
 	out = [];
 }
 
 
-export function testSimplestComponent() {
+export async function testSimplestComponent() {
 	const contentEl = getRequiredTestElement('.test-content');
 	const [el] = append(contentEl, html('<simplest-component></simplest-component><simplest-component></simplest-component>'));
 	el.click();
@@ -127,7 +127,7 @@ export function testSimplestComponent() {
 }
 
 
-export function testComponentEventBindings() {
+export async function testComponentEventBindings() {
 	const contentEl = getRequiredTestElement('.test-content');
 	contentEl.append(html('<my-component></my-component>'));
 
@@ -177,7 +177,7 @@ export async function testReattachedComponentDocEvent() {
 	equal(out, []);
 }
 
-export function testComponentHubEvents() {
+export async function testComponentHubEvents() {
 	const contentEl = getRequiredTestElement('.test-content');
 	contentEl.append(html('<my-component></my-component>'));
 
@@ -196,7 +196,7 @@ export function testComponentHubEvents() {
 	equal(out, []);
 }
 
-export function testAtHubEventsComponent() {
+export async function testAtHubEventsComponent() {
 	const contentEl = getRequiredTestElement('.test-content');
 	append(contentEl, '<at-hub-component></at-hub-component>');
 
