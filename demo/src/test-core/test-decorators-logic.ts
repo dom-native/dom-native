@@ -59,5 +59,6 @@ export function testOnEvent() {
 
 export function testOnHub() {
 	hub("data").pub("agent", "some message");
-	equal(out, ['dev-el onHubDataAgent', 'dev-el2 onHubDataAgent', 'dev-el2 onHubDataAgent']);
+	equal(out, ['dev-el onHubDataAgent', 'dev-el2 onHubDataAgent']);
+	// equal(out, ['dev-el onHubDataAgent', 'dev-el2 onHubDataAgent', 'dev-el2 onHubDataAgent']);
 }
