@@ -14,6 +14,9 @@
 			],
 			"@dom-native/draggable": [
 				"./draggable/src/index.ts"
+			],
+			"@dom-native/ui": [
+				"./dom-native-ui/src/index.ts"
 			]
 		},
 		"allowJs": false,
@@ -28,7 +31,8 @@
 	"include": [
 		"./src/**/*.ts",
 		"../dom-native/src/**/*.ts",
-		"../draggable/src/**/*.ts"
+		"../draggable/src/**/*.ts",
+		"../dom-native-ui/src/**/*.ts"
 	],
 	"exclude": [
 		"node_modules",

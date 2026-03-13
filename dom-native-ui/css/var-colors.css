@@ -1,0 +1,66 @@
+/**
+ * Resources: 
+ *  - Google Materials Color: https://material.io/design/color/#tools-for-picking-colors
+ **/
+
+:root {
+
+	/* google gray palette */
+	--d-clr-gray-000: #FFFFFF;
+	--d-clr-gray-050: #FAFAFA;
+	--d-clr-gray-100: #F5F5F5;
+	--d-clr-gray-200: #EEEEEE;
+	--d-clr-gray-300: #E0E0E0;
+	--d-clr-gray-400: #BDBDBD;
+	--d-clr-gray-500: #9E9E9E;
+	--d-clr-gray-600: #757575;
+	--d-clr-gray-700: #616161;
+	--d-clr-gray-800: #424242;
+	--d-clr-gray-900: #212121;
+
+	/* google material light blue palette */
+	--d-clr-050: #E1F5FE;
+	--d-clr-100: #B3E5FC;
+	--d-clr-200: #81D4FA;
+	--d-clr-300: #4FC3F7;
+	--d-clr-400: #29B6F6;
+	--d-clr-500: #03A9F4;
+	--d-clr-600: #039BE5;
+	--d-clr-700: #0288D1;
+	--d-clr-800: #0277BD;
+	--d-clr-900: #01579B;
+	--d-clr-A100: #80D8FF;
+	--d-clr-A200: #40C4FF;
+	--d-clr-A400: #00B0FF;
+	--d-clr-A700: #0091EA;
+
+	--d-clr-prime: var(--d-clr-700);
+
+
+	--d-field-bkg: var(--d-clr-gray-000);
+	--d-field-bkg-sel: var(--d-clr-gray-400);
+	--d-field-bdr: #aaa;
+	--d-field-bdr-focused: var(--d-clr-prime);
+	--d-field-input: var(--d-clr-gray-900);
+	--d-field-label: var(--d-clr-gray-700);
+	--d-field-label-no-value: var(--d-clr-gray-500);
+	--d-field-label-focused: var(--d-clr-800);
+	--d-field-trail-text: var(--d-clr-gray-600);
+	--d-field-ico: var(--d-clr-gray-500);
+
+
+	--d-field-choice-off-fill: var(--d-clr-gray-500);
+	--d-field-choice-off-focus-fill: var(--d-clr-gray-700);
+	--d-field-choice-on-fill: var(--d-clr-prime);
+	--d-field-choice-on-focus-fill: var(--d-clr-600);
+
+	--d-field-placholder-clr: var(--d-clr-gray-700);
+
+	--d-select-option-ov-bkg: var(--d-clr-gray-100);
+	--d-select-option-noval-clr: var(--d-clr-gray-600);
+
+
+	/*#region    Layout */
+	--d-field-v-padding: 1rem;
+	/*#endregion Layout */
+}

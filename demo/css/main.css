@@ -1,6 +1,7 @@
 @import "demo.css";
 @import "colors.css";
 @import "./test.css";
+@import "../../dom-native-ui/css/main.css";
 
 .card {
 	box-shadow:

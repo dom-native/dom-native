@@ -1,8 +1,9 @@
 import "./demo-core";
 import "./test-core";
 import "./demo-draggable";
+import "./demo-ui";
 import { hub } from "dom-native";
-import { type DemoFamily, DOM_NATIVE_FAMILY, DRAGGABLE_FAMILY, DEFAULT_SPEC_BY_FAMILY, VALID_SPECS_BY_FAMILY, DOM_NATIVE_TEST_FAMILY, DEFAULT_DOM_NATIVE_TEST_SPEC, VALID_DOM_NATIVE_TEST_SPECS } from "./infra/spec-config.js";
+import { type DemoFamily, DOM_NATIVE_FAMILY, DRAGGABLE_FAMILY, DEFAULT_SPEC_BY_FAMILY, VALID_SPECS_BY_FAMILY, DOM_NATIVE_TEST_FAMILY, DEFAULT_DOM_NATIVE_TEST_SPEC, VALID_DOM_NATIVE_TEST_SPECS, DOM_NATIVE_UI_FAMILY } from "./infra/spec-config.js";
 
 const routerHub = hub("router-hub");
 routerHub.sub("navigate", (route: string) => {
@@ -69,7 +70,7 @@ function _parseRawHash(hash: string): { family: DemoFamily | typeof DOM_NATIVE_T
 	if (!familyRaw || !specRaw) {
 		return null;
 	}
-	if (familyRaw !== DOM_NATIVE_FAMILY && familyRaw !== DRAGGABLE_FAMILY && familyRaw !== DOM_NATIVE_TEST_FAMILY) {
+	if (familyRaw !== DOM_NATIVE_FAMILY && familyRaw !== DRAGGABLE_FAMILY && familyRaw !== DOM_NATIVE_TEST_FAMILY && familyRaw !== DOM_NATIVE_UI_FAMILY) {
 		return null;
 	}
 	return { family: familyRaw, spec: specRaw };
