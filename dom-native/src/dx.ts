@@ -130,6 +130,8 @@ export function push(el: HTMLElement | DocumentFragment, selector_or_data: strin
 	}
 
 	const dxEls = all(el, selector);
+	// Track occurrence index per propPath to distribute array values across multiple same-name elements
+	const propPathCounters: { [key: string]: number } = {};
 
 	dxEls.forEach(function (dxEl) {
 		const propPath = getPropPath(dxEl);
@@ -139,7 +141,17 @@ export function push(el: HTMLElement | DocumentFragment, selector_or_data: strin
 			return;
 		}
 
-		const value = val(data, propPath);
+		let value = val(data, propPath);
+
+		// When value is an array and element is a non-checkbox/radio input or select,
+		// distribute array items by occurrence index
+		if (value instanceof Array
+			&& !dxEl.matches("input[type='checkbox']")
+			&& !dxEl.matches("input[type='radio']")) {
+			const idx = propPathCounters[propPath] || 0;
+			propPathCounters[propPath] = idx + 1;
+			value = value[idx];
+		}
 
 		if (typeof value !== "undefined") {
 			let i = 0,
