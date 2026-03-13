@@ -1,5 +1,5 @@
 import { all } from "./dom.js";
-import { asArray, val } from "./utils.js";
+import { val } from "./utils.js";
 
 type PusherFn = (value: any) => void;
 type PullerFn = (existingValue: any) => any;
@@ -77,8 +77,19 @@ const _pullers: [string, PullerFn][] = [
 
 	[
 		"input, select",
-		function (this: HTMLSelectElement, existingValue: any) {
-			return this.value;
+		function (this: HTMLSelectElement | HTMLInputElement, existingValue: any) {
+			if (this instanceof HTMLInputElement && this.type === "radio") {
+				return this.value;
+			}
+			if (typeof existingValue === "undefined") {
+				return this.value;
+			}
+			if (existingValue instanceof Array) {
+				const values = existingValue.slice();
+				values.push(this.value);
+				return values;
+			}
+			return [existingValue, this.value];
 		},
 	],
 
