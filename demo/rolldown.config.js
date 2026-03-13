@@ -6,7 +6,7 @@ export default defineConfig({
 		alias: {
 			"dom-native": new URL("../dom-native/src/index.ts", import.meta.url).pathname,
 			"#dom-native": new URL("../dom-native/src/index.ts", import.meta.url).pathname,
-			"@dom-native/draggable": new URL("../draggable/src/index.ts", import.meta.url).pathname,
+			"@dom-native/draggable": new URL("../dom-native-draggable/src/index.ts", import.meta.url).pathname,
 		},
 	},
 	output: {
@@ -15,4 +15,3 @@ export default defineConfig({
 		sourcemap: true,
 	},
 });
-
