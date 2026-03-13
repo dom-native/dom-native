@@ -62,11 +62,13 @@ const _pullers: [string, PullerFn][] = [
 				// change "on" by true value (which usually what we want to have)
 				// TODO: We should test the attribute "value" to allow "on" if it is defined
 				newValue = iptValue && iptValue !== "on" ? iptValue : true;
-				if (typeof existingValue !== "undefined") {
-					// if we have an existingValue for this property, we create an array
-					const values = asArray(existingValue);
-					values.push(newValue);
-					newValue = values;
+				if (this.type === "checkbox") {
+					if (typeof existingValue !== "undefined") {
+						// if we have an existingValue for this property, we create an array
+						const values = existingValue instanceof Array ? existingValue.slice() : [existingValue];
+						values.push(newValue);
+						newValue = values;
+					}
 				}
 			}
 			return newValue;
