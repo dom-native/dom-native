@@ -9,6 +9,10 @@ const customObj = { name: "customA" };
 export function _init() {
 	hub1 = hub("hub1");
 
+	// Clean up any previous subscriptions to handle re-navigation without full page refresh
+	hub1.unsub({ ns: "ns1" });
+	hub1.unsub({ ns: "ns_label1" });
+
 	// subscribe to a simple topic
 	hub1.sub("HUB1_TOPIC_1", function (data, info) {
 		out.push("HUB1_TOPIC_1" + " >> " + info.topic + "-" + info.label + "-" + data);
@@ -17,7 +21,7 @@ export function _init() {
 	// subscribe to a topic and label
 	hub1.sub("HUB1_TOPIC_1", "hub1_label_1", function (data, info) {
 		out.push("HUB1_TOPIC_1; hub1_label_1" + " >> " + info.topic + "-" + info.label + "-" + data);
-	});
+	}, { ns: "ns_label1" });
 
 	var hub2 = hub("hub2");
 
