@@ -27,7 +27,7 @@ export function basicPush() {
 	});
 
 	// pull the empty form, and change it matches.
-	const expectedEmptyFormStringify = '{"a":"","b":"","d":"","e":""}';
+	const expectedEmptyFormStringify = '{"a":"","b":"","c1":"","c3":["",""],"d":"","e":""}';
 	equal(JSON.stringify(pull(formEl)), expectedEmptyFormStringify);
 
 	// push the orginal data, and then, pull and make sure it matches
