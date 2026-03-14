@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "demo-build": "node scripts/build-demo.js ",
-    "demo-watch": "node scripts/watch-demo.js"
+    "demo-watch": "node scripts/watch-demo.js",
+    "ui-assets-build": "node scripts/build-ui-assets.js"
   },
   "dependencies": {
     "d3-ease": "^3.0.1",
