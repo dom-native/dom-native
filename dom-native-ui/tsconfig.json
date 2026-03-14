@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    // For browser client, we target edge and above.
+    "target": "ES2022",
+
+    // Resolve to es module for rollup
+    "module": "ES2022",
+
+    // This is important to support 3rd party modules that are still in a node.js/commonjs way
+    "moduleResolution": "node",
+
+    "outDir": "./dist/" /* Redirect output structure to the directory. */,
+    "sourceMap": true /* Generates corresponding '.map' file. */,
+
+    // 99% of the code will be .ts, and .js files will just be 3rd party libs and will be in
+    "allowJs": false,
+    "checkJs": false,
+
+    // To extract the maximum value from TypeScript, we use strict = true (no implicit, null check, ...)
+    "strict": true,
+
+    "removeComments": false,
+
+    "declaration": true,
+
+    "esModuleInterop": true,
+
+    "experimentalDecorators": true, // for now, until rolldown support stage 3
+  },
+
+  // We want more control about which code we will compile and exclude
+  "include": ["./src/**/*.ts"],
+
+  "exclude": [
+    "node_modules",
+  ],
+
+  "rolldownOptions": {
+    "platform": "browser",
+  },
+}

@@ -1,0 +1,41 @@
+{
+  "name": "@dom-native/ui",
+  "type": "module",
+  "version": "0.3.0-WIP",
+  "description": "Minimalist UI Elements to be used with dom-native",
+  "main": "dist/index.js",
+  "scripts": {
+    "prepack": "npm run build",
+    "build": "rolldown -c rolldown.config.js",
+    "build-min": "rolldown -c rolldown.min.config.js",
+    "watch": "rolldown -c -w"
+  },
+  "peerDependencies": {
+    "dom-native": "^0.11.0"
+  },
+  "devDependencies": {
+    "rolldown": "^1.0.0-rc.8",
+    "typescript": "^5.6.3"
+  },
+  "files": [
+    "src/",
+    "dist/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dom-native/dom-native.git"
+  },
+  "keywords": [
+    "domnative",
+    "dom native",
+    "frameworkless",
+    "framework",
+    "Web Components",
+    "Native Web Components",
+    "customElements",
+    "cssGrid",
+    "DOM",
+    "mvc",
+    "html5"
+  ]
+}
