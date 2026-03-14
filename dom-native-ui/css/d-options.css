@@ -1,0 +1,36 @@
+d-options.d-field{
+	display: grid;
+	min-height: auto;
+	align-items: center;
+
+	& > .d-ipt {
+		display: grid;
+		grid-auto-flow: column;
+		grid-column-gap: .5rem;
+		justify-items: center;
+		& > div {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 2rem;
+			cursor: pointer;
+			color: var(--txt-L3);
+			padding: 0 1rem;
+			border-right: solid 1px var(--bdr-L4);
+
+			&.sel{
+				color: var(--txt-prime);
+				font-weight: 700;
+			}
+		}
+	}
+
+	& > div:first-of-type{
+		padding-left: 0;
+	}
+
+	& > div:last-of-type{
+		border-right: none;
+	}
+
+}
