@@ -1,7 +1,14 @@
 import chokidar from "chokidar";
 import { spawn } from "node:child_process";
 
-const WATCH_ROOTS = ["demo/src", "dom-native/src", "draggable/src", "dom-native-ui/assets"];
+const WATCH_ROOTS = [
+	"demo/src",
+	"dom-native/src",
+	"dom-native-draggable/src",
+	"dom-native-ui/src",
+	"dom-native-ui/css",
+	"dom-native-ui/assets",
+];
 const DEBOUNCE_MS = 300;
 
 let debounceTimer = null;
@@ -113,4 +120,3 @@ process.on("SIGTERM", () => {
 });
 
 void startBuild();
-
