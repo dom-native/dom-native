@@ -1,7 +1,7 @@
 import chokidar from "chokidar";
 import { spawn } from "node:child_process";
 
-const WATCH_ROOTS = ["demo/src", "dom-native/src", "draggable/src"];
+const WATCH_ROOTS = ["demo/src", "dom-native/src", "draggable/src", "dom-native-ui/assets"];
 const DEBOUNCE_MS = 300;
 
 let debounceTimer = null;

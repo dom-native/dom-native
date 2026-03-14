@@ -8,6 +8,7 @@ _*
 
 **/web-content/js/*
 **/web-content/css/*
+**/web-content/images/*
 
 # -- AIPack
 # By default, ignore all paths starting with .aipack

@@ -8,4 +8,5 @@ import './spec-d-radio.js';
 import './spec-d-select.js';
 import './spec-d-textarea.js';
 
-// loadDefaultIcons();
+// loadSvgSymbols("images/symbols.svg");
+loadDefaultIcons()
