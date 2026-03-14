@@ -11,8 +11,8 @@ export const DOM_NATIVE_UI_FAMILY: DemoFamily = "dom-native-ui";
 
 export const DEFAULT_SPEC_BY_FAMILY: Record<DemoFamily, string> = {
 	[DOM_NATIVE_FAMILY]: "basic",
-	[DRAGGABLE_FAMILY]: "dnd-simple",
-	[DOM_NATIVE_UI_FAMILY]: "d-check",
+	[DRAGGABLE_FAMILY]: "dnd-basic",
+	[DOM_NATIVE_UI_FAMILY]: "d-input",
 };
 
 export const SPEC_NAMES_BY_FAMILY: Record<DemoFamily, string[]> = {

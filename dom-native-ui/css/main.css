@@ -2,11 +2,9 @@
 @import './base.css';
 @import './var-colors.css';
 @import './var-elevs.css';
-
 @import './d-ico-symbol.css';
 @import './d-base-input.css';
 @import './d-base-toggle.css';
-@import './d-options.css';
 
 * {
   -webkit-font-smoothing: antialiased;

@@ -1,1 +1,1 @@
-export const NAV = ["d-check", "d-ico-symbol", "d-input", "d-options", "d-radio", "d-select", "d-textarea"] as const;
+export const NAV = ["d-input", "d-check", "d-radio", "d-select", "d-textarea", "d-ico-symbol"] as const;
