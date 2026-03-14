@@ -1,4 +1,4 @@
-import { BaseHTMLElement, customElement } from "#dom-native";
+import { BaseHTMLElement, customElement } from "dom-native";
 import { CodeDoc, SpecView } from "../infra/index.js";
 import { code_simpleElement, code_simpleElement2 } from "./_codes.js";
 

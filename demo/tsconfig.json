@@ -9,9 +9,6 @@
 			"dom-native": [
 				"./dom-native/src/index.ts"
 			],
-			"#dom-native": [
-				"./dom-native/src/index.ts"
-			],
 			"@dom-native/draggable": [
 				"./draggable/src/index.ts"
 			],

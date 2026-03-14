@@ -1,4 +1,4 @@
-import { adoptStyleSheets, BaseHTMLElement, css, customElement, html } from '#dom-native';
+import { adoptStyleSheets, BaseHTMLElement, css, customElement, html } from 'dom-native';
 import { CodeDoc, SpecView } from '../infra/index.js';
 import { code_shadowPart, code_shadowSimple, code_shadowSlot } from './_codes.js';
 
@@ -11,11 +11,11 @@ export class SpecShadowDom extends SpecView {
 	}
 }
 
-//#region    ---------- code: shadowSimple ---------- 
+//#region    ---------- code: shadowSimple ----------
 const _shadow_simple_css = css`
-h3{ 
-	display: inline; 
-	color: red; 
+h3{
+	display: inline;
+	color: red;
 	font-size: 1rem;
 }
 `;
@@ -29,9 +29,9 @@ class ShadowSimple extends BaseHTMLElement {
 		adoptStyleSheets(this, _shadow_simple_css);
 	}
 }
-//#endregion ---------- /code: shadowSimple ---------- 
+//#endregion ---------- /code: shadowSimple ----------
 
-//#region    ---------- code: shadowPart ---------- 
+//#region    ---------- code: shadowPart ----------
 @customElement('shadow-part')
 class ShadowPart extends BaseHTMLElement {
 	constructor() {
@@ -40,9 +40,9 @@ class ShadowPart extends BaseHTMLElement {
 		s.innerHTML = `
 <style>
 /* basic style for h3, which can be overriden with css-part */
-h3 { 
-	display: inline; 
-	color: red; 
+h3 {
+	display: inline;
+	color: red;
 	font-size: 1rem;
 }
 </style>
@@ -54,12 +54,12 @@ Hello from <h3 part="label">ShadowPart</h3> constructor
 }
 //#endregion ---------- /code: shadowPart ----------
 
-//#region    ---------- code: shadowSlot ---------- 
+//#region    ---------- code: shadowSlot ----------
 // This will create Template and return its .content, which could be cloned (shadow.innerHTML alternative)
 const shadowSlotTmpl = html(`
 <style>
 ::slotted(h3){
-	display: inline; 
+	display: inline;
 	font-size: 1rem;
 	padding: 0 1rem;
 	color: blue;
@@ -101,11 +101,11 @@ const spec_shadow_dom: CodeDoc = {
 					title: 'Shadow CSS Part',
 					html: `
 <style>
-shadow-part::part(label){ 
+shadow-part::part(label){
 	color: blue;
 }
-</style>					
-<div class="root-el">			
+</style>
+<div class="root-el">
   <shadow-part></shadow-part>
 </div>
 			`,
@@ -119,8 +119,8 @@ shadow-slot h3{ /* will override the component ::slotted(h3) */
 	color: green;
 }
 </style>
-				
-<div class="root-el">			
+
+<div class="root-el">
   <shadow-slot><h3>slot</h3></shadow-slot>
 </div>
 			`,

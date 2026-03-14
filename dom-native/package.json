@@ -12,9 +12,6 @@
     "watch": "rolldown -c -w",
     "build-min": "rolldown -c rolldown.min.config.js"
   },
-  "imports": {
-    "#dom-native": "./src/index.js"
-  },
   "devDependencies": {
     "rolldown": "^1.0.0-rc.8",
     "typescript": "^5.6.3"

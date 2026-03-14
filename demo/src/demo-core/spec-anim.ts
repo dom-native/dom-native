@@ -1,4 +1,4 @@
-import { adoptStyleSheets, anim, append, BaseHTMLElement, css, customElement } from '#dom-native';
+import { adoptStyleSheets, anim, append, BaseHTMLElement, css, customElement } from 'dom-native';
 import { CodeDoc, SpecView } from '../infra/index.js';
 import { easeBounce } from 'd3-ease';
 import { code_animPie } from './_codes.js';
@@ -14,7 +14,7 @@ export class SpecAnimView extends SpecView {
 
 
 
-//#region    ---------- code: animPie ---------- 
+//#region    ---------- code: animPie ----------
 
 const PAD = 8;
 

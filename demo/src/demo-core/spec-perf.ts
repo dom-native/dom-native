@@ -1,4 +1,4 @@
-import { BaseHTMLElement, customElement, first, on, onEvent } from '#dom-native';
+import { BaseHTMLElement, customElement, first, on, onEvent } from 'dom-native';
 import { CodeDoc, SpecView } from '../infra/index.js';
 import { wait } from 'utils-min';
 import { code_perfSimplest } from './_codes.js';
@@ -219,7 +219,7 @@ function processPerf(start: number, containerEl: HTMLElement): Promise<PerfResul
 	})
 }
 
-//#endregion ---------- /code: perfSimplest ---------- 
+//#endregion ---------- /code: perfSimplest ----------
 
 
 

@@ -1,4 +1,4 @@
-import { BaseHTMLElement, customElement, on, onEvent, OnEvent } from '#dom-native';
+import { BaseHTMLElement, customElement, on, onEvent, OnEvent } from 'dom-native';
 import { CodeDoc, SpecView } from '../infra/index.js';
 import { code_eventShadow, code_eventSimple } from './_codes.js';
 
@@ -43,9 +43,9 @@ Some <span class="clickable-1">clickable-1</span> <span class="clickable-2">clic
 
 
 }
-//#endregion ---------- /code: eventSimple ---------- 
+//#endregion ---------- /code: eventSimple ----------
 
-//#region    ---------- code: eventShadow ---------- 
+//#region    ---------- code: eventShadow ----------
 @customElement('event-shadow')
 class EventShadow extends BaseHTMLElement {
 	constructor() {
@@ -82,7 +82,7 @@ Some <span class="clickable-1">clickable-1</span> <span class="clickable-2">clic
 		});
 	}
 }
-//#endregion ---------- /code: eventShadow ---------- 
+//#endregion ---------- /code: eventShadow ----------
 
 
 const spec_doc: CodeDoc = {
