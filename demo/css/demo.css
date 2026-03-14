@@ -49,7 +49,7 @@ spec-main-view {
 		background: #777;
 		color: #fff;
 		display: grid;
-		grid-template-columns: 12rem 2rem 15rem 15rem 15rem 1fr;
+		grid-template-columns: 12rem 2rem 15rem 15rem 15rem 1fr 15rem;
 		align-items: stretch;
 		grid-gap: 1rem;
 		& > * {
@@ -70,6 +70,7 @@ spec-main-view {
 			font-size: 1.25rem;
 			font-weight: 200;
 			letter-spacing: 0.01em;
+			padding: 0 1rem;
 			&.sel {
 				color: #333;
 				background: rgba(255, 255, 255, 1);
