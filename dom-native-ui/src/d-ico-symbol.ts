@@ -19,23 +19,23 @@ export function svgSymbolEl(name: string, attrs?: { [k: string]: string }): Elem
 }
 
 
-//#region    ---------- d-symbol ---------- 
+//#region    ---------- d-symbol ----------
 /**
- * Component that display an svg symbol, but does not have the 'icon' semantic. 
- * Full name of the symbol needs to be given. 
+ * Component that display an svg symbol, but does not have the 'icon' semantic.
+ * Full name of the symbol needs to be given.
  * Will add the symbol name as css class.
- * 
+ *
  * Usage: `<d-symbol name='ico-user'></d-symbol>`
- * 
- * Attributes: 
+ *
+ * Attributes:
  *   - name:
- * 
+ *
  * Properties:
  *   - none
- * 
+ *
  * Content:
  *   - symbol name
- * 
+ *
  */
 @customElement('d-symbol')
 class SymbolElement extends BaseHTMLElement {
@@ -43,7 +43,7 @@ class SymbolElement extends BaseHTMLElement {
 
 	get name() { return this.getAttribute('name') ?? '' }
 
-	//#region    ---------- Lifecycle ---------- 
+	//#region    ---------- Lifecycle ----------
 	init() {
 		super.init();
 		this.refresh();
@@ -61,7 +61,7 @@ class SymbolElement extends BaseHTMLElement {
 				break;
 		}
 	}
-	//#endregion ---------- /Lifecycle ---------- 
+	//#endregion ---------- /Lifecycle ----------
 
 	refresh() {
 		const name = this.name;
@@ -73,25 +73,25 @@ class SymbolElement extends BaseHTMLElement {
 }
 //#endregion ---------- /d-symbol ----------
 
-//#region    ---------- d-ico ---------- 
+//#region    ---------- d-ico ----------
 /**
- * Component that display an icon icon stored in the symbols svg. 
- * 'ico-[name]' will be added as component class name and used for the symbol name. 
- * 
- * Usage: `<d-ico name="user"></d-ico>`  
+ * Component that display an icon icon stored in the symbols svg.
+ * 'ico-[name]' will be added as component class name and used for the symbol name.
+ *
+ * Usage: `<d-ico name="user"></d-ico>`
  * TODO: need to implement `<d-ico name="user"></d-ico>` (can change name)
- * 
- * Attributes: 
- *   -  name?: 
- * 
- * 
+ *
+ * Attributes:
+ *   -  name?:
+ *
+ *
  * Properties: none
- * 
+ *
  */
 @customElement('d-ico')
 export class IcoElement extends SymbolElement {
 	// NOTE: Unfortunately, TS 5.x decorator seems to remove support for static intialization
-	//       e.g., when doing a IcoElement.prefix in the get name() we get undefined. 
+	//       e.g., when doing a IcoElement.prefix in the get name() we get undefined.
 	//       So, disabling feature for now. TS 5.x decorator more important than static initialization.
 	// static prefix = '';
 

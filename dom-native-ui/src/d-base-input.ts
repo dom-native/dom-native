@@ -4,33 +4,33 @@ import { svgSymbolEl } from './d-ico-symbol.js';
 
 const SHADOW_CONTENT = html`
 	<slot name="icon-lead"></slot>
-	<slot name="icon-trail"></slot>		
+	<slot name="icon-trail"></slot>
 	<slot name="label"></slot>
 	<slot name="label-trail"></slot>
-	<slot name="text-trail"></slot>	
+	<slot name="text-trail"></slot>
 	<div class="box" part="box"></div>
 `;
 
 /**
  * Base field element for d-input and d-text (text area)
- * 
- * Attributes: 
+ *
+ * Attributes:
  *   - See BaseFieldElement.
  *   - `password?`: set input as password
- * 
- * Properties: 
+ *
+ * Properties:
  *   - See BaseFieldElement.
  *   - `password: boolean`: reflective of attribute.
- * 
+ *
  * CSS:
  *   - See BaseFieldElement.
- * 
+ *
  * Content:
  *   - none
- * 
+ *
  * Events:
  *   - `CHANGE` see BaseFieldElement.
- * 
+ *
  */
 export abstract class BaseInputElement extends BaseFieldElement {
 
@@ -71,7 +71,7 @@ export abstract class BaseInputElement extends BaseFieldElement {
 		shadow.append(content);
 	}
 
-	//#region    ---------- Lifecycle ---------- 
+	//#region    ---------- Lifecycle ----------
 	// Component initialization (will be called once by BaseHTMLElement on first connectedCallback)
 	init() {
 		super.init();
@@ -102,7 +102,7 @@ export abstract class BaseInputElement extends BaseFieldElement {
 			this.appendChild(elem('label', { slot: 'label', $: { textContent: label } }));
 		}
 
-		// add the text-trail 
+		// add the text-trail
 		if (textTrail) {
 			this.classList.add("has-text-trail");
 			this.appendChild(elem('div', { slot: 'text-trail', $: { textContent: textTrail } }));
@@ -142,7 +142,7 @@ export abstract class BaseInputElement extends BaseFieldElement {
 			}
 		});
 
-		// TODO: minor bug when user re-click on label when input is empty, it toggle focus off. 
+		// TODO: minor bug when user re-click on label when input is empty, it toggle focus off.
 		on(this.shadowRoot, 'click', 'label', (evt) => {
 			this.ctrlEl.focus();
 		});
@@ -167,7 +167,7 @@ export abstract class BaseInputElement extends BaseFieldElement {
 					if (isValueElement(this.ctrlEl)) {
 						setAttr(this.ctrlEl, { placeholder: newVal });
 					} else {
-						// TODO - check if 
+						// TODO - check if
 						this.value = this.value;
 					}
 					break;
@@ -175,9 +175,9 @@ export abstract class BaseInputElement extends BaseFieldElement {
 		}
 
 	}
-	//#endregion ---------- /Lifecycle ---------- 
+	//#endregion ---------- /Lifecycle ----------
 
-	//#region    ---------- HTML Element Overrides ---------- 
+	//#region    ---------- HTML Element Overrides ----------
 	focus() {
 		this.ctrlEl?.focus();
 	}

@@ -9,9 +9,9 @@ export const DX_OPTIONS_NAMES = {
 
 /**
  * Base component for any Field base custom component that provide a `.value` `.name` interface.
- * This will also automatically set the component as css class `dx` if it has a name, 
+ * This will also automatically set the component as css class `dx` if it has a name,
  * so that by default they pushed/pulled by `mvdom push/pull` system.
- * 
+ *
  * Attributes:
  *   - `readonly?`: set the component as readonly.
  *   - `disabled?`: set the component as disabled.
@@ -20,8 +20,8 @@ export const DX_OPTIONS_NAMES = {
  *   - `value?`: this is the initial value of the component. TODO: needs to unify when no value (right now .empty for input, .no-value for c-select)
  *   - `placeholder?`: placeholder text.
  *   - `autofocus?`: will do a focus on requestAnimationFrame (later might add timeout when attribute has numeric value)
- * 
- * Properties: 
+ *
+ * Properties:
  *   - `readonly: boolean`: reflective of attribute.
  * 	 - `disabled: boolean`: reflective of attribute.
  *   - `noValue: boolean`: reflective of css `no-value`.
@@ -30,28 +30,28 @@ export const DX_OPTIONS_NAMES = {
  *   - `label?: string`: Manged by subClass. (reflection up to subclasss).
  *   - `value?: any`: Managed by subClass. (reflection up to subclasss).
  *   - `noValue: boolean`: reflective of CSS Attribute `.no-label`.
- * 
+ *
  * CSS:
  *  - `.no-value` when the field has no value (for now, managed by sub class)
  *  - `.no-label` when the field has no label.
  *  - `.dx` will be added when field component has a name.
- * 
- * Content: 
+ *
+ * Content:
  *  - (subclass dependent)
- * 
+ *
  * Events:
  *   - `CHANGE` Sub Class call `triggerChange()` which will trigger a `evt.detail: {name: string, value: string}`.
- * 
+ *
  * Sub class MUST:
  *   - Sub classes MUST call `super.init()` in their `init()` implementation.
  *   - Manage value property
- * 
+ *
  */
 export abstract class BaseFieldElement extends BaseHTMLElement {
 
 
 	private _eventReady = false;
-	/** 
+	/**
 	 * Determine if this field is event ready (can fire CHANGE and such events)
 	 * This is next nextFrame of init so that does not trigger uncessary CHANGE event on DOM setup
 	 */
@@ -99,9 +99,9 @@ export abstract class BaseFieldElement extends BaseHTMLElement {
 	abstract get value(): any
 	abstract set value(val: any)
 
-	//#region    ---------- Lifecycle ---------- 
+	//#region    ---------- Lifecycle ----------
 	init() {
-		super.init(); // best practice, even if it in this case, the parent.init() is blank. 
+		super.init(); // best practice, even if it in this case, the parent.init() is blank.
 
 		this.classList.add('d-field');
 
@@ -123,7 +123,7 @@ export abstract class BaseFieldElement extends BaseHTMLElement {
 			this.classList.add('no-label');
 		}
 
-		// by default if we have a 'name' attribute we add 
+		// by default if we have a 'name' attribute we add
 		//   - The '.dx' to allow seamless mvdom push/pull
 		//   - The '.c-field' which specifies that this component has name/value so that
 		//     we can use the same `mvdom` pusher/puller for all
@@ -156,7 +156,7 @@ export abstract class BaseFieldElement extends BaseHTMLElement {
 				break;
 		}
 	}
-	//#endregion ---------- /Lifecycle ---------- 
+	//#endregion ---------- /Lifecycle ----------
 
 
 	triggerChange() {
@@ -180,7 +180,7 @@ export abstract class BaseFieldElement extends BaseHTMLElement {
 }
 
 
-//#region    ---------- Register mvdom dx ---------- 
+//#region    ---------- Register mvdom dx ----------
 pusher('.d-field', function (this: BaseFieldElement, val: any) {
 	this.value = val;
 });

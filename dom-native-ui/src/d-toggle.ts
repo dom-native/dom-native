@@ -15,21 +15,21 @@ const SHADOW_CONTENT = html`
  *   - label
  *   - `value?`: value of the component (when checked).
  *   - `checked?`: checked states of te component (on / off state of the individual element)
- *   
+ *
  * Properties:
  *   - See BaseFieldElement.
  *   - `value`: If checkbox checked true or 'value' attribute if present, otherwise, if not checked false.
  *   - `checked: boolean`: reflective of Attribute.
- * 
+ *
  * CSS:
  *   - See BaseFieldElement.
- * 
- * Content: 
+ *
+ * Content:
  *   - none
- * 
+ *
  * Events:
  *   - `CHANGE` see BaseFieldElement.
- * 
+ *
  */
 
 export abstract class BaseToggleElement extends BaseFieldElement {
@@ -57,7 +57,7 @@ export abstract class BaseToggleElement extends BaseFieldElement {
 		}
 		// if not checked
 		else {
-			// Check if we have a unchecked-value 
+			// Check if we have a unchecked-value
 			let uncheckedValue = getAttr(this, "unchecked-value");
 			if (uncheckedValue) return uncheckedValue;
 
@@ -100,7 +100,7 @@ export abstract class BaseToggleElement extends BaseFieldElement {
 	}
 
 
-	//#region    ---------- Lifecycle ---------- 
+	//#region    ---------- Lifecycle ----------
 	// Component initialization (will be called once by BaseHTMLElement on first connectedCallback)
 	init() {
 		super.init();
@@ -146,6 +146,6 @@ export abstract class BaseToggleElement extends BaseFieldElement {
 		}
 
 	}
-	//#endregion ---------- /Lifecycle ---------- 
+	//#endregion ---------- /Lifecycle ----------
 
 }

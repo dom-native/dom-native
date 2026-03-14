@@ -10,32 +10,32 @@ const SHADOW_CONTENT = html`
 `;
 
 /**
- * UNDER REFACTORIZATION DO NOT USE 
- * 
+ * UNDER REFACTORIZATION DO NOT USE
+ *
  * d-select is a select component.
  *
  * Usage: `<d-select name="fieldA" value="0" popup-css="my-select-popup"><option value="0">Item 0</option></d-select>`
  * See:  http://localhost:8080/_spec/controls
- * 
+ *
  * Attributes:
  *   - See BaseFieldElement.
- * 
+ *
  * Properties:
  *   - See BaseFieldElement.
  *   - `options: Option[]` The list of options object for this field. Can be initialized with HTML content or with the DATA API.
- * 
+ *
  * CSS:
  *   - See BaseFieldElement.
- * 
+ *
  * Content (NOT reflective, just for initialization)
  *   - List of `<option value="1">Value 1</option>` (value must be unique, one can be non present, which === null)
  *   - or shorthand for one option `<d-select value="1">Value One</d-select>` will create one `<option` with this value/content
  *   - or shorhand for place holder `<d-select>Select User</d-select>` same as `<d-select placeholder="Select User"></d-select>`
- * 
+ *
  * Events:
  *   - `CHANGE` see BaseFieldElement.
  *   - `DATA` with `evt.detail: {sendData: (options: Option[]) => void}` that provide a data callback when the component needs the data.
- * 
+ *
  */
 export type SelectOption = { content: string, value: string | null };
 export type SelectDataSender = (options: SelectOption[]) => void;
@@ -170,7 +170,7 @@ const SELECT_POPUP_POSITION = Object.freeze({ loc: 'bottom', align: 'left' } as 
 interface WithData { _data: any }
 /**
  * Component to be used only by the SelectElement (for now).
- * Events: 
+ * Events:
  * 	- `SELECT` when an item is selected
  * 	- `CANCEL` when the user click outside
  */
@@ -210,7 +210,7 @@ class SelectPopupElement extends BaseHTMLElement {
 		this.reposition();
 	}
 
-	// Auto remove when click outide of parent 
+	// Auto remove when click outide of parent
 	// (click on parent, d-select, will be responsibility of d-select)
 	@onDoc('pointerup')
 	onDocClick(evt: PointerEvent) {
@@ -266,7 +266,7 @@ class SelectPopupElement extends BaseHTMLElement {
 				hGap
 			});
 			// NOTE: This is a hack otherwise when the window has small height
-			//       the popup sometime goes below the d-textara text content. 
+			//       the popup sometime goes below the d-textara text content.
 			//       Really seems to be a UI bug, and only way found so far is to change
 			//       a ui property on this popup (hence the +1 above, and the value here)
 			setTimeout(() => {

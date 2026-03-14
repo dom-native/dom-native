@@ -2,31 +2,31 @@ import { all, customElement, first, getAttr, on } from 'dom-native';
 import { BaseFieldElement } from './d-base-field.js';
 
 /**
- * COMPONENT NOT SUPPORTED YET. Just placeholder code. 
- * 
+ * COMPONENT NOT SUPPORTED YET. Just placeholder code.
+ *
  * d-options custom element encapsulate a label/input field group ()`c-input > label, input`) structure.
  * component styles are global but scoped via css naming (see c-input.pcss).
  *
  * Usage: `<d-options name="state" options="1:Open, 0:Close, 2 : Both" value="0"></d-options>`
  * See:  http://localhost:8080/_spec/controls
- * 
+ *
  * Attributes:
  *   - See BaseFieldElement.
  *   - `value?`: See BaseFieldElement. String matching the "value" part of value. TODO: need to make reflective.
- *   - `options`: possible options with format [value: label, value: label] (0: cat, 1: dog). 
+ *   - `options`: possible options with format [value: label, value: label] (0: cat, 1: dog).
  *             'value' act as a key, can be be any string (value and label will be trimmed)
  *             e.g., options='0: cat, 1: dog, 2: lion'
- * 
+ *
  * Properties:
  *   - See BaseFieldElement.
  *   - `value`: Return the current value selected ('0' or '1' or '2' from the above example)
- * 
+ *
  * CSS:
  *   - See BaseFieldElement.
- * 
+ *
  * Content:
  *   - TBD
- * 
+ *
  * Events:
  *   - `CHANGE` see BaseFieldElement.
  */
@@ -61,7 +61,7 @@ export class DOptionElement extends BaseFieldElement {
 		}
 	}
 
-	//#region    ---------- Lifecycle ---------- 
+	//#region    ---------- Lifecycle ----------
 	// Component initialization (will be called once by BaseHTMLElement on first connectedCallback)
 	init() {
 		super.init();
@@ -90,7 +90,7 @@ export class DOptionElement extends BaseFieldElement {
 			this.triggerChange();
 		});
 	}
-	//#endregion ---------- /Lifecycle ---------- 
+	//#endregion ---------- /Lifecycle ----------
 
 }
 declare global {

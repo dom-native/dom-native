@@ -6,29 +6,29 @@ const _base_input_css = css`
 		-webkit-appearance: none;
 		-moz-appearance: none;
 		padding-left: 0;
-		padding-right: 0;		
+		padding-right: 0;
 	}
 `;
 
 /**
- * d-input custom element encapsulate a label/input field group ()`d-input > label, input`) structure. 
- * component styles are global but scoped via css naming (see d-input.pcss). 
- * 
+ * d-input custom element encapsulate a label/input field group ()`d-input > label, input`) structure.
+ * component styles are global but scoped via css naming (see d-input.pcss).
+ *
  * Usage: `<d-input name="fieldNameA" value="value A"></d-input>`
  * See:  http://localhost:8080/_spec/controls
- * 
- * Attributes: 
+ *
+ * Attributes:
  *   - See BaseFieldElement.
  *   - `password?`: set input as password
- * 
- * 
- * Properties: 
+ *
+ *
+ * Properties:
  *   - See BaseFieldElement.
  *   - `password: boolean`: reflective of attribute.
- * 
+ *
  * CSS:
  *   - See BaseFieldElement.
- * 
+ *
  * Parts:
  *   - label: The label element
  * 	 - label-trail: The eventual label trail element
@@ -36,10 +36,10 @@ const _base_input_css = css`
  *   - ctrl: The control element (the html input element in this case)
  *   - icon-lead: The eventual icon lead element
  * 	 - icon-trail: The eventual icond trail lelement
- * 
+ *
  * Events:
  *   - `CHANGE` see BaseFieldElement.
- * 
+ *
  */
 @customElement("d-input")
 export class DInputElement extends BaseInputElement {
@@ -65,7 +65,7 @@ export class DInputElement extends BaseInputElement {
 		this.noValue = (!(newVal && newVal.length > 0));
 
 		// Note: If the UI call this setter, will always be input value old/new will be always equals.
-		//       however, it if is programmatic call, it might be different. so for now, we have to always trigger it. 
+		//       however, it if is programmatic call, it might be different. so for now, we have to always trigger it.
 		//       TODO: need to find a way to trigger only on change.
 		this.triggerChange();
 	};
@@ -79,7 +79,7 @@ export class DInputElement extends BaseInputElement {
 		super.init();
 	}
 
-	//#region    ---------- BaseInput Implementations ---------- 
+	//#region    ---------- BaseInput Implementations ----------
 	createCtrlEl(): HTMLInputElement {
 		const type = this.hasAttribute('password') ? 'password' : 'text';
 		return elem('input', { type });
@@ -88,7 +88,7 @@ export class DInputElement extends BaseInputElement {
 	getInitialValue() {
 		return getAttr(this, 'value');
 	}
-	//#endregion ---------- /BaseInput Implementations ---------- 
+	//#endregion ---------- /BaseInput Implementations ----------
 
 }
 declare global {
