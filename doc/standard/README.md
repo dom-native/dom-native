@@ -5,7 +5,7 @@
 `dom-native` is a DOM-first, Web Component-oriented utility library for building modern frontends with native browser primitives and TypeScript.
 The browser and the DOM are the framework.
 
-This standard follows both the public `dom-native` API and the recurring patterns used in the awesomeapp frontend:
+This standard follows both the public `dom-native` API and the recurring patterns used in real `dom-native` applications:
 
 - native custom elements with `BaseHTMLElement`
 - top-level `html\`...\`` fragments for static structure
@@ -16,13 +16,46 @@ This standard follows both the public `dom-native` API and the recurring pattern
 - app and model reactions with `hub(...)` and `@onHub(...)`
 - focused refresh methods instead of broad rerender logic
 
-## Recommended reading order
+This `README.md` is the entry point and quick overview.
+The detailed standards are split into the companion documents listed below.
+
+## Overview
+
+- **Base Element**: `BaseHTMLElement`, which extends the standard `HTMLElement` and provides simple lifecycle hooks based on DOM callbacks and event binding patterns.
+  - One-time `init()`
+  - Optional synchronous `preDisplay(firstCall)`
+  - Optional deferred `postDisplay(firstCall)`
+  - Automatic cleanup for namespaced root DOM and hub bindings
+- **DOM Event** utilities, with `on(...)` for direct or delegated event binding, plus TS decorators.
+  - `on(...)`, `off(...)`, `trigger(...)`
+  - `@onEvent(...)`, `@onDoc(...)`, `@onWin(...)`
+- **Hub Event** utilities, for lightweight topic and label based pub/sub and component reactions.
+  - `hub(name)`, `sub(...)`, `pub(...)`, `unsub(...)`
+  - `bindHubEvents(...)`
+  - `@onHub(...)`
+- **CSS / Style** utilities, for stylesheet objects, shadow DOM stylesheet adoption, and targeted runtime styling.
+  - `css(...)`
+  - `adoptStyleSheets(...)`
+  - `style(...)`, `setClass(...)`
+- **Position** utilities, for anchored floating UI placement relative to elements or points.
+  - `position(...)`
+  - `Pos`
+  - `PositionOptions`
+
+## Standard documents
 
 - `doc-01-element.md`, elements, lifecycle, and DOM builders
 - `doc-02-event-dom.md`, DOM event binding and decorators
 - `doc-03-event-hub.md`, hub pub/sub and decorators
 - `doc-04-css.md`, css objects, stylesheet adoption, and inline style helpers
 - `doc-05-position.md`, anchored positioning
+
+## Recommended reading order
+
+- Start with `doc-01-element.md`
+- Then read `doc-02-event-dom.md`
+- Then `doc-03-event-hub.md`
+- Use `doc-04-css.md` and `doc-05-position.md` as focused references
 
 ## Quick example
 
@@ -72,6 +105,21 @@ export class ProfileView extends BaseHTMLElement {
 - Use `elem(...)` for dynamic nodes and custom element composition.
 - Use `frag(...)` for repeated list rendering.
 
+## How this maps to awesomeapp patterns
+
+The awesomeapp frontend uses a very consistent `dom-native` style:
+
+- define a top-level `const HTML = html\`...\`;`
+- clone with `document.importNode(HTML, true)` in `init()`
+- cache important nodes with `first(...)`, `getFirst(...)`, or `cherryChild(...)`
+- attach once with `replaceChildren(content)`
+- use `postDisplay()` for first async refresh
+- keep `@onEvent(...)` and `@onHub(...)` handlers thin
+- move DOM update logic into focused methods like `refresh()`, `refresh_view()`, `refreshMsgs()`, or `refreshConv()`
+- use `elem(...)` with `$: { _data: ... }` for dynamic child custom elements
+- use `frag(...)` for repeated rendering
+- use `push(...)` and `pull(...)` for form-like DOM data exchange
+
 ## Notes
 
 - `html(...)` returns a `DocumentFragment`, not an element.
@@ -79,3 +127,7 @@ export class ProfileView extends BaseHTMLElement {
 - `preDisplay()` is synchronous during `connectedCallback()`.
 - `postDisplay()` runs in `requestAnimationFrame(...)`.
 - Prefer explicit subtree replacement over broad string rerenders.
+
+## Next step
+
+For implementation details, continue with the individual standard documents in this folder.

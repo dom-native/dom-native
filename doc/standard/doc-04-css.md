@@ -4,11 +4,11 @@
 
 This document covers the `dom-native` CSS helpers:
 
-- `css(...)`
-- `CSSObject`
-- `adoptStyleSheets(...)`
-- `style(...)`
-- `setClass(...)` and `className(...)`
+- `css(...)`, create reusable stylesheet objects from strings or template literals
+- `CSSObject`, the immutable wrapper around stylesheet text and sheet access
+- `adoptStyleSheets(...)`, attach one or more stylesheet objects to a shadow root or shadow host
+- `style(...)`, apply targeted inline style updates to one or more elements
+- `setClass(...)` and `className(...)`, add or remove classes from state-like key/value input
 
 These helpers are intentionally small.
 They help with shadow DOM stylesheets, reusable CSS text, and targeted style or class updates.

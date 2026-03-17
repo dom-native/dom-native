@@ -4,12 +4,14 @@
 
 This document covers the `dom-native` hub system:
 
-- `hub(name)`
-- `sub(...)`
-- `pub(...)`
-- `unsub(...)`
-- `bindHubEvents(...)`
-- `@onHub(...)`
+- Core functions
+  - `hub(name)`
+  - `sub(...)`, subscribe to topic and optional label-based pub/sub events
+  - `pub(...)`, publish a hub event with or without labels
+  - `unsub(...)`, remove subscriptions by namespace
+  - `bindHubEvents(...)`, bind dictionary-based hub listeners in one call
+- TS decorators
+  - `@onHub(...)`, bind component methods to hub events with automatic cleanup
 
 The hub is a lightweight topic and label-based pub/sub system.
 It is commonly used for route events, model events, and other app-level notifications.

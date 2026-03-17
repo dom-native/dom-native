@@ -4,11 +4,11 @@
 
 This document covers the standard element pattern for `dom-native`:
 
-- `BaseHTMLElement`
-- lifecycle methods
-- `@customElement(...)`
-- `html\`...\``, `elem(...)`, and `frag(...)`
-- the recommended `init()` pattern used throughout awesomeapp
+- The `BaseHTMLElement`
+  - its lifecycle methods
+  - `@customElement(...)`, the convenient TS decorator
+- DOM Builder Helpers
+  - `html\`...\``, `elem(...)`, and `frag(...)`
 
 The dominant project style is:
 
@@ -17,6 +17,8 @@ The dominant project style is:
 - query and cache key elements before attach
 - `replaceChildren(content)`
 - do async and state sync work in `postDisplay()`
+
+In short, this document explains how `dom-native` components are structured, rendered, and composed using native custom elements plus the standard `html`, `elem`, and `frag` builder helpers.
 
 ## BaseHTMLElement
 
@@ -297,7 +299,7 @@ If the accumulator returns `null`, that item is skipped.
 
 ## Focused refresh methods
 
-A recurring awesomeapp pattern is to keep handlers small and move DOM logic into focused methods.
+A recurring project pattern is to keep handlers small and move DOM logic into focused methods.
 
 ```ts
 @customElement("sample-view")

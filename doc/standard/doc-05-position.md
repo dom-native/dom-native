@@ -12,6 +12,8 @@ Use it for:
 - anchored dialogs
 - context UI near pointer position
 
+In short, `position(...)` is the standard way to place popup-like UI such as menus, tooltips, and anchored overlays in a predictable DOM-first style.
+
 ## Core API
 
 Type signatures first, with one comment per signature.

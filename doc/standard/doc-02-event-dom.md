@@ -4,13 +4,17 @@
 
 This document covers DOM event binding in `dom-native`:
 
-- `on(...)`
-- `off(...)`
-- `trigger(...)`
-- `@onEvent(...)`
-- `@onDoc(...)`
-- `@onWin(...)`
-- the important behavior nuances
+- Primitive event functions:  
+  - `on(...)` - bind direct or delegated DOM events with optional namespace and lifecycle-friendly options
+  - `off(...)` - remove bound DOM events, usually by type, selector, listener, or namespace
+  - `trigger(...)` - dispatch bubbling custom events with a small, convenient API
+
+- TS Decorators
+  - `@onEvent(...)` - bind component-local events on the element, or on `shadowRoot` when present
+  - `@onDoc(...)` - bind document-level events with automatic component cleanup
+  - `@onWin(...)` - bind window-level events with automatic component cleanup
+
+- The important behavior nuances
 
 ## on(...) type signatures
 
