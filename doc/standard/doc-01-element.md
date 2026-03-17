@@ -8,7 +8,7 @@ This document covers the standard element pattern for `dom-native`:
   - its lifecycle methods
   - `@customElement(...)`, the convenient TS decorator
 - DOM Builder Helpers
-  - `html\`...\``, `elem(...)`, and `frag(...)`
+  - html`...`, `elem(...)`, and `frag(...)`
 
 The dominant project style is:
 
@@ -90,9 +90,13 @@ export class ProfileView extends BaseHTMLElement {
 	#contentEl!: HTMLElement;
 
 	init() {
+		// Create the content from doc fragment, detached from dom root, 
 		const content = document.importNode(HTML, true);
 		this.#titleEl = first(content, ".title")!;
 		this.#contentEl = first(content, ".content")!;
+		// Could have done
+		// [this.#titleEl, this.#contentEl]= cherryChild(content, [".title", ".content"])!;
+		
 		this.replaceChildren(content);
 	}
 
