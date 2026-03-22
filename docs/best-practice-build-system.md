@@ -172,9 +172,9 @@ export default defineConfig({
 ### Example `lightningcss.config.js`
 
 ```js
-import { bundle } from "lightningcss";
+import { bundleAsync } from "lightningcss";
 import { writeFileSync, mkdirSync } from "node:fs";
-import { dirname } from "node:path";
+import { dirname, resolve } from "node:path";
 
 const cssInputPath = new URL("./css/main.css", import.meta.url).pathname;
 const cssOutputPath = new URL("./web-content/css/bundle.css", import.meta.url).pathname;
@@ -185,6 +185,15 @@ console.log("[web] Building CSS with lightningcss...");
 let { code, map } = bundle({
 	filename: cssInputPath,
 	map: true,
+	resolver: {
+		// https by default external
+		resolve(specifier, from) {
+			if (/^https?:/.test(specifier)) {
+				return { external: specifier };
+			}
+			return resolve(dirname(from), specifier);
+		},
+	},	
 });
 
 mkdirSync(cssOutputDir, { recursive: true });
