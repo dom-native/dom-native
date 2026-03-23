@@ -13,7 +13,7 @@ This is the canonical way to develop and validate demo changes as file changes i
 - Watch demo bundle during development:
 
 ```sh
-npm run demo-build -- -w
+npm run demo-watch
 ```
 
 - Build demo bundle once:
