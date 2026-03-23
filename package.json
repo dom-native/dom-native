@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "demo-build": "node scripts/demo-build.js",
+    "demo-watch": "node scripts/demo-build.js -- -w",
     "ui-assets-build": "node scripts/build-ui-assets.js"
   },
   "dependencies": {
@@ -14,7 +15,7 @@
   "devDependencies": {
     "chokidar": "^5.0.0",
     "lightningcss": "^1.32.0",
-    "rolldown": "^1.0.0-rc.8",
+    "rolldown": "^1.0.0-rc.10",
     "typescript": "^5.6.3"
   }
 }
