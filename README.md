@@ -13,7 +13,7 @@ This is the canonical way to develop and validate demo changes as file changes i
 - Watch demo bundle during development:
 
 ```sh
-npm run demo-watch
+npm run demo-build -- -w
 ```
 
 - Build demo bundle once:
@@ -32,11 +32,11 @@ Root demo build generates browser-ready assets used by `demo/web-content/index.h
 
 ### Typical demo dev loop
 
-- Run `npm run watch-demo` from repository root.
+- Run `npm run demo-build -- -w` from repository root.
 - Edit sources under:
   - `demo/src`
   - `dom-native/src`
-  - `draggable/src`
+  - `dom-native-draggable/src`
 - Reload `demo/web-content/index.html` via a local static server to verify behavior.
 
 ## Dev

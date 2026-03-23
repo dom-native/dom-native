@@ -3,8 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "demo-build": "node scripts/build-demo.js ",
-    "demo-watch": "node scripts/watch-demo.js",
+    "demo-build": "node scripts/demo-build.js",
     "ui-assets-build": "node scripts/build-ui-assets.js"
   },
   "dependencies": {
