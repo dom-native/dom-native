@@ -184,7 +184,7 @@ const cssOutputDir = dirname(cssOutputPath);
 
 console.log("[web] Building CSS with lightningcss...");
 
-let { code, map } = bundle({
+let { code, map } = bundleAsync({
 	filename: cssInputPath,
 	map: true,
 	resolver: {
