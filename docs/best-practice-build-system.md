@@ -1,60 +1,37 @@
 # Web Build Best Practices
 
-## Purpose
+This guide defines a generic build setup for browser applications using TypeScript with `rolldown` and CSS with `lightningcss`.
 
-- This guide defines a simple, generic build setup for a browser app or site using:
-  - TypeScript bundled with `rolldown`
-  - CSS bundled with `lightningcss`
-
-## Recommended Project Structure
+## Project Structure
 
 - `package.json`
 - `tsconfig.json`
 - `rolldown.config.js`
 - `lightningcss.config.js`
 - `scripts/`
-- `src/`
-  - `main.ts`
-- `css/`
-  - `main.css`
+- `src/main.ts`
+- `css/main.css`
 - `web-content/`
-  - `images/`
   - `index.html`
+  - `js/` (generated)
+  - `css/` (generated)
 
-## Build Goals
+## Goals
 
-- Bundle `src/main.ts` into:
-  - `web-content/js/bundle.js`
-- Bundle `css/main.css` into:
-  - `web-content/css/bundle.css`
-- Keep `web-content/index.html` as the browser entry page.
-- Keep the structure simple and easy to scaffold.
+- Bundle `src/main.ts` into `web-content/js/bundle.js`.
+- Bundle `css/main.css` into `web-content/css/bundle.css`.
+- Maintain a simple structure for easy scaffolding.
 
-In the .gitignore make sure to exclude
+Exclude generated files in `.gitignore`:
 
 ```gitignore
 web-content/css/*
 web-content/js/*
 ```
 
-`web-content/index.html` and `web-content/images/...` should be accepted. 
+## Package Configuration
 
-
-## Default `package.json` Additions
-
-- Add these scripts:
-  - `build` - build js and css (one-time)
-  - `watch` - build once, then rebuild on changes (uses rolldown native watch + chokidar for CSS/assets)
-
-- Add these dev dependencies:
-  - `rolldown`
-  - `lightningcss`
-  - `typescript`
-  - `chokidar` (for watch mode)
-
-## Example `package.json`
-
-Use the following as a minimal starting point:
+Add these dependencies and scripts to `package.json`:
 
 ```json
 {
@@ -74,26 +51,12 @@ Use the following as a minimal starting point:
 }
 ```
 
-## Rolldown for TypeScript
+## Rolldown Config
 
-### Role
-
-- `rolldown` bundles the browser JavaScript entry.
-- Standard entry:
-  - `src/main.ts`
-- Standard output:
-  - `web-content/js/bundle.js`
-
-### Best Practices
-
-- Use ESM config with `"type": "module"` in `package.json`.
-- Keep a single clear browser entry point.
-- Point `tsconfig` explicitly from the rolldown config.
-- Emit a sourcemap for easier debugging.
-- Use `platform: "browser"` for browser apps.
-- Prefer a direct output file path for simple setups.
-
-### Example `rolldown.config.js`
+- Use ESM configuration with `"type": "module"`.
+- Configure `platform: "browser"`.
+- Reference `tsconfig.json` explicitly.
+- Emit sourcemaps for debugging.
 
 ```js
 import { defineConfig } from "rolldown";
@@ -108,26 +71,13 @@ export default defineConfig({
 		sourcemap: true,
 	},
 });
-```    
+```
 
-## TypeScript Config
+## TypeScript Settings
 
-### Role
-
-- `tsconfig.json` defines the compiler settings used by rolldown.
-- For a browser build, keep it modern and strict.
-
-### Best Practices
-
-- Use modern targets such as `ES2022`.
-- Keep `strict: true`.
-- Enable sourcemaps.
-- Use `moduleResolution: "node"` for a simple setup.
-- Keep `include` focused on the source tree.
-- If you rely on TypeScript decorators today, keep `experimentalDecorators: true`.
-- This remains important while rolldown does not yet support stage 3 decorators end-to-end.
-
-### Example `tsconfig.json`
+- Use modern targets like `ES2022`.
+- Enable `strict` mode and sourcemaps.
+- Set `experimentalDecorators: true` until stage 3 decorators are fully supported by rolldown.
 
 ```json
 {
@@ -144,34 +94,16 @@ export default defineConfig({
 		"esModuleInterop": true,
 		"experimentalDecorators": true // for now, until rolldown support stage 3
 	},
-	"include": [
-		"./src/**/*.ts"
-	],
-	"exclude": [
-		"node_modules"
-	]
+	"include": ["./src/**/*.ts"],
+	"exclude": ["node_modules"]
 }
 ```
 
-## Lightning CSS for CSS Bundling
+## Lightning CSS Config
 
-### Role
-
-- `lightningcss` bundles the CSS entry.
-- Standard entry:
-  - `css/main.css`
-- Standard output:
-  - `web-content/css/bundle.css`
-
-### Best Practices
-
-- Use a small Node config script for CSS build steps.
+- Use a Node script for bundling.
 - Resolve input and output paths from `import.meta.url`.
-- Ensure the output directory exists before writing.
-- Enable sourcemap generation during development-oriented builds.
-- Keep CSS entry imports inside `css/main.css`.
-
-### Example `lightningcss.config.js`
+- Ensure output directories exist before writing.
 
 ```js
 import { bundleAsync } from "lightningcss";
@@ -203,29 +135,11 @@ writeFileSync(cssOutputPath, code);
 console.log(`[web] Generated CSS: ${cssOutputPath}`);
 ```
 
-## Build Script
+## Build and Watch Scripts
 
-### Role
+Use `scripts/build.js` as the entry point for both one-time builds and watch mode.
 
-- `scripts/build.js` is the single entry point for both one-time build and watch mode.
-- When invoked with `-w` or `--watch`, it enters watch mode.
-- Otherwise, it performs a one-time build and exits with the appropriate exit code.
-
-### Best Practices
-
-- Keep a single `scripts/build.js` that handles both build and watch via a `-w` flag.
-- Extract reusable helpers (command runner, file copy) into a separate `scripts/build-utils.js`.
-- For watch mode:
-  - Delegate JS/TS watching to rolldown's native `-w` flag (spawned as a child process).
-  - Use `chokidar` to watch CSS source directories and rebuild CSS on change.
-  - Use `chokidar` to watch asset directories and re-copy on change.
-  - Debounce rapid file changes to avoid redundant rebuilds.
-  - Handle `SIGINT` / `SIGTERM` for clean shutdown of all watchers and child processes.
-- For one-time build:
-  - Run rolldown, then lightningcss, then copy assets.
-  - Exit with a non-zero code if any step fails.
-
-### Example `scripts/build-utils.js`
+### `scripts/build-utils.js`
 
 ```js
 import { spawnSync } from "node:child_process";
@@ -238,10 +152,7 @@ export function runCommand(command, args, options = {}) {
 }
 
 export function copyFileIfExists(sourcePath, destinationPath) {
-	if (!existsSync(sourcePath)) {
-		return false;
-	}
-
+	if (!existsSync(sourcePath)) return false;
 	mkdirSync(dirname(destinationPath), { recursive: true });
 	copyFileSync(sourcePath, destinationPath);
 	return true;
@@ -250,16 +161,13 @@ export function copyFileIfExists(sourcePath, destinationPath) {
 export function buildCommands(commands) {
 	for (const [command, args] of commands) {
 		const exitCode = runCommand(command, args);
-		if (exitCode !== 0) {
-			return exitCode;
-		}
+		if (exitCode !== 0) return exitCode;
 	}
-
 	return 0;
 }
 ```
 
-### Example `scripts/build.js`
+### `scripts/build.js`
 
 ```js
 import { spawn } from "node:child_process";
@@ -268,24 +176,15 @@ import { buildCommands, copyFileIfExists, runCommand } from "./build-utils.js";
 
 const ROLLDOWN_CONFIG = "rolldown.config.js";
 const LIGHTNINGCSS_CONFIG = "lightningcss.config.js";
-
-const CSS_WATCH_ROOTS = [
-	"css",
-];
-
+const CSS_WATCH_ROOTS = ["css"];
 const DEBOUNCE_MS = 300;
 const isWatching = process.argv.includes("-w") || process.argv.includes("--watch");
 
 function runBuildOnce() {
-	const exitCode = buildCommands([
+	return buildCommands([
 		["rolldown", ["-c", ROLLDOWN_CONFIG]],
 		["node", [LIGHTNINGCSS_CONFIG]],
 	]);
-	if (exitCode !== 0) {
-		return exitCode;
-	}
-
-	return 0;
 }
 
 function buildCss() {
@@ -297,9 +196,7 @@ function runWatchMode() {
 	buildCss();
 
 	// Delegate JS/TS watching to rolldown's native watch mode
-	const rolldownProc = spawn("rolldown", ["-c", ROLLDOWN_CONFIG, "-w"], {
-		stdio: "inherit",
-	});
+	const rolldownProc = spawn("rolldown", ["-c", ROLLDOWN_CONFIG, "-w"], { stdio: "inherit" });
 
 	// Watch CSS sources with chokidar, rebuild CSS on change
 	let cssTimer = null;
@@ -318,26 +215,16 @@ function runWatchMode() {
 	process.on("SIGTERM", shutdown);
 }
 
-if (isWatching) {
-	runWatchMode();
-} else {
-	process.exit(runBuildOnce());
-}
+if (isWatching) runWatchMode();
+else process.exit(runBuildOnce());
 ```
 
-### Adding Asset Copy Support
+### Asset Copy Support
 
-When the project needs to copy assets (e.g., SVG symbol files) during build and watch, extend the build script:
-
-- Define source/destination constants for assets.
-- Add a `copyAssets()` helper that calls `copyFileIfExists`.
-- Call `copyAssets()` in both `runBuildOnce()` and `runWatchMode()`.
-- In watch mode, add a separate chokidar watcher on the asset directories with its own debounce timer.
+Extend the build script to copy assets, such as SVG symbol files, during the build and watch processes.
 
 ```js
-const ASSET_WATCH_ROOTS = [
-	"path/to/assets",
-];
+const ASSET_WATCH_ROOTS = ["path/to/assets"];
 
 function copyAssets() {
 	copyFileIfExists("path/to/source.svg", "web-content/images/source.svg");
@@ -352,29 +239,20 @@ assetWatcher.on("all", () => {
 });
 ```
 
-## Minimal Source File Examples
+## Example Implementation
 
 ### `src/main.ts`
 
 ```ts
 const app = document.querySelector(".app");
-
-if (app) {
-	app.textContent = "Hello from TypeScript";
-}
+if (app) app.textContent = "Hello from TypeScript";
 ```
 
 ### `css/main.css`
 
 ```css
-body {
-	margin: 0;
-	font-family: Arial, sans-serif;
-}
-
-.app {
-	padding: 24px;
-}
+body { margin: 0; font-family: sans-serif; }
+.app { padding: 24px; }
 ```
 
 ### `web-content/index.html`
@@ -384,7 +262,6 @@ body {
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Web App</title>
 	<link rel="stylesheet" href="./css/bundle.css" />
 </head>
@@ -395,58 +272,32 @@ body {
 </html>
 ```
 
-## Recommended Build Commands
+## Commands
 
-- One-time build:
-  - `npm run build`
+- One-time build: `npm run build`
+- Watch mode: `npm run watch`
 
-- Watch mode:
-  - `npm run watch`
+## Summary
 
-## Build Script Summary
+| Concern | One-time build | Watch mode |
+| :--- | :--- | :--- |
+| JS/TS | `rolldown -c rolldown.config.js` | `rolldown -c rolldown.config.js -w` |
+| CSS | `node lightningcss.config.js` | chokidar on `css/` |
+| Assets | `copyFileIfExists()` | chokidar on assets |
+| Exit | `process.exit(exitCode)` | Runs until interrupted |
 
-| Concern         | One-time build                    | Watch mode                                    |
-| --------------- | --------------------------------- | --------------------------------------------- |
-| JS/TS           | `rolldown -c rolldown.config.js`  | `rolldown -c rolldown.config.js -w` (spawned) |
-| CSS             | `node lightningcss.config.js`     | chokidar on `css/` directories                |
-| Assets          | `copyFileIfExists()`              | chokidar on asset directories                 |
-| Exit            | `process.exit(exitCode)`          | Runs until `SIGINT` / `SIGTERM`               |
+## Project Creation Checklist
 
-## LLM Project Creation Checklist
-
-When creating a new project from scratch, make sure to:
-
-- Create the folders:
-  - `src/`
-  - `css/`
-  - `web-content/`
-  - `web-content/js/`
-  - `web-content/css/`
-- Create these files:
-  - `package.json`
-  - `tsconfig.json`
-  - `rolldown.config.js`
-  - `lightningcss.config.js`
-  - `scripts/build.js`
-  - `scripts/build-utils.js`
-  - `src/main.ts`
-  - `css/main.css`
-  - `web-content/index.html`
-- Wire the output paths exactly as:
-  - `web-content/js/bundle.js`
-  - `web-content/css/bundle.css`
-- Ensure `index.html` references:
-  - `./js/bundle.js`
-  - `./css/bundle.css`
-- Add npm scripts for both build and watch flows.
-  - `build` should run `node scripts/build.js`
-  - `watch` should run `node scripts/build.js -w`
-- If decorators are used, include:
-  - `"experimentalDecorators": true // for now, until rolldown support stage 3`
-- Keep the setup generic and independent from any package-specific framework code.
+- Create folders: `src/`, `css/`, `web-content/js/`, `web-content/css/`.
+- Create configuration files: `package.json`, `tsconfig.json`, `rolldown.config.js`, `lightningcss.config.js`.
+- Create build scripts: `scripts/build.js`, `scripts/build-utils.js`.
+- Create source files: `src/main.ts`, `css/main.css`, `web-content/index.html`.
+- Configure output paths to `web-content/js/bundle.js` and `web-content/css/bundle.css`.
+- Reference bundled files in `index.html`.
+- Add `build` and `watch` npm scripts.
+- Enable `experimentalDecorators` if needed.
 
 ## Notes
 
-- This pattern works well for small to medium browser projects.
-- For more advanced needs, aliases, multiple entry points, asset copying, and environment handling can be added later.
-- The starting point should stay simple unless the project requirements clearly justify more complexity.
+- This setup is suitable for small to medium browser projects.
+- Complexity such as aliases or environment handling can be added as requirements evolve.
