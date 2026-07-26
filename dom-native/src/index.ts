@@ -1,4 +1,4 @@
-export const version = "0.11.1";
+export const version = "0.12.0-WIP";
 
 export { anim } from "./anim";
 export type { AnimCallback } from "./anim";
