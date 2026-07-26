@@ -6,9 +6,7 @@
     // Resolve to es module for rollup
     "module": "ES2022",
 
-    // This is important to support 3rd party modules that are still in a node.js/commonjs way
-    "moduleResolution": "node",
-
+    "rootDir": "./src/",
     "outDir": "./dist/" /* Redirect output structure to the directory. */,
     "sourceMap": true /* Generates corresponding '.map' file. */,
 
