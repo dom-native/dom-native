@@ -1,7 +1,7 @@
 {
   "name": "@dom-native/draggable",
   "type": "module",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Minimalist and expressive API for dragging, positioning, and 'FLIP - capture/invert/play'",
   "main": "dist/index.js",
   "scripts": {
@@ -9,6 +9,9 @@
     "build": "rolldown -c rolldown.config.js",
     "build-min": "rolldown -c rolldown.min.config.js",
     "watch": "rolldown -c -w"
+  },
+  "peerDependencies": {
+    "dom-native": "^0.12.0"
   },
   "devDependencies": {
     "dom-native": "file:../dom-native",
