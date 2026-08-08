@@ -47,6 +47,10 @@ For this monorepo, install and run demo workflows from repository root.
 npm install
 ```
 
+### Important Build
+
+Make sure to run `tsc` in `dom-native/` to have successfull `tsc` in `dom-native-draggable/`
+
 ### Folder ownership model
 
 - Canonical demo source and generated snippets live under `demo/src`.

@@ -3,7 +3,7 @@ import { clamp, findBelow, transform, Transform } from './utils.js';
 
 /////////
 // events (inspired from https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API)
-// Uppercase to avoid any name conflict with real event names. 
+// Uppercase to avoid any name conflict with real event names.
 //
 // - DRAGSTART - the user starts dragging an item. (See Starting a Drag Operation.) (dnd - will be triggered on the drag source element)
 // - DRAG - a dragged item (element or text selection) is dragged. (dnd - will be triggered on the drag source element)
@@ -35,7 +35,7 @@ const onDragFnByEventName: { [key in AllDragEventName]: keyof OnDragController }
 	DROP: 'onDrop'
 }
 
-//#region    ---------- Controller / Options Types ---------- 
+//#region    ---------- Controller / Options Types ----------
 export type DraggableEvent<D = any> = CustomEvent<DragEventDetail<D>>;
 type OnDragFn<D = any> = (evt: DraggableEvent<D>) => void;
 
@@ -74,38 +74,38 @@ export interface DragController extends OnDragController {
 		y?: boolean // NOT IMPLEMENTED YET - false if cannot change y during drag
 		/** Container that will be used to (if selector, containerEl = source.closest(...))  */
 		container?: string | HTMLElement
-		/** 
+		/**
 		 * How the dragEl will be constrained.
 		 * - top-left: will contrain the top-left point of the dragged element
 		 * - center: will constrain the center point of the dragged element
 		 * - box: will constrain all side of the dragged element
-		 * 
-		 * Note: The dragged element could be the ghost or the source depening 
+		 *
+		 * Note: The dragged element could be the ghost or the source depening
 		 */
 		hitbox?: 'top-left' | 'center' | 'box'
 	},
 
-	/** 
-	 * Selector or function droppable first html element. 
-	 * 
+	/**
+	 * Selector or function droppable first html element.
+	 *
 	 * - if string, then closest from over element
 	 * - if false, then no drop event / lookup will be performed (TODO NOT supported yet)
 	 * - if true (DEFAULT), then, will send drop events to any element below the drop
 	 * - if function will be called with the "overEl" as first parameter, and should return the HTMLElement
-	 * 
+	 *
 	 * Default: true, meaning will trigger drop events on any element below the ghost/cursor (TODO NOT supported yet)
 	 **/
 	droppable?: Boolean | string | ((target: HTMLElement) => HTMLElement | null);
 
 	/**
-	 * (default: false) Tell if the dragover even should be triggered on the droppable element 
-	 * Note 1: the `controller.onDragOver` will be called if defined regardless of the this flag. 
+	 * (default: false) Tell if the dragover even should be triggered on the droppable element
+	 * Note 1: the `controller.onDragOver` will be called if defined regardless of the this flag.
 	 * Note 2: If `controller.droppable === false` this flag will be ignored since no droppable will be computed
 	 */
 	dragover?: boolean;
 
-	/** 
-	 * Create the ghost div to be dragged. 
+	/**
+	 * Create the ghost div to be dragged.
 	 * If absent a clone and fixed width/height will be created.
 	 */
 	ghost?: GhostOptions;
@@ -129,10 +129,10 @@ type GhostOptions = {
 interface DragControllerInternal extends DragController {
 	setData(data: any): void;
 }
-//#endregion ---------- /Controller / Options Types ---------- 
+//#endregion ---------- /Controller / Options Types ----------
 
 
-//#region    ---------- DragEvent Types ---------- 
+//#region    ---------- DragEvent Types ----------
 
 export interface DragCandidateEventDetail {
 	source: HTMLElement
@@ -142,15 +142,15 @@ export interface DragCandidateEventDetail {
 }
 
 /**
- * The Drag Events are triggered on the drag source. 
- * 
+ * The Drag Events are triggered on the drag source.
+ *
  * Note: For performance reason, as of now, only start/end is triggered. To listen on each onDrag, pass the `onDrag` to the dragController
  *       when calling draggable(..,..,{onDrag: ...})
- * 
+ *
  * - DRAG-START when the drag start
  * - DRAG-END when the drag end (after an eventual DROP event)
- * 
- * CSS States: 
+ *
+ * CSS States:
  *  - 'drag-source' Class added to the element that initiated the dragged
  *  - 'drag-ghost' Class added to the drag source clone element, which is the element dragged with the pointer
  */
@@ -175,11 +175,11 @@ export interface DragEventDetail<D = any> {
 	readonly clientY: number // the pointerEvent.clientY
 	readonly pointerEvent: PointerEvent
 }
-//#endregion ---------- /DragEvent Types ---------- 
+//#endregion ---------- /DragEvent Types ----------
 
 
 
-//#region    ---------- Activation & Start ---------- 
+//#region    ---------- Activation & Start ----------
 export function draggable(rootEl: HTMLElement, controller?: DragController): void;
 export function draggable(rootEl: Document, selector: string, controller?: DragController): void;
 export function draggable(rootEl: HTMLElement, selector: string, controller?: DragController): void;
@@ -219,7 +219,7 @@ export function activateDrag(src: HTMLElement, evt: PointerEvent, controller?: D
 
 	const pointerId = evt.pointerId;
 
-	//#region    ---------- Initial States ---------- 
+	//#region    ---------- Initial States ----------
 
 	//// for drag events
 	const source = src;
@@ -243,7 +243,7 @@ export function activateDrag(src: HTMLElement, evt: PointerEvent, controller?: D
 	const constraintEl = (typeof constraintContainer === 'string') ? source.closest(constraintContainer) : constraintContainer;
 	const constraintRect = constraintEl?.getBoundingClientRect();
 
-	// Those will be the base scroll x/y to calculate eventual offset when drag and scoll 
+	// Those will be the base scroll x/y to calculate eventual offset when drag and scoll
 	//    this allow to have the draggable following the mouse on drag
 	const scrollOriginX = window.scrollX;
 	const scrollOriginY = window.scrollY;
@@ -275,7 +275,7 @@ export function activateDrag(src: HTMLElement, evt: PointerEvent, controller?: D
 
 	// SAFARI - does not turn off the userSelect on drag and prevent default (and does not support standard userSelect)
 	const originBodyWebkitUserSelect = document.body.style.webkitUserSelect;
-	//#endregion ---------- /Initial States ---------- 
+	//#endregion ---------- /Initial States ----------
 
 
 
@@ -317,7 +317,7 @@ export function activateDrag(src: HTMLElement, evt: PointerEvent, controller?: D
 
 	function processMove(pointerEvent: PointerEvent) {
 
-		// IMPORTANT - make sure we process only the event from the start pointerId 
+		// IMPORTANT - make sure we process only the event from the start pointerId
 		//             (if does not match, it's ok, it means it is another drag session on the same source and it will be processed by the corresponding binding)
 		if (pointerId != pointerEvent.pointerId) {
 			return;
@@ -325,7 +325,7 @@ export function activateDrag(src: HTMLElement, evt: PointerEvent, controller?: D
 
 		const { clientX, clientY } = pointerEvent;
 
-		//#region    ---------- DRAGSTART if threshold  ---------- 
+		//#region    ---------- DRAGSTART if threshold  ----------
 		// if we have a candidate, determine if it becomes a context
 		if (!dragActive) {
 
@@ -352,9 +352,9 @@ export function activateDrag(src: HTMLElement, evt: PointerEvent, controller?: D
 				dragActive = true;
 			}
 		}
-		//#endregion ---------- /DRAGSTART if threshold  ---------- 
+		//#endregion ---------- /DRAGSTART if threshold  ----------
 
-		//#region    ---------- Process Drag ---------- 
+		//#region    ---------- Process Drag ----------
 
 		if (dragActive) {
 			// SAFARI - to prevent select on drag
@@ -409,7 +409,7 @@ export function activateDrag(src: HTMLElement, evt: PointerEvent, controller?: D
 			triggerDragEvent('DRAG', makeDragEventDetail({ pointerEvent, over, droppable }), ctlr);
 
 		}
-		//#endregion ---------- /Process Drag ---------- 
+		//#endregion ---------- /Process Drag ----------
 	}
 
 	function moveDraggable(opts: { clientX: number, clientY: number }) {
@@ -487,7 +487,7 @@ export function activateDrag(src: HTMLElement, evt: PointerEvent, controller?: D
 
 	function processEnd(pointerEvent: PointerEvent) {
 
-		// IMPORTANT - make sure we process only the event from the start pointerId 
+		// IMPORTANT - make sure we process only the event from the start pointerId
 		//             (if does not match, it's ok, it means it is another drag session on the same source and it will be processed by the corresponding binding)
 		if (pointerId != pointerEvent.pointerId) {
 			return;
@@ -538,7 +538,7 @@ export function activateDrag(src: HTMLElement, evt: PointerEvent, controller?: D
 
 	}
 
-	//#endregion ---------- /Process End ---------- 
+	//#endregion ---------- /Process End ----------
 }
 
 
@@ -652,10 +652,10 @@ function resolveHitbox(spec: HitboxSpec, ctnRect: DOMRect, dragRect: Rect): [new
 
 	return [newX, newY];
 }
-//#endregion ---------- /Activation & Start ---------- 
+//#endregion ---------- /Activation & Start ----------
 
 
-//#region    ---------- Event Utils ---------- 
+//#region    ---------- Event Utils ----------
 function actuateDroppable(droppable?: HTMLElement) {
 	droppable?.classList.add('drag-over');
 }
@@ -702,7 +702,7 @@ function triggerEvent(type: AllDragEventName, detail: DragEventDetail, controlle
 	}
 }
 
-//#endregion ---------- /Event Utils ---------- 
+//#endregion ---------- /Event Utils ----------
 
 function findDroppable(x: number, y: number, over: HTMLElement, controller: DragController): HTMLElement | undefined {
 	const droppableQuery = controller.droppable ?? true;
