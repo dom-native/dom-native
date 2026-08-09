@@ -1,7 +1,7 @@
 
-@import './base.css';
-@import './var-colors.css';
-@import './var-elevs.css';
+@import './d-base.css';
+@import './d-var-colors.css';
+@import './d-var-elevs.css';
 @import './d-ico-symbol.css';
 @import './d-base-input.css';
 @import './d-base-toggle.css';
