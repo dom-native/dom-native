@@ -41,6 +41,9 @@ The detailed standards are split into the companion documents listed below.
   - `position(...)`
   - `Pos`
   - `PositionOptions`
+- **Drag and drop** utilities, for pointer-based dragging, ghost elements, drop targets, constraints, and FLIP capture.
+  - `dnd.draggable(...)`, `dnd.activateDrag(...)`
+  - `dnd.capture(...)`
 
 ## Standard documents
 
@@ -49,6 +52,7 @@ The detailed standards are split into the companion documents listed below.
 - `doc-03-event-hub.md`, hub pub/sub and decorators
 - `doc-04-css.md`, css objects, stylesheet adoption, and inline style helpers
 - `doc-05-position.md`, anchored positioning
+- `doc-06-dnd.md`, pointer-based drag and drop
 
 ## Recommended reading order
 
@@ -56,6 +60,7 @@ The detailed standards are split into the companion documents listed below.
 - Then read `doc-02-event-dom.md`
 - Then `doc-03-event-hub.md`
 - Use `doc-04-css.md` and `doc-05-position.md` as focused references
+- Use `doc-06-dnd.md` as the drag and drop reference
 
 ## Quick example
 
