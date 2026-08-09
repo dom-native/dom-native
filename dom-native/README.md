@@ -36,7 +36,7 @@ off(containerEl, {ns: 'some_namespace'});
  
 - **TYPED** for expressiveness and robustness with some minimalistic but powerfull TS **decorators**
 ```ts 
-import {customElement, BaseHTMLElement, onEvent} from 'dom-native';
+import {customElement, BaseHTMLElement, onEvent, onDoc} from 'dom-native';
 
 @customElement('my-element') // shorthand for customElements.define('my-element', MyElement)
 class MyElement extends BaseHTMLElement{
@@ -71,7 +71,7 @@ Here an example with some TypeScript decorators (can be used without TypeScript 
 
 ```ts
 // main.ts
-import { BaseHTMLElement, onEvent } from 'dom-native';
+import { BaseHTMLElement, customElement, onEvent } from 'dom-native';
 
 @customElement('hello-world') // no magic, just call customElement.register('hello-world',HelloComponent); 
 class HelloComponent extends BaseHTMLElement{
@@ -89,12 +89,12 @@ class HelloComponent extends BaseHTMLElement{
     // or shadowDom, DocumentFragment, ....
   }
 
-  // called just before the first paint.
+  // called synchronously during connectedCallback(), before the first paint.
   preDisplay() {
     // put here thing job that needs to be performed just before rendering and could be in init.
   }
 
-  // postDisplay() - will be called at the second requestFrameAnimation (after first paint)
+  // postDisplay() - will be called from a requestAnimationFrame after connectedCallback()
   postDisplay(){
     // some async and UI update/refresh
   }
@@ -135,7 +135,7 @@ class FullComponent extends BaseHTMLElement{
   // bind a method to an document DOM event with an optional selector
   // Note: will be correctly unbound when this element is removed from the Document
   @onDoc('click', '.logoff')
-  onDocumentLogoff(){
+  onWindowResize(){
     console.log('.logoff element was clicked somewhere in the document');
   }
 
@@ -159,14 +159,14 @@ class FullComponent extends BaseHTMLElement{
     this.innerHTML = 'Hello <strong>World</strong>'; // good place to set the innerHTML / appendChild
   }
 
-  // preDisplay() - if defined, will be called once before first paint (i.e. first requestAnimationFrame)
+  // preDisplay() - if defined, called synchronously during each connectedCallback(), before paint
   preDisplay(){ 
     console.log('before first paint');
     // Note: This function can be marked async, but the first paint won't wait until resolve. 
     //       More idiomatic to have async in postDisplay
   }
 
-  // postDisplay() - if defined, will be called once after first paint, before second paint (i.e., second requestAnimationFrame)
+  // postDisplay() - if defined, scheduled with requestAnimationFrame during each connectedCallback()
   async postDisplay(){
     // good place to do some async and UI update/refresh
   }
@@ -232,47 +232,33 @@ class MyComponent extends BaseHTMLElement{
   }  
 }
 
-const el = document.createElement('my-comp'); 
-// NOTHING is printed, the element is not added to the dom. 
-// DO NOT call `el.customData = 'test data'` MyComponent is not instantiated
-
-document.body.appendChild(el);
+const el = document.createElement('my-comp') as MyComponent;
+// Because the definition already exists, the constructor runs immediately.
 // -- print --> '-- constructor undefined'
-// -- print --> '-- init undefined'
-
-// now 'el' has been upgraded to MyComponent instance
-el.customData = 'test-data-1'; 
+el.data = 'test-data-1';
+document.body.appendChild(el);
+// init() and preDisplay() run synchronously during connection.
+// -- print --> '-- init test-data-1'
+// -- print --> '-- preDisplay test-data-1'
 
 document.addEventListener('DOMContentLoaded', function () {
-  const el2 = document.createElement('my-comp'); 
-  // NOTE: Since called after the DOMContentLoaded, MyComponent got instantiated
+  const el2 = document.createElement('my-comp') as MyComponent;
+  // The constructor also runs immediately for an already-defined tag.
   // -- print --> '-- constructor undefined'
-  // -- print --> '-- init undefined'  
-  el2.data = 'test-data-2'; // works, as the setter/getter got instantiated
-}); 
-
-// this will ask the browser to do a call back before first paint, but it will do after preDisplay, because the myComponent instance was created before
-requireAnimationFrame(function(){
-
-  // -- print --> '-- preDisplay test-data-1'
+  el2.data = 'test-data-2';
+  document.body.appendChild(el2);
+  // -- print --> '-- init test-data-2'
   // -- print --> '-- preDisplay test-data-2'
-
-  // this will ask the browser to register a callback for the upcoming paint (which is the one after this one).
-  // Since MyComponent had a postDisplay, it was also registered with a double requireAnimationFrame and will be called before
-  requireAnimationFrame(function(){
-
-    // -- print --> '-- postDisplay test-data-1'
-    // -- print --> '-- postDisplay test-data-2'
-
-  });
 });
+
+// postDisplay() is called from one requestAnimationFrame after each connection.
 ```
 
 #### NOTE - element upgrade
 
 There is an essential detail on when the component class `MyComponent` gets associated with its tag `my-comp`, and it follows the following "element upgrade" rule. 
-- When using `document.createElement('my-comp')` if the `MyComponent` associated class was defined before, then it will get immediately 'upgraded', meaning that the returned value will be of type `MyComponent`
-- However, if when using `document.createElement('my-comp')` the `MyComponent` was not defined, or if the `<my-comp></my-comp>` was created via a template (i.e. in a document fragment), then the `MyComponent` will get instantiated and associated to the tag `my-comp` when the element is added to the `document.body` DOM tree. This is important if the `MyComponent` has some setters/getters, as they won't be defined until after the DOM is added to the body.
+- When using `document.createElement('my-comp')`, if the `MyComponent` class was defined before creation, the element is upgraded immediately and the returned value is a `MyComponent`.
+- If the tag was not defined yet, or the element was created from markup or a template, it remains unupgraded until the custom-element definition is available and the element is connected, unless it is explicitly upgraded. Setters and getters are not available until the upgrade occurs.
 
 ### Best Practices
 
@@ -308,15 +294,16 @@ class WhosHappy extends BaseHTMLElement{
 
   preDisplay(){
     if (this.data){
-      this.innerHTML = `Happy people: ${this.happy.join(', ')} <br />
-                      Not happy: ${this.not.join(', ')}`;
+      this.innerHTML = `Happy people: ${this.data.happy.join(', ')} <br />
+                      Not happy: ${this.data.not.join(', ')}`;
     }
   }
 }
 
 // create element and add it to the DOM
-const el = document.createElement('whos-happy');
-const whosHappyEl = document.body.appendChild(el) as WhosHappy;
+// Set data before connecting so connectedCallback() and preDisplay() can read it.
+const whosHappyEl = document.createElement('whos-happy') as WhosHappy;
+document.body.appendChild(whosHappyEl);
 
 whosHappyEl.data = {happy: ['John', 'Jen'], not: ['Mike']}; // <-- still before first paint, so NO flicker
 
@@ -347,6 +334,7 @@ class HappyMessage extends BaseHTMLElement{
 }
 
 const el = document.createElement('happy-message');
+document.body.appendChild(el);
 
 // -- display --> <happy-message><c-ico>happy-face</c-ico><h1>loading...</h1><p>loading...</p></happy-message>
 // for first paint, and until httpGet gets resolved
@@ -373,7 +361,7 @@ See [Dialog Box with Native Web Components - Part 1](https://www.youtube.com/wat
 
 
 ```ts
-import {on, off, all, first, prev, next, append, frag, attr, style } from 'dom-native';
+import {on, off, all, first, prev, next, append, frag, html, elem, getAttr, setAttr, style } from 'dom-native';
 
 // --------- DOM Event Helpers --------- //
 
@@ -425,7 +413,7 @@ const htmlFrag = html`<div>any</div><td>html</td>`; // Create document fragment 
 
 // create a element
 const div = elem('div'); // same as document.createElement('div')
-const [div, myComp] = elem('div', 'my-comp'); // myComp could be of type MyComp if HTMLElementTagNameMap was augmented
+const myComp = elem('my-comp'); // type is HTMLElement unless HTMLElementTagNameMap is augmented
 // --------- /DOM Helpers --------- //
 
 // --------- /CSS Helpers --------- //
@@ -451,7 +439,7 @@ myHub.sub(topics, [labels,] handler[, opts]); // subscribe
 
 myHub.pub(topic, [label,] data); // publish
 
-myHub.unsub(opts.ns); // unsubscribe
+myHub.unsub({ns: 'some_namespace'}); // unsubscribe
 // --------- /Hub (pub/sub) --------- //
 ```
 
@@ -528,6 +516,37 @@ anim((ntime) => {
 ```
 
 
+
+### Position
+
+`position(...)` places an absolutely positioned element relative to an element or point. The `refPos` option selects the reference point. The `pos` option selects the side occupied by the target, so `BR` places the target below and to the right, while `TL` places it above and to the left.
+
+```ts
+import { position } from 'dom-native';
+
+position(menuEl, buttonEl, {
+  refPos: 'BL',
+  pos: 'BR',
+  vGap: 8,
+  hGap: 0,
+  constrain: window,
+});
+```
+
+### Drag and Drop
+
+Pointer-based dragging and drop are available under the `dnd` namespace.
+
+```ts
+import { dnd } from 'dom-native';
+
+dnd.draggable(rootEl, '.drag-item', {
+  drag: 'ghost',
+  droppable: '.drop-zone',
+});
+```
+
+The helper dispatches uppercase `DRAGSTART`, `DRAG`, `DRAGENTER`, `DRAGLEAVE`, `DROP`, and `DRAGEND` events. See [the drag and drop guide](../docs/doc-06-dnd.md) for constraints, controller callbacks, and FLIP capture.
 
 [changlogs](CHANGELOG.md)
 

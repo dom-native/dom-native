@@ -49,6 +49,8 @@ export function className<E extends Element | Element[] | HTMLCollection | null 
 ): E;
 ```
 
+`CSSObject` is the object returned by `css(...)`. The main package entry point re-exports `css(...)`, but not a separate named `CSSObject` symbol. Its `.sheet` value is `null` when constructable stylesheets are unavailable.
+
 ## css(...)
 
 `css(...)` creates an immutable `CSSObject`.

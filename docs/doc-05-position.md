@@ -30,14 +30,27 @@ export type Pos = "TL" | "TC" | "TR" | "CL" | "CC" | "CR" | "BL" | "BC" | "BR";
 
 // Position options for anchor, gap, axis control, and constraints.
 export interface PositionOptions {
+	/**
+	 * The positioned element's placement relative to the reference point.
+	 * `refPos` selects the point on the reference element; `pos` selects where
+	 * the positioned element is placed relative to that point.
+	 */
 	pos?: Pos;
+
+	/**
+	 * The point on the reference element used as the reference point.
+	 * It does not select the positioned element's placement; `pos` does.
+	 */
+	refPos?: Pos;
+	
 	gap?: number;
 	vGap?: number;
 	hGap?: number;
+	
 	x?: boolean | number;
 	y?: boolean | number;
+	
 	constrain?: Window | HTMLElement | null;
-	refPos?: Pos;
 }
 ```
 
@@ -50,16 +63,17 @@ import { position } from "dom-native";
 
 position(menuEl, buttonEl, {
 	refPos: "BL",
-	pos: "TL",
-	gap: 8,
+	pos: "BR",
+	vGap: 8,
+	hGap: 0,
 });
 ```
 
 Meaning:
 
 - use the button bottom-left as the reference point
-- place the menu top-left from that point
-- add an 8px gap
+- place the menu's top-left corner below that point
+- add an 8px vertical gap while preserving horizontal alignment
 
 ### Relative to a point
 
@@ -91,6 +105,14 @@ Examples:
 - `CC`, center-center
 - `BR`, bottom-right
 
+Positioning: 
+
+- For `refPos`, the letters select the corresponding edge or center of the reference rectangle. 
+
+- For `pos`, they describe the side occupied by the positioned element: `T` and `L` place it above and to the left of the reference point, while `B` and `R` place it below and to the right. 
+
+In other words, `pos: "BR"` places the target's top-left corner at the reference point, while `pos: "TL"` places its bottom-right corner there, before any gap is applied.
+
 ## Default behavior
 
 Default options are effectively:
@@ -107,7 +129,7 @@ Default options are effectively:
 
 That means:
 
-- anchor the element by its top-left
+- place the element above and to the left of the reference point, with its bottom-right corner aligned to it
 - use the reference bottom-right point
 - position on both axes
 - no gap unless provided
@@ -190,8 +212,9 @@ position(menuEl, buttonEl, {
 ```ts
 position(menuEl, triggerEl, {
 	refPos: "BL",
-	pos: "TL",
-	gap: 4,
+	pos: "BR",
+	vGap: 4,
+	hGap: 0,
 });
 ```
 
@@ -200,7 +223,7 @@ position(menuEl, triggerEl, {
 ```ts
 position(tooltipEl, iconEl, {
 	refPos: "CR",
-	pos: "CL",
+	pos: "CR",
 	hGap: 8,
 });
 ```
@@ -209,7 +232,7 @@ position(tooltipEl, iconEl, {
 
 ```ts
 position(menuEl, { x: clientX, y: clientY }, {
-	pos: "TL",
+	pos: "BR",
 	constrain: window,
 });
 ```
@@ -269,8 +292,9 @@ For anchored popup UI, prefer this default pattern:
 ```ts
 position(popupEl, triggerEl, {
 	refPos: "BL",
-	pos: "TL",
-	gap: 8,
+	pos: "BR",
+	vGap: 8,
+	hGap: 0,
 	constrain: window,
 });
 ```

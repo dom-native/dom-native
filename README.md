@@ -3,18 +3,18 @@
 
 The main `dom-native` library is in the [dom-native/](dom-native/) directory.
 
-The `dom-native` approach uses the browser as its component framework, with native Web Components (`customElements` with optional Shadow DOM), plus a small set of utilities to streamline application code. The library is less than 7 KB minified.
+The `dom-native` approach uses the browser as its component framework, with native Web Components (`customElements` with optional Shadow DOM), plus a small set of utilities to streamline application code. The library is intentionally small and has no runtime dependencies.
 
-The [@dom-native/ui](dom-native-ui/) directory also contains templates for UI element primitives, such as inputs, checkboxes, and selects. See the base [`d-base-field.ts`](dnui/src/d-base-field.ts) component.
+The `docs/` directory contains implementation-aligned standards for the element, event, hub, CSS, positioning, and drag and drop APIs.
 
 ## Usage
 
-- Dependency: `"dom-native": "^0.13.0"` (now include dnd for draggables / drop)
+- Install: `npm install dom-native`; the package exposes the `dnd` namespace for dragging and drop.
 
 - Decorators: `experimental` (a long story, but currently the most portable option)
 
 ```typescript
-import { BaseHTMLElement, customElement, onEvent, OnEvent } from "dom-native";
+import { BaseHTMLElement, customElement, onEvent, type OnEvent } from "dom-native";
 
 @customElement("simple-element")
 class SimpleElement extends BaseHTMLElement {

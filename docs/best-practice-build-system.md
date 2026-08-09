@@ -1,6 +1,16 @@
 # Web Build Best Practices
 
-This guide defines a generic build setup for browser applications using TypeScript with `rolldown` and CSS with `lightningcss`.
+This guide defines a generic build setup for browser applications using TypeScript 7 with `rolldown` and CSS with `lightningcss`.
+
+## Install TypeScript 7
+
+Install TypeScript 7 before configuring the rest of the build:
+
+```sh
+npm install --save-dev typescript@7
+```
+
+The package configurations in this repository use TypeScript `^7.0.0`. TypeScript 7 removes the old `moduleResolution` compiler option, so leave `"moduleResolution": "node"` out of `tsconfig.json`.
 
 ## Project Structure
 
@@ -43,10 +53,10 @@ Add these dependencies and scripts to `package.json`:
     "watch": "node scripts/build.js -w"
   },
   "devDependencies": {
-    "chokidar": "^4.0.0",
-    "lightningcss": "^1.32.0",
-    "rolldown": "^1.0.0-rc.8",
-    "typescript": "^5.6.3"
+    "chokidar": "^5.0.0",
+    "lightningcss": "^1.33.0",
+    "rolldown": "^1.2.0",
+    "typescript": "^7.0.0"
   }
 }
 ```
@@ -61,15 +71,18 @@ Add these dependencies and scripts to `package.json`:
 ```js
 import { defineConfig } from "rolldown";
 
+const input = new URL("./src/main.ts", import.meta.url).pathname;
+
 export default defineConfig({
-	input: new URL("./src/main.ts", import.meta.url).pathname,
-	platform: "browser",
-	tsconfig: new URL("./tsconfig.json", import.meta.url).pathname,
-	output: {
-		file: new URL("./web-content/js/bundle.js", import.meta.url).pathname,
-		format: "iife",
-		sourcemap: true,
-	},
+  input,
+  platform: "browser",
+  tsconfig: new URL("./tsconfig.json", import.meta.url).pathname,
+  output: {
+    file: new URL("./web-content/js/bundle.js", import.meta.url).pathname,
+    format: "iife",
+    name: "bundle",
+    sourcemap: true,
+  },
 });
 ```
 
@@ -77,25 +90,37 @@ export default defineConfig({
 
 - Use modern targets like `ES2022`.
 - Enable `strict` mode and sourcemaps.
+- TypeScript 7 no longer uses `moduleResolution: "node"`; omit it from `tsconfig.json`.
+- Set `rootDir`, `outDir`, and `declaration` for package builds and generated type declarations.
 - Set `experimentalDecorators: true` until stage 3 decorators are fully supported by rolldown.
 
-```json
+```jsonc
 {
-	"compilerOptions": {
-		"target": "ES2022",
-		"module": "ES2022",
-		"moduleResolution": "node",
-		"outDir": "./dist/", /* Redirect output structure to the directory. */
-		"allowJs": false,
-		"checkJs": false,
-		"strict": true,
-		"removeComments": false,
-		"sourceMap": true,
-		"esModuleInterop": true,
-		"experimentalDecorators": true // for now, until rolldown support stage 3
-	},
-	"include": ["./src/**/*.ts"],
-	"exclude": ["node_modules"]
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+
+    "rootDir": "./src/",
+    "outDir": "./dist/" /* Redirect output structure to the directory. */,
+
+    "allowJs": false,
+    "checkJs": false,
+    "strict": true,
+
+    "removeComments": false,
+    "sourceMap": true,
+
+    "declaration": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true, // for now, until rolldown support stage 3
+  },
+
+  "include": ["./src/**/*.ts"],
+  "exclude": ["node_modules"],
+
+  "rolldownOptions": {
+    "platform": "browser",
+  },
 }
 ```
 
@@ -106,7 +131,7 @@ export default defineConfig({
 - Ensure output directories exist before writing.
 
 ```js
-import { bundleAsync } from "lightningcss";
+import { bundle } from "lightningcss";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 
@@ -116,18 +141,18 @@ const cssOutputDir = dirname(cssOutputPath);
 
 console.log("[web] Building CSS with lightningcss...");
 
-let { code, map } = bundleAsync({
-	filename: cssInputPath,
-	map: true,
-	resolver: {
-		// https by default external
-		resolve(specifier, from) {
-			if (/^https?:/.test(specifier)) {
-				return { external: specifier };
-			}
-			return resolve(dirname(from), specifier);
-		},
-	},	
+let { code, map } = bundle({
+  filename: cssInputPath,
+  map: true,
+  resolver: {
+    // https by default external
+    resolve(specifier, from) {
+      if (/^https?:/.test(specifier)) {
+        return { external: specifier };
+      }
+      return resolve(dirname(from), specifier);
+    },
+  },
 });
 
 mkdirSync(cssOutputDir, { recursive: true });
@@ -147,23 +172,23 @@ import { copyFileSync, existsSync, mkdirSync } from "node:fs";
 import { dirname } from "node:path";
 
 export function runCommand(command, args, options = {}) {
-	const result = spawnSync(command, args, { stdio: "inherit", ...options });
-	return result.status ?? 1;
+  const result = spawnSync(command, args, { stdio: "inherit", ...options });
+  return result.status ?? 1;
 }
 
 export function copyFileIfExists(sourcePath, destinationPath) {
-	if (!existsSync(sourcePath)) return false;
-	mkdirSync(dirname(destinationPath), { recursive: true });
-	copyFileSync(sourcePath, destinationPath);
-	return true;
+  if (!existsSync(sourcePath)) return false;
+  mkdirSync(dirname(destinationPath), { recursive: true });
+  copyFileSync(sourcePath, destinationPath);
+  return true;
 }
 
 export function buildCommands(commands) {
-	for (const [command, args] of commands) {
-		const exitCode = runCommand(command, args);
-		if (exitCode !== 0) return exitCode;
-	}
-	return 0;
+  for (const [command, args] of commands) {
+    const exitCode = runCommand(command, args);
+    if (exitCode !== 0) return exitCode;
+  }
+  return 0;
 }
 ```
 
@@ -181,38 +206,38 @@ const DEBOUNCE_MS = 300;
 const isWatching = process.argv.includes("-w") || process.argv.includes("--watch");
 
 function runBuildOnce() {
-	return buildCommands([
-		["rolldown", ["-c", ROLLDOWN_CONFIG]],
-		["node", [LIGHTNINGCSS_CONFIG]],
-	]);
+  return buildCommands([
+    ["rolldown", ["-c", ROLLDOWN_CONFIG]],
+    ["node", [LIGHTNINGCSS_CONFIG]],
+  ]);
 }
 
 function buildCss() {
-	runCommand("node", [LIGHTNINGCSS_CONFIG]);
+  runCommand("node", [LIGHTNINGCSS_CONFIG]);
 }
 
 function runWatchMode() {
-	// Initial CSS build (rolldown will do its own initial build via -w)
-	buildCss();
+  // Initial CSS build (rolldown will do its own initial build via -w)
+  buildCss();
 
-	// Delegate JS/TS watching to rolldown's native watch mode
-	const rolldownProc = spawn("rolldown", ["-c", ROLLDOWN_CONFIG, "-w"], { stdio: "inherit" });
+  // Delegate JS/TS watching to rolldown's native watch mode
+  const rolldownProc = spawn("rolldown", ["-c", ROLLDOWN_CONFIG, "-w"], { stdio: "inherit" });
 
-	// Watch CSS sources with chokidar, rebuild CSS on change
-	let cssTimer = null;
-	const cssWatcher = chokidar.watch(CSS_WATCH_ROOTS, { ignoreInitial: true });
-	cssWatcher.on("all", () => {
-		clearTimeout(cssTimer);
-		cssTimer = setTimeout(buildCss, DEBOUNCE_MS);
-	});
+  // Watch CSS sources with chokidar, rebuild CSS on change
+  let cssTimer = null;
+  const cssWatcher = chokidar.watch(CSS_WATCH_ROOTS, { ignoreInitial: true });
+  cssWatcher.on("all", () => {
+    clearTimeout(cssTimer);
+    cssTimer = setTimeout(buildCss, DEBOUNCE_MS);
+  });
 
-	// Clean shutdown
-	const shutdown = () => {
-		rolldownProc.kill();
-		cssWatcher.close();
-	};
-	process.on("SIGINT", shutdown);
-	process.on("SIGTERM", shutdown);
+  // Clean shutdown
+  const shutdown = () => {
+    rolldownProc.kill();
+    cssWatcher.close();
+  };
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
 }
 
 if (isWatching) runWatchMode();
@@ -227,15 +252,15 @@ Extend the build script to copy assets, such as SVG symbol files, during the bui
 const ASSET_WATCH_ROOTS = ["path/to/assets"];
 
 function copyAssets() {
-	copyFileIfExists("path/to/source.svg", "web-content/images/source.svg");
+  copyFileIfExists("path/to/source.svg", "web-content/images/source.svg");
 }
 
 // In runWatchMode(), after CSS watcher:
 let assetTimer = null;
 const assetWatcher = chokidar.watch(ASSET_WATCH_ROOTS, { ignoreInitial: true });
 assetWatcher.on("all", () => {
-	clearTimeout(assetTimer);
-	assetTimer = setTimeout(copyAssets, DEBOUNCE_MS);
+  clearTimeout(assetTimer);
+  assetTimer = setTimeout(copyAssets, DEBOUNCE_MS);
 });
 ```
 
@@ -251,8 +276,13 @@ if (app) app.textContent = "Hello from TypeScript";
 ### `css/main.css`
 
 ```css
-body { margin: 0; font-family: sans-serif; }
-.app { padding: 24px; }
+body {
+  margin: 0;
+  font-family: sans-serif;
+}
+.app {
+  padding: 24px;
+}
 ```
 
 ### `web-content/index.html`
@@ -260,15 +290,13 @@ body { margin: 0; font-family: sans-serif; }
 ```html
 <!doctype html>
 <html lang="en">
-<head>
-	<meta charset="utf-8" />
-	<title>Web App</title>
-	<link rel="stylesheet" href="./css/bundle.css" />
-</head>
-<body>
-	<div class="app">Loading...</div>
-	<script src="./js/bundle.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Web App</title>
+    <link rel="stylesheet" href="./css/bundle.css" />
+    <script src="./js/bundle.js"></script>
+  </head>
+  <body></body>
 </html>
 ```
 
@@ -279,12 +307,12 @@ body { margin: 0; font-family: sans-serif; }
 
 ## Summary
 
-| Concern | One-time build | Watch mode |
-| :--- | :--- | :--- |
-| JS/TS | `rolldown -c rolldown.config.js` | `rolldown -c rolldown.config.js -w` |
-| CSS | `node lightningcss.config.js` | chokidar on `css/` |
-| Assets | `copyFileIfExists()` | chokidar on assets |
-| Exit | `process.exit(exitCode)` | Runs until interrupted |
+| Concern | One-time build                   | Watch mode                          |
+| :------ | :------------------------------- | :---------------------------------- |
+| JS/TS   | `rolldown -c rolldown.config.js` | `rolldown -c rolldown.config.js -w` |
+| CSS     | `node lightningcss.config.js`    | chokidar on `css/`                  |
+| Assets  | `copyFileIfExists()`             | chokidar on assets                  |
+| Exit    | `process.exit(exitCode)`         | Runs until interrupted              |
 
 ## Project Creation Checklist
 

@@ -12,7 +12,11 @@ const DEFAULT = { pos: "TL", refPos: "BR", gap: 0, x: true, y: true } as const;
 type Point = { x: number; y: number };
 
 export interface PositionOptions {
-	/** The el position based on the reference point. */
+	/**
+	 * The positioned element's placement relative to the reference point.
+	 * `refPos` selects the point on the reference element; `pos` selects where
+	 * the positioned element is placed relative to that point.
+	 */
 	pos?: Pos;
 
 	/**
@@ -51,7 +55,10 @@ export interface PositionOptions {
 	 */
 	constrain?: Window | HTMLElement | null;
 
-	/** The refEl reference point position. */
+	/**
+	 * The point on the reference element used as the reference point.
+	 * It does not select the positioned element's placement; `pos` does.
+	 */
 	refPos?: Pos;
 }
 

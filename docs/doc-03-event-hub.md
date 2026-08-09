@@ -43,6 +43,8 @@ export interface Hub {
 export function hub(name: string): Hub;
 ```
 
+Subscription options are structural objects with optional `ns` and `ctx`. The internal `HubOptions` type is not re-exported as a named type by the package entry point.
+
 ## Creating a hub
 
 ```ts
@@ -121,6 +123,8 @@ If a publish includes labels:
 - topic-only listeners are called once per published label
 
 That means labels are not just metadata, they affect routing behavior.
+
+For topic-only subscriptions, `info.label` is not populated at runtime. Treat it as absent even though the current public interface types it as `string`.
 
 ## Binding dictionaries
 

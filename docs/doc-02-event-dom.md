@@ -101,6 +101,8 @@ type OnEventOptions = {
 };
 ```
 
+`OnEventOptions` describes the options object used by the API, but it is not re-exported as a named type by the package entry point.
+
 ### Common uses
 
 - `ctx`
@@ -141,6 +143,8 @@ import { off, on } from "dom-native";
 on(document, "pointerdown", handler, { ns: "menu" });
 off(document, { ns: "menu" });
 ```
+
+Type-based cleanup uses the same selector key used during binding. Without a selector, cleanup targets direct bindings for that type. Use `{ ns }` when several bindings must be removed together. The current zero-argument overload does not enumerate all registered listeners.
 
 ### Trigger a custom event
 
