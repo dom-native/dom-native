@@ -1,7 +1,7 @@
 {
   "name": "@dom-native/ui",
   "type": "module",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Minimalist UI Elements to be used with dom-native",
   "main": "dist/index.js",
   "scripts": {
