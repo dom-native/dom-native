@@ -27,7 +27,7 @@ export interface CodeDoc {
 }
 
 on(document, 'pointercancel', function (evt) {
-	// DEBUG: 
+	// DEBUG:
 	// document.body.style.backgroundColor = 'red';
 	// setTimeout(() => {
 	// 	document.body.style.backgroundColor = '#fff';
@@ -42,7 +42,9 @@ export abstract class SpecView extends BaseHTMLElement {
 	init() {
 		super.init();
 		this.innerHTML = _render(this.doc);
-		all(this, 'code').forEach(el => (<any>window).hljs.highlightBlock(el));
+		all(this, 'code').forEach(el => {
+			(<any>window).hljs.highlightBlock(el);
+		});
 	}
 
 	postDisplay() {
@@ -74,13 +76,19 @@ function _render(doc: CodeDoc) {
 			//// Render custom item function and result
 			let fnBody: string | undefined;
 			if (item.js) {
-				const fnString = item.js.toString();
+				const callbackSource = item.js.toString();
+				const fnString = callbackSource;
 				fnBody = fnString.slice(fnString.indexOf("{") + 1, fnString.lastIndexOf("}")).trim();
 
 				const jsPrefix = item.jsPrefix ?? doc.jsPrefix;
 				if (jsPrefix) {
 					fnBody = jsPrefix + '\n' + fnBody;
 				}
+			}
+
+			let displayCode: string | undefined;
+			if (fnBody !== undefined) {
+				displayCode = formatCode(fnBody, 'jsBody');
 			}
 
 			let tsBody = item.ts;
@@ -97,7 +105,7 @@ function _render(doc: CodeDoc) {
 				<div class="html">${item.html}</div>
 				${item.hideHtmlCode ? '' : `<pre><code class="html">${escapeHtml(formatCode(item.html, 'html'))}</code></pre>`}
 				${tsBody && !item.hideTsCode ? `<pre><code class="typescript">${formatCode(tsBody, 'ts')}</code></pre>` : ''}
-				${fnBody && !item.hideJsCode ? `<pre><code class="javascript">${formatCode(fnBody, 'jsBody')}</code></pre>` : ''}
+				${displayCode && !item.hideJsCode ? `<pre><code class="javascript">${displayCode}</code></pre>` : ''}
 			</div>`;
 		}).join('\n');
 
@@ -144,7 +152,7 @@ export function simplePull(containerEl: HTMLElement) {
 function formatCode(codeText: string, type: 'html' | 'js' | 'jsBody' | 'ts'): string {
 
 
-	// TODO if code, needs to escape the < inside the ` ` 
+	// TODO if code, needs to escape the < inside the ` `
 	if (type !== 'html') {
 		codeText = codeText.replace(/</g, '&lt;');
 	}
@@ -172,7 +180,7 @@ function formatCode(codeText: string, type: 'html' | 'js' | 'jsBody' | 'ts'): st
 			}
 		}
 
-		// if anything but 
+		// if anything but
 		line = line.trimRight();
 
 		// replace all tabs by 2 space

@@ -56,7 +56,6 @@ From `dom-native/src/index.ts`:
 - `onDoc`, `onEvent`, `onWin`
 - `onHub`
 - `val`
-- deprecated `scanChild`
 
 ## BaseHTMLElement
 
@@ -302,10 +301,6 @@ Rules:
 - intended to be exhaustive
 
 Throws if requested sequence cannot be satisfied.
-
-### `scanChild(...)`
-
-Deprecated alias for `cherryChild(...)`.
 
 ## DOM builders
 

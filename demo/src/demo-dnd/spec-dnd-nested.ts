@@ -1,7 +1,5 @@
 import { CodeDoc, SpecView } from '../infra/index.js';
-import { customElement, on, OnEvent } from 'dom-native';
-import { DragEventDetail, draggable } from '@dom-native/draggable';
-
+import { customElement, on, OnEvent, dnd } from 'dom-native';
 
 @customElement('spec-dnd-nested')
 export class SpecNestedView extends SpecView {
@@ -13,9 +11,9 @@ function simpleNested(rootEl: HTMLElement) {
 	// NOTHING SPECIAL, nested supported. Here, (.card the container and .box are annotated with .drag-me and will be be activate below)//
 
 	// specifying a droppable (closest selector from the over el), will trigger drop event only on those elements
-	draggable(rootEl, '.drag-me', { drag: 'ghost', droppable: '.drop-zone' });//
+	dnd.draggable(rootEl, '.drag-me', { drag: 'ghost', droppable: '.drop-zone' });//
 
-	on(rootEl, 'DROP', (evt: OnEvent<DragEventDetail>) => {
+	on(rootEl, 'DROP', (evt: OnEvent<dnd.DragEventDetail>) => {
 		const clone = evt.detail.source.cloneNode(true);
 		// here target can only be a '.drop-zone' element (from the over element)
 		(<HTMLElement>evt.target).append(clone);
@@ -25,11 +23,11 @@ function simpleNested(rootEl: HTMLElement) {
 
 function simpleNestedWithStyle(rootEl: HTMLElement) {
 
-	// Makes all '.drag-me' draggable 
-	draggable(rootEl, '.drag-me', { drag: 'ghost' });//
+	// Makes all '.drag-me' draggable
+	dnd.draggable(rootEl, '.drag-me', { drag: 'ghost' });//
 
 	// on with selector '.drop-zone' from rootEl
-	on(rootEl, 'DROP', '.drop-zone', (evt: OnEvent<DragEventDetail>) => {
+	on(rootEl, 'DROP', '.drop-zone', (evt: OnEvent<dnd.DragEventDetail>) => {
 		const clone = evt.detail.source.cloneNode(true);//
 
 		// evt.selectTarget = '.drop-zone' element
@@ -40,21 +38,20 @@ function simpleNestedWithStyle(rootEl: HTMLElement) {
 	});//
 
 	// Here additional styling logic on dragenter / dragleave the .drop-zone
-	on(rootEl, 'DRAGENTER,DRAGLEAVE', '.drop-zone', (evt: OnEvent<DragEventDetail>) => {
+	on(rootEl, 'DRAGENTER,DRAGLEAVE', '.drop-zone', (evt: OnEvent<dnd.DragEventDetail>) => {
 		if (evt.type == 'DRAGENTER') {
 			evt.selectTarget.style.borderColor = 'blue';
 		} else if (evt.type == 'DRAGLEAVE') {
 			evt.selectTarget.style.borderColor = 'var(--clr-bdr)';
 		}
-	});//	
+	});//
 
 }
 
 const spec_doc: CodeDoc = {
 	title: 'dnd nested',
 	jsPrefix: `
-import { on } from 'dom-native'
-import { draggable } from '@dom-native/draggable'
+import { on, dnd } from 'dom-native'
 	`,
 	groups: [
 		{
@@ -62,8 +59,8 @@ import { draggable } from '@dom-native/draggable'
 				{
 					title: 'Nested',
 					html: `
-<div class="root-el">			
-	<h4>Drag card or box</h4>			
+<div class="root-el">
+	<h4>Drag card or box</h4>
 	<div class="card drag-me">
 		<div class="box drag-me">Drag Me</div>
 		<div class="box drag-me">Drag Me</div>
@@ -78,8 +75,8 @@ import { draggable } from '@dom-native/draggable'
 				{
 					title: 'Nested with style',
 					html: `
-<div class="root-el">			
-	<h4>Drag card or box</h4>			
+<div class="root-el">
+	<h4>Drag card or box</h4>
 	<div class="card drag-me">
 		<div class="box drag-me">Drag Me</div>
 		<div class="box drag-me">Drag Me</div>

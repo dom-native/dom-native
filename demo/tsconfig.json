@@ -2,20 +2,21 @@
 	"compilerOptions": {
 		"target": "ES2022",
 		"module": "ES2022",
-		"moduleResolution": "node",
-		"baseUrl": "..",
-		"outDir": "./dist/", /* Redirect output structure to the directory. */
-		"paths": {
-			"dom-native": [
-				"./dom-native/src/index.ts"
-			],
-			"@dom-native/draggable": [
-				"./draggable/src/index.ts"
-			],
-			"@dom-native/ui": [
-				"./dom-native-ui/src/index.ts"
-			]
-		},
+
+    "rootDir": "../",
+  	"outDir": "./dist/", /* Redirect output structure to the directory. */
+  	"paths": {
+  		"dom-native": [
+  			"../dom-native/src/index.ts"
+  		],
+  		"dnative/dnd": [
+  			"../dom-native/src/dnd/index.ts"
+  		],
+  		"dnui": [
+  			"../dom-native-ui/src/index.ts"
+  		]
+  	},
+
 		"allowJs": false,
 		"checkJs": false,
 		"strict": true,
@@ -28,11 +29,10 @@
 	"include": [
 		"./src/**/*.ts",
 		"../dom-native/src/**/*.ts",
-		"../draggable/src/**/*.ts",
 		"../dom-native-ui/src/**/*.ts"
 	],
 	"exclude": [
-		"node_modules",
+		"node_modules"
 	]
 }
 

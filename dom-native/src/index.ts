@@ -22,5 +22,4 @@ export { onDoc, onEvent, onWin } from "./ts-decorator-on-event";
 export { onHub } from "./ts-decorator-on-hub";
 export { val } from "./utils";
 
-// Deprecated
-export { scanChild } from "./dom";
+export * as dnd from "./dnd/index";

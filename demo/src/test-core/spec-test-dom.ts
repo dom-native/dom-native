@@ -62,8 +62,6 @@ export class SpecTestDom extends SpecView {
 								testAppendElReturnValue,
 								testAppendHtmlReturnValue,
 								testFirstWithType,
-								testScanChild,
-								testScanChildMany,
 							};
 							const outputEl = itemEl.querySelector("#output") as HTMLUListElement;
 							void run_tests(outputEl, tests, {

@@ -1,6 +1,5 @@
 import { CodeDoc, SpecView } from '../infra/index.js';
-import { closest, customElement, on, style } from 'dom-native';
-import { activateDrag, draggable, DraggableEvent } from '@dom-native/draggable';
+import { closest, customElement, on, style, dnd } from 'dom-native';
 
 
 @customElement('spec-sample-slider')
@@ -13,13 +12,12 @@ export class SpecSliderView extends SpecView {
 
 function simpleSlider(rootEl: HTMLElement) {
 
-	draggable(rootEl, '.thumb', {
+	dnd.draggable(rootEl, '.thumb', {
 		// add some contraints, don't move y and keep keep source element contained in the closest container matching '.slider'
 		constraints: {
 			y: false,
 			container: '.slider',
 			hitbox: 'center'
-
 		}
 	});
 
@@ -27,7 +25,7 @@ function simpleSlider(rootEl: HTMLElement) {
 
 function multiSlider(rootEl: HTMLElement) {
 
-	draggable(rootEl, '.thumb', {
+	dnd.draggable(rootEl, '.thumb', {
 		// add some contraints, don't move y and keep keep source element contained in the closest container matching '.slider'
 		constraints: {
 			y: false,
@@ -36,7 +34,7 @@ function multiSlider(rootEl: HTMLElement) {
 		}
 	});//
 
-	draggable(rootEl, '.slider-zone', {
+	dnd.draggable(rootEl, '.slider-zone', {
 		constraints: {
 			y: false,
 			container: '.slider',
@@ -50,7 +48,7 @@ function multiSlider(rootEl: HTMLElement) {
 function multiSliderWithHandle(rootEl: HTMLElement) {
 
 	//// DRAG the .thumb (blue dot)
-	draggable(rootEl, '.thumb', {
+	dnd.draggable(rootEl, '.thumb', {
 		// tell to drag the source element and not to create a ghost/clone
 		drag: 'source',
 		// add some contraints, don't move y and keep keep source element contained in the closest container matching '.slider'
@@ -62,11 +60,11 @@ function multiSliderWithHandle(rootEl: HTMLElement) {
 	});//
 
 	//// DRAG the .silder-zone
-	// Here we need a little bit more control to activate the drag 
+	// Here we need a little bit more control to activate the drag
 	// only if the click is directly on the .slider-zone and not on its .slider-handler children elements
 	on(rootEl, 'pointerdown', '.slider-zone', function (evt) {
 		if (evt.selectTarget === evt.target) {
-			activateDrag(evt.selectTarget, evt, {
+			dnd.activateDrag(evt.selectTarget, evt, {
 				drag: 'source',
 				constraints: {
 					y: false,
@@ -78,7 +76,7 @@ function multiSliderWithHandle(rootEl: HTMLElement) {
 	});//
 
 	//// DRAG one of the two .slider-handle to resize
-	draggable(rootEl, '.slider-handle', {
+	dnd.draggable(rootEl, '.slider-handle', {
 		drag: 'none',
 		//
 		onDragStart(evt) {
@@ -87,11 +85,11 @@ function multiSliderWithHandle(rootEl: HTMLElement) {
 			const sliderRect = closest(zoneEl, '.slider')!.getBoundingClientRect();
 			const zoneOriginRect = zoneEl.getBoundingClientRect();//
 
-			// set the event.detail.data with those states which will be carry to all drag event 
+			// set the event.detail.data with those states which will be carry to all drag event
 			evt.detail.data = { sliderRect, zoneEl, zoneOriginRect, zoneOriginOffsetLeft: zoneEl.offsetLeft }
 		},
 		//
-		onDrag(evt: DraggableEvent<{ sliderRect: DOMRect, zoneEl: HTMLElement, zoneOriginRect: DOMRect, zoneOriginOffsetLeft: number }>) {
+		onDrag(evt: dnd.DraggableEvent<{ sliderRect: DOMRect, zoneEl: HTMLElement, zoneOriginRect: DOMRect, zoneOriginOffsetLeft: number }>) {
 			const { originX, clientX, source: handleEl } = evt.detail;
 			let dx = clientX - originX;
 			const { sliderRect, zoneEl, zoneOriginRect, zoneOriginOffsetLeft } = evt.detail.data;
@@ -111,14 +109,14 @@ function multiSliderWithHandle(rootEl: HTMLElement) {
 			}
 
 		}
-	});//	
+	});//
 
 }
 
 
 function rawSlider(rootEl: HTMLElement) {
-	// NOTE: Just a simplistic demonstration to do a draggable with @dom-native/draggable
-	//       But, constraints, initial states, multi-touch drag, ghost, body cursor 
+	// NOTE: Just a simplistic demonstration to do a draggable with dom-native/dnd
+	//       But, constraints, initial states, multi-touch drag, ghost, body cursor
 	//       all need to be reimplemented and does not work in the case below//
 
 	let sliderRec: DOMRect;//
@@ -147,8 +145,7 @@ function rawSlider(rootEl: HTMLElement) {
 const spec_doc: CodeDoc = {
 	title: 'Slider',
 	jsPrefix: `
-import { on }	from 'dom-native'
-import { draggable }	from '@dom-native/draggable'
+import { on, dnd }	from 'dom-native'
 	`,
 	groups: [
 		{
@@ -156,8 +153,8 @@ import { draggable }	from '@dom-native/draggable'
 				{
 					title: 'Simple Drag',
 					html: `
-<div class="root-el">			
-	<h4>Drag slider thumb</h4>			
+<div class="root-el">
+	<h4>Drag slider thumb</h4>
 	<div class="slider">
 			<div class="thumb slide-me"></div>
 	</div>
@@ -168,8 +165,8 @@ import { draggable }	from '@dom-native/draggable'
 				{
 					title: 'Multi drag',
 					html: `
-<div class="root-el">			
-	<h4>Drag slider thumb</h4>			
+<div class="root-el">
+	<h4>Drag slider thumb</h4>
 	<div class="slider" style="width: 20rem">
 			<div class="slider-zone" style="width: 3rem; left: 64px"></div>
 			<div class="thumb slide-me"></div>
@@ -181,8 +178,8 @@ import { draggable }	from '@dom-native/draggable'
 				{
 					title: 'Multi drag with handles',
 					html: `
-<div class="root-el">			
-	<h4>Drag slider thumb</h4>			
+<div class="root-el">
+	<h4>Drag slider thumb</h4>
 	<div class="slider" style="width: 20rem">
 			<div class="slider-zone" style="width: 3rem;left: 64px">
 				<div class="slider-handle left"></div>
@@ -197,8 +194,8 @@ import { draggable }	from '@dom-native/draggable'
 				{
 					title: 'Without dnd (raw PointerEvent)',
 					html: `
-<div class="root-el">			
-	<h4>Drag slider thumb</h4>			
+<div class="root-el">
+	<h4>Drag slider thumb</h4>
 	<div class="slider">
 			<div class="thumb slide-me"></div>
 	</div>

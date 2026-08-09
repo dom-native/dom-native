@@ -1,8 +1,8 @@
 {
   "name": "@dom-native/draggable",
   "type": "module",
-  "version": "0.3.1",
-  "description": "Minimalist and expressive API for dragging, positioning, and 'FLIP - capture/invert/play'",
+  "version": "0.4.0-WIP",
+  "description": "NOW PAR OF dom-native (this lib is deprecated)",
   "main": "dist/index.js",
   "scripts": {
     "prepack": "npm run build",
@@ -11,7 +11,7 @@
     "watch": "rolldown -c -w"
   },
   "peerDependencies": {
-    "dom-native": "^0.12.0"
+    "dom-native": "^0.13.0-WIP"
   },
   "devDependencies": {
     "dom-native": "file:../dom-native",

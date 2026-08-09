@@ -37,9 +37,9 @@ function enableDrag(rootEl: HTMLElement) {
 
 		activateDrag(panel, pointerDownEvt, {
 			// NOTE 1 - the pointerCapture cannot be source (the default) since it will be re-attached causing a cancel
-			//          @dom-native/draggable allows to set a custom pointerCapture
-			// NOTE 2 - binding pointerCapture roolEl might have some significant performance impact on mobile devices (e.g.,, mobile safari). 
-			//          document.body shortest event path, and provides sensible performance gain on ipad. 
+			//          dom-native/dnd allows to set a custom pointerCapture
+			// NOTE 2 - binding pointerCapture roolEl might have some significant performance impact on mobile devices (e.g.,, mobile safari).
+			//          document.body shortest event path, and provides sensible performance gain on ipad.
 			pointerCapture: document.body,
 
 			// we will still drag the ghost (here could be 'none' as well)
@@ -110,5 +110,5 @@ function enableDrag(rootEl: HTMLElement) {
 
 `;
 
-		
+
 

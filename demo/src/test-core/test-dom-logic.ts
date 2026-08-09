@@ -1,4 +1,4 @@
-import { all, append, BaseHTMLElement, closest, customElement, first, getFirst, html, next, prev, scanChild } from 'dom-native';
+import { all, append, BaseHTMLElement, closest, customElement, first, getFirst, html, next, prev, cherryChild } from 'dom-native';
 import { equal } from './test-utils.js';
 
 export function testFirst() {
@@ -207,27 +207,7 @@ export function testAppendHtmlReturnValue() {
 
 export function testFirstWithType() {
 	let ctest: CTest | null = first(document, 'c-test');
-	// NOTE - this is just a type test, so, if it compiles, all good. 
-}
-
-export function testScanChild() {
-	let container = first(document, 'div.el-g')!;
-	let ctest: CTest = scanChild(container, 'c-test');
-	let unknown = scanChild(container, 'unknown-comp');
-	let span: HTMLSpanElement = scanChild(container, 'span');
-	equal(ctest.tagName, 'C-TEST');
-	equal(unknown.tagName, 'UNKNOWN-COMP');
-	equal(span.tagName, 'SPAN');
-	// NOTE - this is just a type test, so, if it compiles, all good. 
-}
-
-export function testScanChildMany() {
-	let container = first(document, 'div.el-g')!;
-	let [ctest, span, unknown] = scanChild(container, 'c-test', 'span', 'unknown-comp');
-	// NOTE - this is just a type test, so, if it compiles, all good. 
-	equal(ctest.tagName, 'C-TEST');
-	equal(span.tagName, 'SPAN');
-	equal(unknown.tagName, 'UNKNOWN-COMP');
+	// NOTE - this is just a type test, so, if it compiles, all good.
 }
 
 // to mimic union type

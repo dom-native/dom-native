@@ -1,6 +1,5 @@
 import { CodeDoc, SpecView } from "../infra/index.js";
-import { customElement } from "dom-native";
-import { draggable } from "@dom-native/draggable";
+import { customElement, dnd } from "dom-native";
 
 @customElement("spec-dnd-simple")
 export class SpecDndSimpleView extends SpecView {
@@ -10,18 +9,18 @@ export class SpecDndSimpleView extends SpecView {
 
 function dragSimplest(rootEl: HTMLElement) {
 	// by default drag the source element
-	draggable(rootEl, ".drag-me"); //
+	dnd.draggable(rootEl, ".drag-me"); //
 
 	// Note: if draggable element is position: static, translateX/Y will be used, otherwise, top/left
 }
 
 function dragGhost(rootEl: HTMLElement) {
 	// tell to drag a ghost, which is a clone by default
-	draggable(rootEl, ".drag-me", { drag: "ghost" });
+	dnd.draggable(rootEl, ".drag-me", { drag: "ghost" });
 }
 
 function dragConstrained(rootEl: HTMLElement) {
-	draggable(rootEl, ".drag-me", {
+	dnd.draggable(rootEl, ".drag-me", {
 		constraints: {
 			// closest selector from the source element
 			container: ".container",
@@ -34,7 +33,7 @@ function dragConstrained(rootEl: HTMLElement) {
 const spec_dnd_basic: CodeDoc = {
 	title: "dnd simple",
 	jsPrefix: `
-import { draggable } from '@dom-native/draggable'
+import { dnd } from 'dom-native'
 	`,
 	groups: [
 		{

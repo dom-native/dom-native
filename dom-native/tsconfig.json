@@ -26,17 +26,17 @@
 
     "esModuleInterop": true,
 
-    "experimentalDecorators": true, // for now, until rolldown support stage 3
+    "experimentalDecorators": true // for now, until rolldown support stage 3
   },
 
   // We want more control about which code we will compile and exclude
   "include": ["./src/**/*.ts"],
 
   "exclude": [
-    "node_modules",
+    "node_modules"
   ],
 
   "rolldownOptions": {
-    "platform": "browser",
-  },
+    "platform": "browser"
+  }
 }

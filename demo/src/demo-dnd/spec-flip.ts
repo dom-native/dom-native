@@ -1,6 +1,5 @@
 import { CodeDoc, SpecView } from '../infra/index.js';
-import { all, append, BaseHTMLElement, closest, customElement, on, style } from 'dom-native';
-import { activateDrag, capture } from '@dom-native/draggable';
+import { all, append, BaseHTMLElement, closest, customElement, on, style, dnd } from 'dom-native';
 import { code_flip } from './_codes';
 
 
@@ -10,7 +9,7 @@ export class SpecFlipView extends SpecView {
 	doc = spec_doc
 }
 
-//#region    ---------- code: flip ---------- 
+//#region    ---------- code: flip ----------
 @customElement('c-panel')
 export class PanelElement extends BaseHTMLElement {
 	get col() { return this.parentElement as ColElement }
@@ -45,11 +44,11 @@ function enableDrag(rootEl: HTMLElement) {
 		let animationHappening = false;
 
 
-		activateDrag(panel, pointerDownEvt, {
+		dnd.activateDrag(panel, pointerDownEvt, {
 			// NOTE 1 - the pointerCapture cannot be source (the default) since it will be re-attached causing a cancel
-			//          @dom-native/draggable allows to set a custom pointerCapture
-			// NOTE 2 - binding pointerCapture roolEl might have some significant performance impact on mobile devices (e.g.,, mobile safari). 
-			//          document.body shortest event path, and provides sensible performance gain on ipad. 
+			//          dom-native/dnd allows to set a custom pointerCapture
+			// NOTE 2 - binding pointerCapture roolEl might have some significant performance impact on mobile devices (e.g.,, mobile safari).
+			//          document.body shortest event path, and provides sensible performance gain on ipad.
 			pointerCapture: document.body,
 
 			// we will still drag the ghost (here could be 'none' as well)
@@ -83,7 +82,7 @@ function enableDrag(rootEl: HTMLElement) {
 
 							//// not-so-magic FLIP
 							// 1) capture the panel positions
-							const inv = capture(all(rootEl, 'c-panel'));
+							const inv = dnd.capture(all(rootEl, 'c-panel'));
 
 							// 2) move the panel
 							const pos = panel.col.isBefore(panel, overPanel) ? 'after' : 'before';
@@ -118,15 +117,14 @@ function enableDrag(rootEl: HTMLElement) {
 
 }
 
-//#endregion ---------- /code: flip ---------- 
+//#endregion ---------- /code: flip ----------
 
 
 
 const spec_doc: CodeDoc = {
 	title: 'FLIP animation',
 	tsPrefix: `
-import { all, append, BaseHTMLElement, closest, customElement, on, style } from 'dom-native';
-import { activateDrag, capture } from '@dom-native/draggable';
+import { dnd, all, append, BaseHTMLElement, closest, customElement, on, style } from 'dom-native';
 	`,
 	groups: [
 		{
@@ -134,13 +132,13 @@ import { activateDrag, capture } from '@dom-native/draggable';
 				{
 					title: 'Simple Flip example (still some corner cases not handled)',
 					html: `
-<div class="root">					
+<div class="root">
 	<c-col>
 		<c-panel class="">ONE</c-panel>
 		<c-panel class="">TWO</c-panel>
 		<c-panel class="">THREE</c-panel>
 	</c-col>
-</div>			
+</div>
 			`,
 					ts: code_flip,
 					run: enableDrag

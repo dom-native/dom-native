@@ -1,75 +1,63 @@
 
+# dom-native - DOM-native library for typed native Web Component development
 
-dom-native libary family
+The main `dom-native` library is in the [dom-native/](dom-native/) directory.
 
-- [dom-native](dom-native/) - library core 
-- [@dom-native/draggable](https://github.com/dom-native/draggable) - draggrable extension (for internal drag & drop)
+The `dom-native` approach uses the browser as its component framework, with native Web Components (`customElements` with optional Shadow DOM), plus a small set of utilities to streamline application code. The library is less than 7 KB minified.
 
-## Demo development workflow
+The [@dom-native/ui](dom-native-ui/) directory also contains templates for UI element primitives, such as inputs, checkboxes, and selects. See the base [`d-base-field.ts`](dnui/src/d-base-field.ts) component.
 
-The demo development flow is now driven from repository root.
-This is the canonical way to develop and validate demo changes as file changes in this monorepo.
+## Usage
 
-- Watch demo bundle during development:
+- Dependency: `"dom-native": "^0.13.0"` (now include dnd for draggables / drop)
 
-```sh
-npm run demo-watch
+- Decorators: `experimental` (a long story, but currently the most portable option)
+
+```typescript
+import { BaseHTMLElement, customElement, onEvent, OnEvent } from "dom-native";
+
+@customElement("simple-element")
+class SimpleElement extends BaseHTMLElement {
+  init() {
+    this.innerHTML = `
+      Hello from SimpleElement!
+      <button>Click me</button>
+    `;
+  }
+
+  @onEvent("click", "button")
+  onClick(evt: MouseEvent & OnEvent) {
+    const button = evt.selectTarget as HTMLButtonElement;
+    button.textContent = "Clicked!";
+  }
+}
 ```
 
-- Build demo bundle once:
+```html
+<simple-element></simple-element>
+```
+
+## Dev / Demo
+
+To build the assets:
 
 ```sh
+npm install
+# For dom-native/
+cd dom-native && npm install && cd ..
+# For dnui/
+cd dnui && npm install && cd ..
+
+# Build the demo
 npm run demo-build
 ```
 
 
-### Demo output contract
+Then, serve the repository with a local web server and open `demo/web-content/index.html` in your browser.
 
-Root demo build generates browser-ready assets used by `demo/web-content/index.html`:
 
-- `demo/web-content/js/demo-bundle.js`
-- `demo/web-content/css/demo-bundle.css`
-
-### Typical demo dev loop
-
-- Run `npm run demo-build -- -w` from repository root.
-- Edit sources under:
-  - `demo/src`
-  - `dom-native/src`
-  - `dom-native-draggable/src`
-- Reload `demo/web-content/index.html` via a local static server to verify behavior.
-
-## Dev
-
-For this monorepo, install and run demo workflows from repository root.
-
-```sh
-npm install
-```
-
-### Important Build
-
-Make sure to run `tsc` in `dom-native/` to have successfull `tsc` in `dom-native-draggable/`
-
-### Folder ownership model
-
-- Canonical demo source and generated snippets live under `demo/src`.
-- Canonical demo build outputs live under `demo/web-content/js` and `demo/web-content/css`.
-- Canonical demo build configuration lives at repository root:
-  - `rolldown.config.js`
-- Package-level scripts stay focused on package library build/publish workflows.
-
-### Package library development
-
-For [dom-native](dom-native/) library-specific build/watch:
-
-```sh
-cd dom-native
-npm install
-npm run build
-npm run watch
-```
-
---- 
+---
 
 [This Repo](https://github.com/dom-native/dom-native)
+
+
