@@ -29,6 +29,61 @@ BaseHTMLElement
 		IcoElement
 ```
 
+## Two integration approaches
+
+Use one of the following approaches depending on whether the application should consume the packaged UI or own the UI source.
+
+### 1. Quick: use `@dom-native/ui` as a library
+
+When `@dom-native/ui` is installed as a library dependency, import the package stylesheet from the application's CSS entry point and import the UI exports from the application module:
+
+```sh
+npm install @dom-native/ui dom-native
+```
+
+```css
+@import "../node_modules/@dom-native/ui/css/main.css";
+```
+
+```ts
+import { loadDefaultIcons } from "@dom-native/ui";
+
+loadDefaultIcons();
+```
+
+`@dom-native/ui/css/main.css` is the package stylesheet entry point. It imports the component styles, theme variables, elevation variables, and icon styles. A CSS-aware build system follows these imports and emits the complete UI stylesheet in the application's generated CSS bundle.
+
+Add the stylesheet import once to the application's CSS entry point. This lets the build system process the package CSS and avoids manually copying or linking the files from `node_modules`.
+
+### 2. Production: copy and own the UI code
+
+For production applications that need to control, audit, or modify the UI implementation, copy the UI source from the `dom-native-ui` repository into the application instead of importing it from `node_modules`.
+
+Copy `dom-native-ui/src/` and `dom-native-ui/css/` into application-owned directories while preserving their relative structure. For example:
+
+```text
+src/
+  dom-native-ui/
+css/
+  dom-native-ui/
+```
+
+Import the copied stylesheet from the application's CSS entry point:
+
+```css
+@import "./dom-native-ui/main.css";
+```
+
+Import the copied TypeScript entry point from the application module:
+
+```ts
+import { loadDefaultIcons } from "./dom-native-ui/index.js";
+
+loadDefaultIcons();
+```
+
+Keep `dom-native` available as an application dependency, preserve the copied UI source's internal imports, and include the stylesheets imported by the local `main.css`. The application now owns this UI code and must bring upstream changes over manually. Do not import the package stylesheet in this mode, because the local copy is the source of truth.
+
 ## BaseFieldElement
 
 `BaseFieldElement` is the foundation for custom elements that behave like form fields. It establishes a consistent `name` and `value` interface and integrates fields with the `dom-native` push and pull system.
