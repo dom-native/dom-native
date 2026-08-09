@@ -59,25 +59,25 @@ Add the stylesheet import once to the application's CSS entry point. This lets t
 
 For production applications that need to control, audit, or modify the UI implementation, copy the UI source from the `dom-native-ui` repository into the application instead of importing it from `node_modules`.
 
-Copy `dom-native-ui/src/` and `dom-native-ui/css/` into application-owned directories while preserving their relative structure. For example:
+Copy the contents of `dom-native-ui/src/` into `src/dui/` and the contents of `dom-native-ui/css/` into `css/dui/`, preserving the files' internal structure. For example:
 
 ```text
 src/
-  dom-native-ui/
+  dui/
 css/
-  dom-native-ui/
+  dui/
 ```
 
 Import the copied stylesheet from the application's CSS entry point:
 
 ```css
-@import "./dom-native-ui/main.css";
+@import "./dui/main.css";
 ```
 
 Import the copied TypeScript entry point from the application module:
 
 ```ts
-import { loadDefaultIcons } from "./dom-native-ui/index.js";
+import { loadDefaultIcons } from "./dui/index.js";
 
 loadDefaultIcons();
 ```
@@ -368,3 +368,231 @@ When adding a form component:
 - color icon instances through CSS rather than embedding control-specific colors in the symbol geometry
 
 These base classes keep field behavior consistent while allowing concrete elements to remain focused on their own control, value, and interaction logic.
+
+## Component usage
+
+The demo UI under `demo/src/demo-ui/` exercises the same elements described here. The examples below use the public markup and attributes shown by those demos.
+
+### Common setup
+
+Importing the UI entry point registers the custom elements. Load the default SVG symbol set once during application startup:
+
+```ts
+import { loadDefaultIcons } from "@dom-native/ui";
+
+loadDefaultIcons();
+```
+
+When the source is copied using option 2, import `loadDefaultIcons` from `./dui/index.js` instead.
+
+### d-ico and d-symbol
+
+Use `d-ico` for an icon element and `d-symbol` for a general-purpose SVG symbol reference:
+
+```html
+<d-ico name="d-ico-star"></d-ico>
+
+<d-symbol name="d-ico-star"
+  style="max-width:5rem;max-height:5rem;fill:blue">
+</d-symbol>
+```
+
+The `name` is the complete document-wide SVG symbol ID. The default symbol collection includes names such as `d-ico-star`, `d-ico-visible`, `d-ico-check-on`, and `d-ico-radio-on`. Both elements add the symbol name as a CSS class and render an SVG `<use>` reference.
+
+### d-input
+
+`d-input` provides a text input with optional labels, icons, placeholder text, and trailing content:
+
+```html
+<d-input label="Label" value="Value"></d-input>
+<d-input label="Label"></d-input>
+<d-input label="Label" placeholder="Placeholder"></d-input>
+
+<d-input
+  icon-lead="d-ico-star"
+  label-trail="Trail Label"
+  label="Label"
+  value="Value">
+</d-input>
+
+<d-input
+  icon-trail="d-ico-visible"
+  label="Label"
+  value="Value">
+</d-input>
+
+<d-input label="Label" value="Value" disabled></d-input>
+<d-input label="label" text-trail="CM"></d-input>
+<d-input label="Password" password></d-input>
+```
+
+The `icon-lead` and `icon-trail` attributes contain complete SVG symbol IDs. A missing label is supported, and `disabled` and `readonly` are forwarded to the internal native input element.
+
+### d-textarea
+
+`d-textarea` uses the same field layout as `d-input` while creating a native `<textarea>` control:
+
+```html
+<d-textarea label="Label">Value...</d-textarea>
+
+<d-textarea
+  icon-lead="d-ico-star"
+  label="Label"
+  value="Value from attr">
+Some
+multi line
+another one.
+</d-textarea>
+
+<d-textarea
+  icon-trail="d-ico-visible"
+  label="Label"
+  value="Value from attr">
+</d-textarea>
+
+<d-textarea label="Label" placeholder="Placeholder"></d-textarea>
+<d-textarea label="Label" value="Value" disabled></d-textarea>
+```
+
+The initial value is taken from the first non-empty text node. When there is no non-empty text node, the component uses the `value` attribute. The component also supports fields without labels and leading or trailing icons.
+
+### d-select
+
+`d-select` displays options in a popup and uses `<option>` children as its initial option source:
+
+```html
+<d-select label="Label" value="one">
+  <option>None</option>
+  <option value="one">value one</option>
+  <option value="G">value G</option>
+</d-select>
+
+<d-select
+  label="Label"
+  placeholder="Placeholder">
+  <option>None</option>
+  <option value="one">value one</option>
+</d-select>
+
+<d-select
+  icon-lead="d-ico-star"
+  label="Label"
+  value="one">
+  <option>None</option>
+  <option value="one">value one</option>
+</d-select>
+
+<d-select
+  class="load-example"
+  label="Label"
+  value="one">
+  Some stuff
+</d-select>
+```
+
+An option without a `value` has a null value. The component supports disabled, readonly, placeholder, and no-label states. The current source marks `d-select` as under refactoring, so its API should be treated as provisional.
+
+The demo's leading-icon example currently spells the attribute `ico-lead`. The component implementation reads `icon-lead`, which is the spelling that should be used in application markup.
+
+A select can request options from an owning view through `D-DATA`. The event handler receives a sender function and calls it with `SelectOption[]`:
+
+```ts
+import { SelectDataSender, SelectOption } from "@dom-native/ui";
+import { OnEvent, customElement, onEvent } from "dom-native";
+
+const OPTIONS_LOADED: SelectOption[] = [
+  { value: "one", content: "One" },
+  { value: "two", content: "Two" },
+];
+
+@customElement("select-demo")
+class SelectDemo extends HTMLElement {
+  @onEvent("D-DATA")
+  onSelectData(evt: OnEvent<SelectDataSender>) {
+    evt.detail(OPTIONS_LOADED);
+  }
+}
+```
+
+This follows the data-loading pattern used by the demo select specification.
+
+### d-check
+
+`d-check` is a checkbox-like toggle. It can represent a boolean or a checked value:
+
+```html
+<d-check name="nameA" label="Label" checked></d-check>
+
+<d-check
+  name="mood"
+  label="Label"
+  value="happy"
+  checked>
+</d-check>
+
+<d-check
+  name="nameA"
+  label="Label A"
+  checked>
+</d-check>
+<d-check
+  name="nameB"
+  value="value-b"
+  label="Label B">
+</d-check>
+<d-check
+  name="nameC"
+  value="value-c"
+  label="Label C"
+  checked>
+</d-check>
+
+<d-check checked></d-check>
+<d-check label="Label" checked disabled></d-check>
+<d-check label="Label" checked readonly></d-check>
+```
+
+When checked, `value` returns the `value` attribute when present, or `true` when it is absent. When unchecked, it returns `false` by default. An `unchecked-value` attribute can provide an alternate unchecked value, and `dx="pull_skip_unchecked"` makes the unchecked value `undefined`.
+
+Pointer interaction does not change the checked state when the element is disabled or readonly. Programmatic changes through the `checked` property remain available.
+
+### d-radio
+
+`d-radio` coordinates radio elements that share a `name` in the same container:
+
+```html
+<d-radio
+  name="nameA"
+  label="Val 1"
+  value="val-1">
+</d-radio>
+
+<d-radio
+  name="nameA"
+  label="Val 2"
+  value="val-2"
+  checked>
+</d-radio>
+
+<d-radio
+  name="mood"
+  label="Label"
+  value="happy">
+</d-radio>
+
+<d-radio
+  name="nameA"
+  label="Val 1"
+  checked
+  disabled>
+</d-radio>
+
+<d-radio
+  name="nameA"
+  label="Val 2"
+  readonly>
+</d-radio>
+```
+
+Selecting one radio unchecks another checked radio with the same name. A checked radio returns its configured value, while an unchecked radio returns `undefined`. Clicking an already checked radio does not uncheck it.
+
