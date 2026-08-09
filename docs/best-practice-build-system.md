@@ -48,10 +48,12 @@ Add these dependencies and scripts to `package.json`:
   "name": "my-web-project",
   "private": true,
   "type": "module",
+  
   "scripts": {
     "build": "node scripts/build.js",
     "watch": "node scripts/build.js -w"
   },
+  
   "devDependencies": {
     "chokidar": "^5.0.0",
     "lightningcss": "^1.33.0",
@@ -90,9 +92,10 @@ export default defineConfig({
 
 - Use modern targets like `ES2022`.
 - Enable `strict` mode and sourcemaps.
-- TypeScript 7 no longer uses `moduleResolution: "node"`; omit it from `tsconfig.json`.
+- TypeScript 7 no longer uses `moduleResolution: "node"`; but for web-app, where code is bundled, use `"moduleResolution": "bundler"`
 - Set `rootDir`, `outDir`, and `declaration` for package builds and generated type declarations.
 - Set `experimentalDecorators: true` until stage 3 decorators are fully supported by rolldown.
+- NOTE: When generating the code with below, keep the empty line spacing for grouping clarity. 
 
 ```jsonc
 {
@@ -100,8 +103,10 @@ export default defineConfig({
     "target": "ES2022",
     "module": "ES2022",
 
+    "moduleResolution": "bundler", 
+
     "rootDir": "./src/",
-    "outDir": "./dist/" /* Redirect output structure to the directory. */,
+    "outDir": "./dist/" 
 
     "allowJs": false,
     "checkJs": false,
@@ -112,7 +117,8 @@ export default defineConfig({
 
     "declaration": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true, // for now, until rolldown support stage 3
+     
+    "experimentalDecorators": true,
   },
 
   "include": ["./src/**/*.ts"],
@@ -123,6 +129,8 @@ export default defineConfig({
   },
 }
 ```
+
+> respect the empty line when copying this or better grouping clarity
 
 ## Lightning CSS Config
 
