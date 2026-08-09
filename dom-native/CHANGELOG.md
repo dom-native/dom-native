@@ -2,6 +2,19 @@
 
 > Legend: `.` minor; `+` addition; `^` enhancement; `*` refactor; `-` fix; `!` change; 
 
+
+### v0.12.0 - Aug 8, 2026
+
+- `+` draggable - add @dom-native/draggable to repo (mono-repo)
+- `+` ui - add the @dom-native/ui package and demo assets (mono-repo)
+- `^` build - update to TypeScript 7
+- `!` build - migrate library and demo builds to Rolldown and Lightning CSS
+- `*` demo-build - simplify build and watch workflows with shared, debounced rebuilds
+- `-` position - fix offset-parent, coordinate, and disabled-axis handling
+- `-` dx - fix repeated form value accumulation, checkbox values, and array distribution for same-name fields
+- `-` hub - fix duplicate subscriptions after test navigation
+- `+` docs - add DOM Native and web build-system best-practice guides
+
 ### v0.11.4 - May 8, 2024
 
 - `!` `preDisplay` in now on **same frame** as init
