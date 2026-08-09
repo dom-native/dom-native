@@ -1,8 +1,8 @@
 {
   "name": "@dom-native/draggable",
   "type": "module",
-  "version": "0.4.0-WIP",
-  "description": "NOW PAR OF dom-native (this lib is deprecated)",
+  "version": "0.4.0",
+  "description": "deprecated - NOW PART OF dom-native as 'dnd' sub module",
   "main": "dist/index.js",
   "scripts": {
     "prepack": "npm run build",
