@@ -47,12 +47,15 @@ The detailed standards are split into the companion documents listed below.
 
 ## Standard documents
 
+- `best-practice-build-system.md`, browser build setup with TypeScript, Rolldown, and Lightning CSS
 - `doc-01-element.md`, elements, lifecycle, and DOM builders
 - `doc-02-event-dom.md`, DOM event binding and decorators
 - `doc-03-event-hub.md`, hub pub/sub and decorators
 - `doc-04-css.md`, css objects, stylesheet adoption, and inline style helpers
 - `doc-05-position.md`, anchored positioning
-- `doc-06-dnd.md`, pointer-based drag and drop
+- `doc-06-dx-data-exchange.md`, DOM data exchange
+- `doc-10-dnd.md`, pointer-based drag and drop
+- `doc-20-ui-components.md`, form-oriented UI components and SVG symbol helpers
 
 ## Recommended reading order
 
@@ -60,7 +63,10 @@ The detailed standards are split into the companion documents listed below.
 - Then read `doc-02-event-dom.md`
 - Then `doc-03-event-hub.md`
 - Use `doc-04-css.md` and `doc-05-position.md` as focused references
-- Use `doc-06-dnd.md` as the drag and drop reference
+- Use `doc-06-dx-data-exchange.md` for DOM data exchange
+- Use `doc-10-dnd.md` as the drag and drop reference
+- Use `doc-20-ui-components.md` for UI components
+- Use `best-practice-build-system.md` for browser build setup
 
 ## Quick example
 
