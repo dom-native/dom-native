@@ -1,5 +1,6 @@
 import { CodeDoc, SpecView } from "../infra/index.js";
 import { customElement, dnd } from "dom-native";
+import { code_drag_simplest, code_drag_ghost, code_drag_constrained } from "./_codes";
 
 @customElement("spec-dnd-simple")
 export class SpecDndSimpleView extends SpecView {
@@ -32,7 +33,7 @@ function dragConstrained(rootEl: HTMLElement) {
 
 const spec_dnd_basic: CodeDoc = {
 	title: "dnd simple",
-	jsPrefix: `
+	tsPrefix: `
 import { dnd } from 'dom-native'
 	`,
 	groups: [
@@ -45,7 +46,8 @@ import { dnd } from 'dom-native'
 	<div class="box drag-me">drag me</div>
 </div>
 			`,
-					js: dragSimplest,
+					ts: code_drag_simplest,
+					run: dragSimplest,
 				},
 				{
 					title: "Drag ghost (i.e., clone)",
@@ -55,7 +57,8 @@ import { dnd } from 'dom-native'
 	<div class="box drag-me" >drag me</div>
 </div>
 			`,
-					js: dragGhost,
+					ts: code_drag_ghost,
+					run: dragGhost,
 				},
 				{
 					title: "Drag constrained (to center point)",
@@ -67,7 +70,8 @@ import { dnd } from 'dom-native'
 	</div>
 </div>
 			`,
-					js: dragConstrained,
+					ts: code_drag_constrained,
+					run: dragConstrained,
 				},
 			],
 		},

@@ -1,5 +1,6 @@
 import { CodeDoc, SpecView } from '../infra/index.js';
 import { customElement, on, OnEvent, dnd } from 'dom-native';
+import { code_simple_nested, code_simple_nested_with_style } from './_codes';
 
 @customElement('spec-dnd-nested')
 export class SpecNestedView extends SpecView {
@@ -50,8 +51,8 @@ function simpleNestedWithStyle(rootEl: HTMLElement) {
 
 const spec_doc: CodeDoc = {
 	title: 'dnd nested',
-	jsPrefix: `
-import { on, dnd } from 'dom-native'
+	tsPrefix: `
+import { on, OnEvent, dnd } from 'dom-native'
 	`,
 	groups: [
 		{
@@ -70,7 +71,8 @@ import { on, dnd } from 'dom-native'
 	<div class="zone drop-zone"></div>
 </div>
 			`,
-					js: simpleNested
+					ts: code_simple_nested,
+					run: simpleNested
 				},
 				{
 					title: 'Nested with style',
@@ -86,7 +88,8 @@ import { on, dnd } from 'dom-native'
 	<div class="zone drop-zone"></div>
 </div>
 			`,
-					js: simpleNestedWithStyle
+					ts: code_simple_nested_with_style,
+					run: simpleNestedWithStyle
 				}
 			]
 		}

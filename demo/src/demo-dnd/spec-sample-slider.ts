@@ -1,5 +1,6 @@
 import { CodeDoc, SpecView } from '../infra/index.js';
 import { closest, customElement, on, style, dnd } from 'dom-native';
+import { code_multi_slider, code_multi_slider_with_handle, code_raw_slider, code_simple_slider } from './_codes';
 
 
 @customElement('spec-sample-slider')
@@ -144,7 +145,7 @@ function rawSlider(rootEl: HTMLElement) {
 
 const spec_doc: CodeDoc = {
 	title: 'Slider',
-	jsPrefix: `
+	tsPrefix: `
 import { on, dnd }	from 'dom-native'
 	`,
 	groups: [
@@ -160,7 +161,8 @@ import { on, dnd }	from 'dom-native'
 	</div>
 </div>
 			`,
-					js: simpleSlider
+					ts: code_simple_slider,
+					run: simpleSlider
 				},
 				{
 					title: 'Multi drag',
@@ -173,7 +175,8 @@ import { on, dnd }	from 'dom-native'
 	</div>
 </div>
 			`,
-					js: multiSlider
+					ts: code_multi_slider,
+					run: multiSlider
 				},
 				{
 					title: 'Multi drag with handles',
@@ -189,7 +192,8 @@ import { on, dnd }	from 'dom-native'
 	</div>
 </div>
 			`,
-					js: multiSliderWithHandle
+					ts: code_multi_slider_with_handle,
+					run: multiSliderWithHandle
 				},
 				{
 					title: 'Without dnd (raw PointerEvent)',
@@ -201,7 +205,8 @@ import { on, dnd }	from 'dom-native'
 	</div>
 </div>
 			`,
-					js: rawSlider
+					ts: code_raw_slider,
+					run: rawSlider
 				}
 
 			]

@@ -1,5 +1,6 @@
 import { CodeDoc, SpecView } from "../infra/index.js";
 import { customElement, first, on, OnEvent, dnd } from "dom-native";
+import { code_dnd_basic_simple_drag, code_dnd_basic_simple_droppable } from "./_codes.js";
 
 
 @customElement("spec-dnd-basic")
@@ -53,7 +54,8 @@ import { on, first, dnd } from 'dom-native'
 	<div class="zone show-zone"></div>
 </div>
 			`,
-					js: simpleDrag,
+					ts: code_dnd_basic_simple_drag,
+					run: simpleDrag,
 				},
 				{
 					title: "Simple Droppable",
@@ -65,7 +67,8 @@ import { on, first, dnd } from 'dom-native'
 	<div class="zone drop-zone"></div>
 </div>
 			`,
-					js: simpleDroppable,
+					ts: code_dnd_basic_simple_droppable,
+					run: simpleDroppable,
 				},
 			],
 		},
