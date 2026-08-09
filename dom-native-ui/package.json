@@ -11,7 +11,7 @@
     "watch": "rolldown -c -w"
   },
   "peerDependencies": {
-    "dom-native": "^0.13.0-WIP"
+    "dom-native": "^0.13.0"
   },
   "devDependencies": {
     "dom-native": "file:../dom-native",

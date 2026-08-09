@@ -10,11 +10,7 @@
     "build-min": "rolldown -c rolldown.min.config.js",
     "watch": "rolldown -c -w"
   },
-  "peerDependencies": {
-    "dom-native": "^0.13.0-WIP"
-  },
   "devDependencies": {
-    "dom-native": "file:../dom-native",
     "rolldown": "^1.2.0",
     "typescript": "^7.0.0"
   },

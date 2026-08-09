@@ -3,6 +3,14 @@
 > Legend: `.` minor; `+` addition; `^` enhancement; `*` refactor; `-` fix; `!` change; 
 
 
+### v0.13.0 - Aug 9, 2026
+
+- `!` dnd - refactor draggable integration, now use `import { dnd } from 'dom-native'`
+- `^` docs - update the build-system guide for TypeScript 7 and DND documentation
+- `^` demo-dnd - show exact static DND code
+- `!` `@dom-native/draggable` deprecated/empties as `0.4.0`
+- `.` `@dom-native/ui` `0.4.x` to work with `dom-native` v0.13 and above. 
+
 ### v0.12.0 - Aug 8, 2026
 
 - `+` draggable - add @dom-native/draggable to repo (mono-repo)
